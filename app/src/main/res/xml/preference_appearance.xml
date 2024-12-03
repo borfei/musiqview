@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:title="@string/preference_looks">
+
+        <ListPreference
+            app:key="theme"
+            app:icon="@drawable/baseline_brightness_6_24"
+            app:defaultValue="auto"
+            app:entries="@array/preference_themes"
+            app:entryValues="@array/preference_themes_values"
+            app:title="@string/preference_looks_theme"
+            app:useSimpleSummaryProvider="true" />
+        <CheckBoxPreference
+            app:key="theme_dynamic_colors"
+            app:icon="@drawable/baseline_color_lens_24"
+            app:defaultValue="false"
+            app:title="@string/preference_looks_dynamic_colors" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:title="@string/preference_information">
+
+        <EditTextPreference
+            app:key="info_title_format"
+            app:defaultValue="@string/preference_information_title_format_default"
+            app:title="@string/preference_information_title_format"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="info_subtitle_format"
+            app:defaultValue="@string/preference_information_subtitle_format_default"
+            app:title="@string/preference_information_subtitle_format"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:title="@string/preference_layout">
+
+        <CheckBoxPreference
+            app:key="layout_animate_changes"
+            app:icon="@drawable/baseline_animation_24"
+            app:defaultValue="true"
+            app:title="@string/preference_layout_animate_changes"
+            app:summary="@string/preference_layout_animate_changes_summary" />
+        <ListPreference
+            app:key="layout_immersive_mode"
+            app:defaultValue="landscape"
+            app:entries="@array/preference_immersive_mode"
+            app:entryValues="@array/preference_immersive_mode_values"
+            app:title="@string/preference_layout_immersive_mode"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+</PreferenceScreen>

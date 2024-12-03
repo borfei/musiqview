@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="preference_themes">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>System default</item>
+    </string-array>
+    <string-array name="preference_themes_values">
+        <item>light</item>
+        <item>dark</item>
+        <item>auto</item>
+    </string-array>
+    <string-array name="preference_immersive_mode">
+        <item>Off</item>
+        <item>On</item>
+        <item>Landscape mode only</item>
+    </string-array>
+    <string-array name="preference_immersive_mode_values">
+        <item>disabled</item>
+        <item>enabled</item>
+        <item>landscape</item>
+    </string-array>
+    <string-array name="preference_types">
+        <item>Integer</item>
+        <item>String</item>
+        <item>Boolean</item>
+        <item>Long</item>
+        <item>Float</item>
+    </string-array>
+</resources>

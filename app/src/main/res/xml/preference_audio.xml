@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        app:title="@string/preference_playback">
+
+        <CheckBoxPreference
+            app:key="playback_audio_focus"
+            app:icon="@drawable/baseline_speaker_24"
+            app:defaultValue="true"
+            app:title="@string/preference_playback_audio_focus"
+            app:summary="@string/preference_playback_audio_focus_summary" />
+        <SeekBarPreference
+            android:max="10000"
+            app:key="playback_duration_interval"
+            app:icon="@drawable/baseline_timer_24"
+            app:defaultValue="1000"
+            app:min="0"
+            app:seekBarIncrement="1000"
+            app:title="@string/preference_playback_duration_interval"
+            app:showSeekBarValue="true" />
+    </PreferenceCategory>
+</PreferenceScreen>
