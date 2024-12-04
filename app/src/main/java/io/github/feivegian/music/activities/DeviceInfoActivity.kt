@@ -1,4 +1,4 @@
-package io.github.spir0th.music.activities
+package io.github.feivegian.music.activities
 
 import android.app.Activity
 import android.content.Intent
@@ -10,10 +10,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import io.github.spir0th.music.BuildConfig
-import io.github.spir0th.music.R
-import io.github.spir0th.music.databinding.ActivityDeviceInfoBinding
-import io.github.spir0th.music.utils.adjustPaddingForSystemBarInsets
+import io.github.feivegian.music.BuildConfig
+import io.github.feivegian.music.R
+import io.github.feivegian.music.databinding.ActivityDeviceInfoBinding
+import io.github.feivegian.music.utils.adjustPaddingForSystemBarInsets
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException

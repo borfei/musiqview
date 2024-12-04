@@ -1,4 +1,4 @@
-package io.github.spir0th.music.activities
+package io.github.feivegian.music.activities
 
 import android.animation.LayoutTransition
 import android.content.ComponentName
@@ -28,11 +28,11 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withC
 import com.google.android.material.slider.Slider
 import com.google.android.material.snackbar.Snackbar
 import com.google.common.util.concurrent.MoreExecutors
-import io.github.spir0th.music.R
-import io.github.spir0th.music.databinding.ActivityMusicBinding
-import io.github.spir0th.music.services.PlaybackService
-import io.github.spir0th.music.utils.adjustPaddingForSystemBarInsets
-import io.github.spir0th.music.utils.setImmersiveMode
+import io.github.feivegian.music.R
+import io.github.feivegian.music.databinding.ActivityMusicBinding
+import io.github.feivegian.music.services.PlaybackService
+import io.github.feivegian.music.utils.adjustPaddingForSystemBarInsets
+import io.github.feivegian.music.utils.setImmersiveMode
 import java.util.Locale
 
 class MusicActivity : AppCompatActivity(), Player.Listener {

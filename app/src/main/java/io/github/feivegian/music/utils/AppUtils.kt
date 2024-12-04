@@ -1,4 +1,4 @@
-package io.github.spir0th.music.utils
+package io.github.feivegian.music.utils
 
 import android.app.Application
 import android.app.UiModeManager
@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import com.jakewharton.processphoenix.ProcessPhoenix
-import io.github.spir0th.music.App
+import io.github.feivegian.music.App
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date

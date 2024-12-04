@@ -1,4 +1,4 @@
-package io.github.spir0th.music.fragments
+package io.github.feivegian.music.fragments
 
 import android.content.ComponentName
 import android.os.Bundle
@@ -8,9 +8,9 @@ import androidx.media3.session.SessionToken
 import androidx.preference.CheckBoxPreference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.common.util.concurrent.MoreExecutors
-import io.github.spir0th.music.R
-import io.github.spir0th.music.activities.PreferenceActivity
-import io.github.spir0th.music.services.PlaybackService
+import io.github.feivegian.music.R
+import io.github.feivegian.music.activities.PreferenceActivity
+import io.github.feivegian.music.services.PlaybackService
 
 class AudioPreferenceFragment : PreferenceFragmentCompat() {
     private lateinit var activity: PreferenceActivity

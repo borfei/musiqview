@@ -10,7 +10,7 @@
 
         <intent
             android:targetPackage="io.github.feivegian.music"
-            android:targetClass="io.github.spir0th.music.activities.ServiceTestActivity"/>
+            android:targetClass="io.github.feivegian.music.activities.ServiceTestActivity"/>
     </Preference>
     <Preference
         app:key="device_info"
@@ -18,7 +18,7 @@
 
         <intent
             android:targetPackage="io.github.feivegian.music"
-            android:targetClass="io.github.spir0th.music.activities.DeviceInfoActivity" />
+            android:targetClass="io.github.feivegian.music.activities.DeviceInfoActivity" />
     </Preference>
     <Preference
         app:key="preference_editor"
@@ -26,6 +26,6 @@
 
         <intent
             android:targetPackage="io.github.feivegian.music"
-            android:targetClass="io.github.spir0th.music.activities.PreferenceEditorActivity" />
+            android:targetClass="io.github.feivegian.music.activities.PreferenceEditorActivity" />
     </Preference>
 </PreferenceScreen>

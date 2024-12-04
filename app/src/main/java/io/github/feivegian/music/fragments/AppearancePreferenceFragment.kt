@@ -1,14 +1,14 @@
-package io.github.spir0th.music.fragments
+package io.github.feivegian.music.fragments
 
 import android.os.Bundle
 import androidx.preference.CheckBoxPreference
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
-import io.github.spir0th.music.App
-import io.github.spir0th.music.R
-import io.github.spir0th.music.activities.PreferenceActivity
-import io.github.spir0th.music.utils.convert
-import io.github.spir0th.music.utils.setNightMode
+import io.github.feivegian.music.App
+import io.github.feivegian.music.R
+import io.github.feivegian.music.activities.PreferenceActivity
+import io.github.feivegian.music.utils.convert
+import io.github.feivegian.music.utils.setNightMode
 
 class AppearancePreferenceFragment : PreferenceFragmentCompat() {
     private lateinit var application: App

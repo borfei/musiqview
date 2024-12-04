@@ -1,12 +1,13 @@
-package io.github.spir0th.music
+package io.github.feivegian.music
 
 import android.app.Application
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
-import io.github.spir0th.music.utils.generateTraceLog
-import io.github.spir0th.music.utils.setNightMode
+import io.github.feivegian.music.utils.generateTraceLog
+import io.github.feivegian.music.utils.setNightMode
+import io.github.feivegian.music.R
 
 class App : Application(), Thread.UncaughtExceptionHandler {
     private lateinit var preferences: SharedPreferences

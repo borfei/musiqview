@@ -1,12 +1,12 @@
-package io.github.spir0th.music.fragments
+package io.github.feivegian.music.fragments
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.github.spir0th.music.R
-import io.github.spir0th.music.activities.PreferenceActivity
+import io.github.feivegian.music.R
+import io.github.feivegian.music.activities.PreferenceActivity
 import java.io.File
 
 class ExperimentsFragment : PreferenceFragmentCompat() {
