@@ -6,13 +6,6 @@
         app:key="crash_logs"
         app:title="@string/preference_experiments_crash_logs" />
     <Preference
-        app:title="@string/preference_experiments_service_test">
-
-        <intent
-            android:targetPackage="io.github.feivegian.music"
-            android:targetClass="io.github.feivegian.music.activities.ServiceTestActivity"/>
-    </Preference>
-    <Preference
         app:key="device_info"
         app:title="@string/preference_experiments_device_info">
 
