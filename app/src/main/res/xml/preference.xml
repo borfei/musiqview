@@ -14,8 +14,7 @@
     <Preference
         app:icon="@drawable/baseline_info_24"
         app:fragment="io.github.feivegian.music.fragments.AboutFragment"
-        app:title="@string/preference_about"
-        app:summary="@string/preference_about_summary" />
+        app:title="@string/preference_about" />
     <Preference
         app:key="experiments"
         app:fragment="io.github.feivegian.music.fragments.ExperimentsFragment"

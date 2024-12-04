@@ -50,7 +50,7 @@
     <!-- Preference strings -->
     <string name="preference_title">Settings</string>
     <string name="preference_appearance">Appearance</string>
-    <string name="preference_appearance_summary">Customize app interface</string>
+    <string name="preference_appearance_summary">Adjust the looks to your likings</string>
     <string name="preference_looks">Look and Feel</string>
     <string name="preference_looks_theme">Theme</string>
     <string name="preference_looks_dynamic_colors">Dynamic colors</string>
@@ -64,13 +64,15 @@
     <string name="preference_layout_animate_changes_summary">Certain UI elements will be animated depending how the layout is changed</string>
     <string name="preference_layout_immersive_mode">Immersive mode</string>
     <string name="preference_audio">Audio</string>
-    <string name="preference_audio_summary">Alter how the playback works</string>
+    <string name="preference_audio_summary">Customize playback behavior</string>
     <string name="preference_playback">Playback</string>
     <string name="preference_playback_audio_focus">Audio focus</string>
     <string name="preference_playback_audio_focus_summary">Prevent audio playback from simultaneously playing with other apps</string>
     <string name="preference_playback_duration_interval">Duration interval (ms)</string>
+    <string name="preference_other">Other</string>
+    <string name="preference_other_wake_lock">Prevent screen from sleep</string>
+    <string name="preference_other_wake_lock_summary">When enabled, wake lock is acquired and the screen will no longer sleep.</string>
     <string name="preference_about">About</string>
-    <string name="preference_about_summary">View what this application is all about</string>
     <string name="preference_about_name">Music</string>
     <string name="preference_about_version">Version %1$s</string>
     <string name="preference_about_updates">Check for updates</string>

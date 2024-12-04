@@ -2,6 +2,7 @@ package io.github.feivegian.music.services
 
 import android.content.SharedPreferences
 import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
@@ -20,6 +21,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
 
         val player = ExoPlayer.Builder(this)
             .setAudioAttributes(AudioAttributes.DEFAULT, preferences.getBoolean("playback_audio_focus", true))
+            .setWakeMode(if (preferences.getBoolean("other_wake_lock", false)) C.WAKE_MODE_LOCAL else C.WAKE_MODE_NONE)
             .build()
         mediaSession = MediaSession.Builder(this, player)
             .setCallback(this)
