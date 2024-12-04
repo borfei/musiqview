@@ -89,10 +89,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
 
-        // Acquire wake lock if enabled
-        if (wakeLock) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        }
         // Register onBackPressedDispatcher for custom activity exit processing
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -178,6 +174,13 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         super.onIsPlayingChanged(isPlaying)
         binding.playbackState.isChecked = isPlaying
+
+        if (wakeLock) {
+            when (isPlaying) {
+                true -> { window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
+                false -> { window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
+            }
+        }
     }
 
     override fun onPlayerError(error: PlaybackException) {

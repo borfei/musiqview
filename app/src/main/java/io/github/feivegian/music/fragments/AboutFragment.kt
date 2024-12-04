@@ -1,11 +1,10 @@
 package io.github.feivegian.music.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.jakewharton.processphoenix.ProcessPhoenix
 import io.github.feivegian.music.BuildConfig
 import io.github.feivegian.music.R
 import io.github.feivegian.music.activities.PreferenceActivity
@@ -13,32 +12,33 @@ import io.github.feivegian.music.activities.PreferenceActivity
 class AboutFragment : PreferenceFragmentCompat() {
     private lateinit var activity: PreferenceActivity
 
-    private var discoverExperimentsCount = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity = requireActivity() as PreferenceActivity
-    }
+    private var uec = 0
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preference_about, rootKey)
+        activity = requireActivity() as PreferenceActivity
         val name = findPreference<Preference>("name")
 
         name?.summary = getString(R.string.preference_about_version, BuildConfig.VERSION_NAME)
         name?.setOnPreferenceClickListener {
-            discoverExperimentsCount += 1
+            // "uec" and "ex" is named here because we want this kind of functionality to be hidden
+            // once the user has unlocked this, experiments will be accessible
+            uec += 1
 
-            if (discoverExperimentsCount >= 5) {
-                val activity = requireActivity() as PreferenceActivity
-                val intent = Intent(requireContext(), PreferenceActivity::class.java)
+            if (uec >= 5) {
+                val ex = activity.preferences.getBoolean("experiments", false)
 
-                if (!activity.areExperimentsEnabled()) {
-                    Toast.makeText(requireContext(), R.string.preference_discover_experiments, Toast.LENGTH_LONG).show()
-                    activity.toggleExperiments(true)
-                    ProcessPhoenix.triggerRebirth(requireContext(), intent)
+                if (!ex) {
+                    activity.preferences.edit {
+                        putBoolean("experiments", true)
+                        apply()
+                    }
+                    if (!activity.isRestartRequiredShown()) {
+                        activity.setShowRestartRequired(true)
+                    }
                 }
 
-                discoverExperimentsCount = 0
+                uec = 0 // reset to zero after unlocking experiments
             }
 
             true

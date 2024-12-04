@@ -1,12 +1,14 @@
 package io.github.feivegian.music.utils
 
+import android.app.AlarmManager
 import android.app.Application
+import android.app.PendingIntent
 import android.app.UiModeManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity.ALARM_SERVICE
 import androidx.appcompat.app.AppCompatDelegate
-import com.jakewharton.processphoenix.ProcessPhoenix
 import io.github.feivegian.music.App
 import java.io.File
 import java.text.SimpleDateFormat
@@ -16,10 +18,6 @@ import kotlin.system.exitProcess
 
 fun Application.convert(): App {
     return this as App
-}
-
-fun App.restart(vararg nextIntent: Intent) {
-    ProcessPhoenix.triggerRebirth(this, *nextIntent)
 }
 
 fun App.setNightMode(value: String) {

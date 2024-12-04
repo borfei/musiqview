@@ -12,12 +12,11 @@
             app:title="@string/preference_playback_audio_focus"
             app:summary="@string/preference_playback_audio_focus_summary" />
         <SeekBarPreference
-            android:max="10000"
             app:key="playback_duration_interval"
             app:icon="@drawable/baseline_timer_24"
             app:defaultValue="1000"
             app:min="0"
-            app:seekBarIncrement="1000"
+            android:max="10000"
             app:title="@string/preference_playback_duration_interval"
             app:showSeekBarValue="true" />
     </PreferenceCategory>
