@@ -12,6 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -55,6 +56,8 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
     private var immersiveMode: ImmersiveMode = ImmersiveMode.LANDSCAPE_ONLY
     private var animateLayoutChanges: Boolean = true
 
+    private var wakeLock: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -79,12 +82,17 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 immersiveMode
             }
         }
+        wakeLock = preferences.getBoolean("other_wake_lock", false)
 
         // Inflate activity view using ViewBinding
         binding = ActivityMusicBinding.inflate(layoutInflater)
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
 
+        // Acquire wake lock if enabled
+        if (wakeLock) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
         // Register onBackPressedDispatcher for custom activity exit processing
         onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -155,6 +163,11 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         super.onDestroy()
         mediaController?.removeListener(this)
         mediaController?.release()
+
+        // If wake lock is enabled & is acquired, release it
+        if (wakeLock) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
     }
 
     override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
@@ -215,7 +228,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             artworkBitmap = Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
         }
 
-        // set the loaded cover art to it's respective view
+        // Set the loaded cover art to it's respective view
         Glide.with(this)
             .load(artworkBitmap)
             .transition(withCrossFade())
@@ -224,7 +237,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         binding.infoTitle.text = title
         binding.infoSubtitle.text = subtitle
 
-        // toggle info labels depending on text length
+        // Information texts may be hidden when their text length is less than zero
         binding.infoTitle.visibility = when (title.isNotEmpty()) {
             true -> {
                 View.VISIBLE
@@ -273,7 +286,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             Intent.ACTION_VIEW -> {
                 intent?.data?.let {
                     val item = MediaItem.fromUri(it)
-                    Log.i(TAG, "Playing URI from intent: $it")
                     intent?.data = null
                     mediaController?.setMediaItem(item)
                     mediaController?.prepare()

@@ -13,15 +13,20 @@ import io.github.feivegian.music.BuildConfig
 
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
     private lateinit var preferences: SharedPreferences
+    private var audioFocus: Boolean = true
+    private var wakeLock: Boolean = false
+
     private var mediaSession: MediaSession? = null
 
     override fun onCreate() {
         super.onCreate()
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        audioFocus = preferences.getBoolean("playback_audio_focus", true)
+        wakeLock = preferences.getBoolean("other_wake_lock", false)
 
         val player = ExoPlayer.Builder(this)
-            .setAudioAttributes(AudioAttributes.DEFAULT, preferences.getBoolean("playback_audio_focus", true))
-            .setWakeMode(if (preferences.getBoolean("other_wake_lock", false)) C.WAKE_MODE_LOCAL else C.WAKE_MODE_NONE)
+            .setAudioAttributes(AudioAttributes.DEFAULT, audioFocus)
+            .setWakeMode(if (wakeLock) C.WAKE_MODE_NETWORK else C.WAKE_MODE_NONE) // network one
             .build()
         mediaSession = MediaSession.Builder(this, player)
             .setCallback(this)
