@@ -30,7 +30,7 @@
             android:theme="@style/AppTheme.Experimental" />
         <activity
             android:name=".activities.PreferenceActivity"
-            android:exported="false"
+            android:exported="true"
             android:theme="@style/AppTheme.Preference">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
