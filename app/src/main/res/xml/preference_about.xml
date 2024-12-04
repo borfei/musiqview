@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:key="name"
+        app:key="about_name"
         app:icon="@drawable/baseline_audio_file_24"
         app:title="@string/preference_about_name"
         app:summary="@string/preference_about_version" />
@@ -10,10 +10,24 @@
         app:enabled="false"
         app:icon="@drawable/baseline_update_24"
         app:title="@string/preference_about_updates" />
-    <CheckBoxPreference
-        app:key="experiments"
-        app:isPreferenceVisible="false"
-        app:title="@string/preference_experiments" />
+    <PreferenceCategory
+        app:title="@string/preference_project">
+
+        <Preference
+            app:key="project_website"
+            app:icon="@drawable/baseline_home_24"
+            app:title="@string/preference_project_website" />
+        <Preference
+            app:key="project_source"
+            app:icon="@drawable/baseline_code_24"
+            app:title="@string/preference_project_source"
+            app:summary="@string/preference_project_source_summary" />
+        <Preference
+            app:key="project_license"
+            app:icon="@drawable/baseline_copyright_24"
+            app:title="@string/preference_project_license"
+            app:summary="@string/preference_project_license_summary" />
+    </PreferenceCategory>
     <PreferenceCategory
         app:title="@string/preference_author">
 
@@ -27,4 +41,9 @@
             app:title="@string/preference_author_donate"
             app:summary="@string/preference_author_donate_summary" />
     </PreferenceCategory>
+    <!-- hidden preference, used for unlocking experiments -->
+    <CheckBoxPreference
+        app:key="experiments"
+        app:isPreferenceVisible="false"
+        app:title="@string/preference_experiments" />
 </PreferenceScreen>
