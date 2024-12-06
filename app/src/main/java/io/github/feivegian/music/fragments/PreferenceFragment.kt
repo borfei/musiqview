@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.preference.CheckBoxPreference
@@ -11,6 +12,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import androidx.preference.SeekBarPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.feivegian.music.App
@@ -21,7 +23,7 @@ import io.github.feivegian.music.R
 import io.github.feivegian.music.activities.PreferenceActivity
 import java.io.File
 
-class PreferenceFragment : PreferenceFragmentCompat() {
+class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var activity: PreferenceActivity
     private lateinit var customTabsIntent: CustomTabsIntent
     private lateinit var application: App
@@ -34,7 +36,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         activity = requireActivity() as PreferenceActivity
         customTabsIntent = CustomTabsIntent.Builder().build()
         application = activity.application.asApp()
-        preferences = activity.getPreferences()
+        preferences = PreferenceManager.getDefaultSharedPreferences(application)
+        preferences.registerOnSharedPreferenceChangeListener(this)
 
         val theme = findPreference<ListPreference>("looks_theme")
         val dynamicColors = findPreference<CheckBoxPreference>("looks_dynamic_colors")
@@ -146,5 +149,29 @@ class PreferenceFragment : PreferenceFragmentCompat() {
 
             true
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        preferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        var value: Any = "UNKNOWN"
+
+        try {
+            value = sharedPreferences?.getString(key, String())!!
+        } catch (_: ClassCastException) {}
+        try {
+            value = sharedPreferences?.getStringSet(key, setOf())!!
+        } catch (_: ClassCastException) {}
+        try {
+            value = sharedPreferences?.getBoolean(key, false)!!
+        } catch (_: ClassCastException) {}
+        try {
+            value = sharedPreferences?.getInt(key, -1)!!
+        } catch (_: ClassCastException) {}
+
+        Log.i(PreferenceActivity.TAG, "Preference changed: $key -> $value")
     }
 }
