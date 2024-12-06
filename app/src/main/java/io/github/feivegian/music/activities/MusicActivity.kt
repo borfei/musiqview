@@ -36,6 +36,7 @@ import io.github.feivegian.music.utils.setImmersiveMode
 import java.util.Locale
 
 class MusicActivity : AppCompatActivity(), Player.Listener {
+
     enum class ImmersiveMode {
         DISABLED, ENABLED, LANDSCAPE_ONLY
     }
@@ -211,20 +212,23 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
 
     private fun updateInfo(metadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
         // parse header/sub-header formatters
-        // TODO: add more formats here
-        var title = headerFormat
-        var subtitle = subheaderFormat
-        title = title.replace("%title%", metadata.title.toString(), true)
-        title = title.replace("%artist%", metadata.artist.toString(), true)
-        title = title.replace("%album_artist%", metadata.albumArtist.toString(), true)
-        title = title.replace("%album%", metadata.albumTitle.toString(), true)
-        subtitle = subtitle.replace("%title%", metadata.title.toString(), true)
-        subtitle = subtitle.replace("%artist%", metadata.artist.toString(), true)
-        subtitle = subtitle.replace("%album_artist%", metadata.albumArtist.toString(), true)
-        subtitle = subtitle.replace("%album%", metadata.albumTitle.toString(), true)
+        var parsedHeader = headerFormat // we use the format to use String.replace later
+        var parsedSubheader = subheaderFormat // same goes to this variable too
+        val formats = hashMapOf(
+            "%title%" to metadata.title,
+            "%artist%" to metadata.artist,
+            "%album_artist%" to metadata.albumArtist,
+            "%album_title%" to metadata.albumTitle
+        )
+        for ((format, value) in formats) {
+            parsedHeader = parsedHeader.replace(format, value.toString())
+            parsedSubheader = parsedSubheader.replace(format, value.toString())
+        }
+
         // load cover art from metadata
         val artworkData = metadata.artworkData ?: byteArrayOf(1)
         var artworkBitmap = BitmapFactory.decodeByteArray(artworkData, 0, artworkData.size)
+
         if (artworkBitmap == null) {
             artworkBitmap = Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
         }
@@ -235,11 +239,11 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             .transition(withCrossFade())
             .into(binding.coverArt)
 
-        binding.infoHeader.text = title
-        binding.infoSubheader.text = subtitle
+        binding.infoHeader.text = parsedHeader
+        binding.infoSubheader.text = parsedSubheader
 
         // Information texts may be hidden when their text length is less than zero
-        binding.infoHeader.visibility = when (title.isNotEmpty()) {
+        binding.infoHeader.visibility = when (parsedHeader.isNotEmpty()) {
             true -> {
                 View.VISIBLE
             }
@@ -247,7 +251,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 View.GONE
             }
         }
-        binding.infoSubheader.visibility = when (subtitle.isNotEmpty()) {
+        binding.infoSubheader.visibility = when (parsedSubheader.isNotEmpty()) {
             true -> {
                 View.VISIBLE
             }
