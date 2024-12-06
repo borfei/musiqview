@@ -2,6 +2,7 @@ package io.github.feivegian.music.fragments
 
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
@@ -44,6 +45,7 @@ class PreferenceFragment : PreferenceFragmentCompat() {
         val experiments = findPreference<PreferenceCategory>("about_experiments")
         val experimentsUnlock = findPreference<CheckBoxPreference>("experiments_unlock")
         val crashLogs = findPreference<Preference>("experiments_crash_logs")
+        val deviceInfo = findPreference<Preference>("experiments_device_info")
 
         name?.summary = getString(R.string.preference_about_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
         experiments?.isVisible = experimentsUnlock?.isChecked == true
@@ -120,6 +122,28 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             }
 
             dialog.show()
+            true
+        }
+        deviceInfo?.setOnPreferenceClickListener {
+            val messageBuilder = StringBuilder().apply {
+                appendLine(getString(R.string.dialog_device_info_message_device, Build.DEVICE))
+                appendLine(getString(R.string.dialog_device_info_message_brand, Build.BRAND))
+                appendLine(getString(R.string.dialog_device_info_message_model, Build.MODEL))
+                appendLine(getString(R.string.dialog_device_info_message_product, Build.PRODUCT))
+                appendLine(getString(R.string.dialog_device_info_message_manufacturer, Build.MANUFACTURER))
+                appendLine(getString(R.string.dialog_device_info_message_supported_abi, Build.SUPPORTED_ABIS.joinToString(",")))
+                appendLine()
+                appendLine(getString(R.string.dialog_device_info_message_os_codename, Build.VERSION.CODENAME))
+                appendLine(getString(R.string.dialog_device_info_message_os_release, Build.VERSION.RELEASE))
+                appendLine(getString(R.string.dialog_device_info_message_os_sdk_version, Build.VERSION.SDK_INT))
+                appendLine(getString(R.string.dialog_device_info_message_os_security_patch, Build.VERSION.SECURITY_PATCH))
+            }
+            MaterialAlertDialogBuilder(activity)
+                .setTitle(R.string.dialog_device_info_title)
+                .setMessage(messageBuilder)
+                .setNegativeButton(R.string.dialog_device_info_negative) { _, _ -> }
+                .show()
+
             true
         }
     }
