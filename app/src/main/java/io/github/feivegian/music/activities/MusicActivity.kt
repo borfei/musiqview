@@ -129,11 +129,13 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         }
         binding.playbackSeek.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
+                binding.playbackState.visibility = View.GONE
                 binding.playbackSeekPosition.visibility = View.GONE
                 mediaController?.pause()
             }
 
             override fun onStopTrackingTouch(slider: Slider) {
+                binding.playbackState.visibility = View.VISIBLE
                 binding.playbackSeekPosition.visibility = View.VISIBLE
                 val duration = mediaController?.duration ?: 0
                 mediaController?.seekTo(((slider.value + 0.0) * duration).toLong())
