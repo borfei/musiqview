@@ -33,8 +33,8 @@ import io.github.feivegian.music.R
 import io.github.feivegian.music.databinding.ActivityMusicBinding
 import io.github.feivegian.music.extensions.isWebUrl
 import io.github.feivegian.music.services.PlaybackService
-import io.github.feivegian.music.utils.adjustPaddingForSystemBarInsets
-import io.github.feivegian.music.utils.setImmersiveMode
+import io.github.feivegian.music.extensions.adjustPaddingForSystemBarInsets
+import io.github.feivegian.music.extensions.setImmersiveMode
 import java.util.Locale
 
 class MusicActivity : AppCompatActivity(), Player.Listener {

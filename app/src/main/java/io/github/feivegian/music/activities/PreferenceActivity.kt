@@ -12,8 +12,8 @@ import com.google.android.material.snackbar.Snackbar
 import io.github.feivegian.music.R
 import io.github.feivegian.music.databinding.ActivityPreferenceBinding
 import io.github.feivegian.music.fragments.PreferenceFragment
-import io.github.feivegian.music.utils.adjustMarginsForSystemBarInsets
-import io.github.feivegian.music.utils.adjustPaddingForSystemBarInsets
+import io.github.feivegian.music.extensions.adjustMarginsForSystemBarInsets
+import io.github.feivegian.music.extensions.adjustPaddingForSystemBarInsets
 
 class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private lateinit var binding: ActivityPreferenceBinding
