@@ -86,7 +86,7 @@ class App : Application(), Thread.UncaughtExceptionHandler {
          *
          * @param[mode] The new mode, must be a value of [UiModeManager] or [AppCompatDelegate]
          */
-        fun App.changeUiMode(mode: Int) {
+        fun Application.changeUiMode(mode: Int) {
             if (Build.VERSION.SDK_INT >= 31) {
                 val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
                 uiModeManager.setApplicationNightMode(mode)
@@ -101,7 +101,7 @@ class App : Application(), Thread.UncaughtExceptionHandler {
          * This is a cast-as method, which calls the Int-accepted [changeUiMode]
          * @param[mode] The new mode, accepted values are "light", "dark", "auto"
          */
-        fun App.changeUiMode(mode: String) {
+        fun Application.changeUiMode(mode: String) {
             if (Build.VERSION.SDK_INT >= 31) {
                 val modeInt = when (mode.lowercase()) {
                     "light" -> {
