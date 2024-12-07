@@ -132,8 +132,12 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             startActivity(Intent(Intent.ACTION_VIEW, mediaItem.localConfiguration?.uri))
         }
         binding.playbackSeek.setLabelFormatter { value ->
+            if (mediaController?.currentMediaItem == null) {
+                return@setLabelFormatter convertMsToDuration(0)
+            }
+
             val duration = mediaController?.duration ?: 0
-            parsePlaybackDurationToString(((value + 0.0) * duration).toLong())
+            convertMsToDuration(((value + 0.0) * duration).toLong())
         }
         binding.playbackSeek.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
@@ -239,20 +243,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         updateSeek(newPosition.positionMs)
     }
 
-    private fun parsePlaybackDurationToString(milliseconds: Long): String {
-        val locale = Locale.getDefault()
-        val microseconds = milliseconds / 1000
-        val minutes = microseconds / 60
-        val seconds = microseconds % 60
-
-        if (microseconds >= 360) {
-            val hours = microseconds / 360
-            return getString(R.string.playback_seek_format_long, hours, minutes, String.format(locale, "%1$02d", seconds))
-        }
-
-        return getString(R.string.playback_seek_format_short, minutes, String.format(locale, "%1$02d", seconds))
-    }
-
     private fun updateInfo(metadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
         // parse header/sub-header formatters
         var parsedHeader = headerFormat // we use the format to use String.replace later
@@ -327,7 +317,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         }
 
         binding.playbackSeek.value = positionFloat
-        binding.playbackSeekPosition.text = parsePlaybackDurationToString(position)
+        binding.playbackSeekPosition.text = convertMsToDuration(position)
     }
 
     private fun update() {
@@ -361,5 +351,19 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
 
         loopRunnable?.let { loopHandler?.removeCallbacks(it) }
         loopHandling = false
+    }
+
+    private fun convertMsToDuration(milliseconds: Long): String {
+        val locale = Locale.getDefault()
+        val microseconds = milliseconds / 1000
+        val minutes = microseconds / 60
+        val seconds = microseconds % 60
+
+        if (microseconds >= 360) {
+            val hours = microseconds / 360
+            return getString(R.string.playback_seek_format_long, hours, minutes, String.format(locale, "%1$02d", seconds))
+        }
+
+        return getString(R.string.playback_seek_format_short, minutes, String.format(locale, "%1$02d", seconds))
     }
 }
