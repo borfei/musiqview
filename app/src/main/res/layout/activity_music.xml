@@ -56,14 +56,30 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                style="?attr/materialIconButtonOutlinedStyle"
-                android:id="@+id/playback_state"
-                android:layout_width="48dp"
+            <LinearLayout
+                android:id="@+id/playback_buttons"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/content_description_playback_state"
-                android:checkable="true"
-                app:icon="@drawable/button_playback_state" />
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    style="?attr/materialIconButtonOutlinedStyle"
+                    android:id="@+id/playback_state"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/content_description_playback_state"
+                    android:checkable="true"
+                    app:icon="@drawable/button_playback_state" />
+
+                <com.google.android.material.button.MaterialButton
+                    style="?attr/materialIconButtonOutlinedStyle"
+                    android:id="@+id/playback_download"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/content_description_playback_download"
+                    android:visibility="gone"
+                    app:icon="@drawable/baseline_download_24" />
+            </LinearLayout>
 
             <com.google.android.material.slider.Slider
                 style="@style/Widget.Material3.Slider.Legacy"

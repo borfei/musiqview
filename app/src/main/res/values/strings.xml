@@ -4,6 +4,7 @@
     <!-- Content descriptions -->
     <string name="content_description_cover_art">Cover art for current media</string>
     <string name="content_description_playback_state">Play or pause current media</string>
+    <string name="content_description_playback_download">Download media to file</string>
     <string name="content_description_playback_seek">Seek media position</string>
     <string name="content_description_preference_editor_add">Add a new preference item</string>
     <!-- Playback strings -->
