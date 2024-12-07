@@ -42,9 +42,8 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
         val dynamicColors = findPreference<CheckBoxPreference>("looks_dynamic_colors")
         val durationInterval = findPreference<SeekBarPreference>("playback_duration_interval")
         val name = findPreference<Preference>("about_name")
-        val website = findPreference<Preference>("project_website")
-        val source = findPreference<Preference>("project_source")
-        val experiments = findPreference<PreferenceCategory>("about_experiments")
+        val source = findPreference<Preference>("about_source")
+        val experiments = findPreference<PreferenceCategory>("experiments")
         val experimentsUnlock = findPreference<CheckBoxPreference>("experiments_unlock")
         val crashLogs = findPreference<Preference>("experiments_crash_logs")
         val deviceInfo = findPreference<Preference>("experiments_device_info")
@@ -72,7 +71,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
             if (uec >= 5) {
                 if (experimentsUnlock?.isChecked == false) {
                     experimentsUnlock.isChecked = true
-                    activity.recreate() // restart activity to show experiments
+                    activity.setShowRestartRequired(true)
                 }
 
                 uec = 0 // reset to zero after unlocking experiments
@@ -82,18 +81,13 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
 
             true
         }
-        website?.setOnPreferenceClickListener {
-            val url = getString(R.string.preference_about_project_website_summary)
-            customTabsIntent.launchUrl(requireContext(), Uri.parse(url))
-            true
-        }
         source?.setOnPreferenceClickListener {
             val url = it.summary.toString()
             customTabsIntent.launchUrl(requireContext(), Uri.parse(url))
             true
         }
         experimentsUnlock?.setOnPreferenceChangeListener { _, _ ->
-            activity.recreate() // restart activity to hide experiments
+            activity.setShowRestartRequired(true)
             true
         }
         crashLogs?.setOnPreferenceClickListener {
@@ -103,7 +97,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
                 .setNegativeButton(R.string.dialog_crash_logs_negative) { _, _ -> }
 
             if (logs.list().isNullOrEmpty()) {
-                dialog.setMessage(R.string.preference_about_experiments_crash_logs_empty)
+                dialog.setMessage(R.string.preference_experiments_crash_logs_empty)
             } else {
                 dialog
                     .setItems(logs.list()) { _, item ->
