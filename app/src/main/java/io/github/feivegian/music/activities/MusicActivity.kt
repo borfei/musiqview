@@ -23,18 +23,18 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
-import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
+import io.github.feivegian.music.App.Companion.asApp
 import io.github.feivegian.music.R
 import io.github.feivegian.music.databinding.ActivityMusicBinding
-import io.github.feivegian.music.extensions.isWebUrl
-import io.github.feivegian.music.services.PlaybackService
 import io.github.feivegian.music.extensions.adjustPaddingForSystemBarInsets
+import io.github.feivegian.music.extensions.isWebUrl
 import io.github.feivegian.music.extensions.setImmersiveMode
+import io.github.feivegian.music.services.PlaybackService
 import java.util.Locale
 
 class MusicActivity : AppCompatActivity(), Player.Listener {
@@ -65,7 +65,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         enableEdgeToEdge()
 
         // Initialize preferences
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        preferences = application.asApp().getPreferences()
         loopInterval = preferences.getInt("playback_duration_interval", loopInterval)
         headerFormat = preferences.getString("interface_header_format", headerFormat).toString()
         subheaderFormat = preferences.getString("interface_subheader_format", subheaderFormat).toString()
