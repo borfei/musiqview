@@ -237,6 +237,13 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             "%album_title%" to metadata.albumTitle
         )
         for ((format, value) in formats) {
+            if (value.isNullOrBlank()) {
+                // when value is null or blank, replace it with a placeholder instead
+                parsedHeader = parsedHeader.replace(format, "<unknown>")
+                parsedSubheader = parsedSubheader.replace(format, "<unknown>")
+                continue
+            }
+
             parsedHeader = parsedHeader.replace(format, value.toString())
             parsedSubheader = parsedSubheader.replace(format, value.toString())
         }
