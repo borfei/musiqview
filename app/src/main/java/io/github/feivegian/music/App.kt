@@ -61,10 +61,20 @@ class App : Application(), Thread.UncaughtExceptionHandler {
     companion object {
         const val TAG = "App"
 
+        /**
+         * Returns the current [Application] instance and casts as [App].
+         *
+         * @return [App]
+         */
         fun Application.asApp(): App {
             return this as App
         }
 
+        /**
+         * Changes the UI mode of the [Application] instance
+         *
+         * @param[mode] The new mode, must be a value of [UiModeManager] or [AppCompatDelegate]
+         */
         fun App.changeUiMode(mode: Int) {
             if (Build.VERSION.SDK_INT >= 31) {
                 val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
@@ -74,6 +84,12 @@ class App : Application(), Thread.UncaughtExceptionHandler {
             }
         }
 
+        /**
+         * Changes the UI mode of the [Application] instance
+         *
+         * This is a cast-as method, which calls the Int-accepted [changeUiMode]
+         * @param[mode] The new mode, accepted values are "light", "dark", "auto"
+         */
         fun App.changeUiMode(mode: String) {
             if (Build.VERSION.SDK_INT >= 31) {
                 val modeInt = when (mode.lowercase()) {

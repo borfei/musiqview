@@ -8,6 +8,14 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
 
+/**
+ * Adjusts the view's padding according to system bar insets
+ *
+ * @param[left] Include the left padding to be adjusted
+ * @param[top] Include the top padding to be adjusted
+ * @param[right] Include the right padding to be adjusted
+ * @param[bottom] Include the bottom padding to be adjusted
+ */
 fun View.adjustPaddingForSystemBarInsets(left: Boolean = false,
                                   top: Boolean = false,
                                   right: Boolean = false,
@@ -29,6 +37,14 @@ fun View.adjustPaddingForSystemBarInsets(left: Boolean = false,
     }
 }
 
+/**
+ * Adjusts the view's margins according to system bar insets
+ *
+ * @param[left] Include the left margin to be adjusted
+ * @param[top] Include the top margin to be adjusted
+ * @param[right] Include the right margin to be adjusted
+ * @param[bottom] Include the bottom margin to be adjusted
+ */
 fun View.adjustMarginsForSystemBarInsets(left: Boolean = false,
                                          top: Boolean = false,
                                          right: Boolean = false,
