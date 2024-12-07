@@ -13,19 +13,21 @@ import android.os.Looper
 import android.view.View
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
-import com.google.android.material.snackbar.Snackbar
 import com.google.common.util.concurrent.MoreExecutors
 import io.github.feivegian.music.R
 import io.github.feivegian.music.databinding.ActivityMusicBinding
@@ -55,6 +57,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
     private var immersiveMode: ImmersiveMode = ImmersiveMode.LANDSCAPE_ONLY
     private var wakeLock: Boolean = false
 
+    @OptIn(UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -144,9 +147,12 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             update()
 
             intent?.let {
+                // When activity has received an intent, we must determine it's action
+                // If the action is ACTION_VIEW, it came from an "Open with..." dialog
+                // this will be considered a local playback, or if it was ACTION_SEND
+                // then it'll be a network playback.
                 when (intent.action) {
                     Intent.ACTION_VIEW -> {
-                        // Local playback
                         intent.data?.let {
                             mediaController?.setMediaItem(MediaItem.fromUri(it))
                         }
@@ -154,7 +160,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                         intent.data = null
                     }
                     Intent.ACTION_SEND -> {
-                        // Stream-over-HTTP playback
                         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
                             mediaController?.setMediaItem(MediaItem.fromUri(it))
                         }
@@ -200,7 +205,14 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        Snackbar.make(binding.root, R.string.playback_file_open_error, Snackbar.LENGTH_LONG).show()
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.dialog_playback_error_title)
+            .setMessage(error.message)
+            .setNegativeButton(R.string.dialog_playback_error_negative) { _, _ ->
+                finish()
+            }
+            .show()
     }
 
     override fun onPositionDiscontinuity(
