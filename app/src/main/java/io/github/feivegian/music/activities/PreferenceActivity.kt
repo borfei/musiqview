@@ -78,8 +78,6 @@ class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefe
         return true
     }
 
-
-
     fun setShowRestartRequired(toggle: Boolean) {
         if (toggle) {
             restartSnackbar.show()
