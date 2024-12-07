@@ -41,6 +41,7 @@ class App : Application(), Thread.UncaughtExceptionHandler {
 
     override fun uncaughtException(t: Thread, e: Throwable) {
         generateTraceLog(e)
+        exitProcess(-1)
     }
 
     private fun generateTraceLog(e: Throwable) {
@@ -55,8 +56,6 @@ class App : Application(), Thread.UncaughtExceptionHandler {
         file.printWriter().use { out ->
             out.println(e.stackTraceToString())
         }
-
-        exitProcess(-1)
     }
 
     companion object {
