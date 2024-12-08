@@ -81,13 +81,13 @@
                     android:layout_weight="1" />
 
                 <TextView
-                    android:id="@+id/playback_seek_position"
+                    android:id="@+id/playback_seek_text"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:singleLine="true"
                     android:text="@string/playback_seek_default"
-                    android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
+                    android:textAppearance="@style/TextAppearance.Material3.LabelSmall" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
