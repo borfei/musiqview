@@ -31,7 +31,6 @@ import io.github.feivegian.music.App.Companion.asApp
 import io.github.feivegian.music.R
 import io.github.feivegian.music.databinding.ActivityMusicBinding
 import io.github.feivegian.music.extensions.adjustPaddingForSystemBarInsets
-import io.github.feivegian.music.extensions.isWebUrl
 import io.github.feivegian.music.extensions.setImmersiveMode
 import io.github.feivegian.music.services.PlaybackService
 import java.util.Locale
@@ -126,13 +125,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 mediaController?.pause()
             }
         }
-        binding.playbackDownload.setOnClickListener {
-            // This implementation only sends the intent to a proper browser
-            // The browser can then download the URL of the media
-            //
-            // TODO: Use a download service implementation
-            startActivity(Intent(Intent.ACTION_VIEW, mediaItem.localConfiguration?.uri))
-        }
         binding.playbackSeek.setLabelFormatter { value ->
             if (mediaController?.currentMediaItem == null) {
                 return@setLabelFormatter convertMsToDuration(0)
@@ -143,13 +135,13 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         }
         binding.playbackSeek.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
-                binding.playbackButtons.visibility = View.INVISIBLE
+                binding.playbackState.visibility = View.INVISIBLE
                 binding.playbackSeekPosition.visibility = View.INVISIBLE
                 mediaController?.pause()
             }
 
             override fun onStopTrackingTouch(slider: Slider) {
-                binding.playbackButtons.visibility = View.VISIBLE
+                binding.playbackState.visibility = View.VISIBLE
                 binding.playbackSeekPosition.visibility = View.VISIBLE
                 val duration = mediaController?.duration ?: 0
                 mediaController?.seekTo(((slider.value + 0.0) * duration).toLong())
@@ -161,35 +153,26 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             mediaController?.addListener(this)
             update()
 
-            intent?.let {
-                // When activity has received an intent, we must determine it's action
-                // If the action is ACTION_VIEW, it came from an "Open with..." dialog
-                // this will be considered a local playback, or if it was ACTION_SEND
-                // then it'll be a network playback.
-                when (intent.action) {
-                    Intent.ACTION_VIEW -> {
-                        intent.data?.let {
-                            mediaItem = MediaItem.fromUri(it)
+            // Accept media URI from intent if mediaItem is set to an empty MediaItem
+            if (mediaItem == MediaItem.EMPTY) {
+                intent?.let {
+                    // Determine it's action before getting the intent data
+                    //
+                    // With Intent.ACTION_VIEW, it's clear that the intent came from
+                    // the one defined in AndroidManifest.xml
+                    when (intent.action) {
+                        Intent.ACTION_VIEW -> {
+                            intent.data?.let {
+                                mediaItem = MediaItem.fromUri(it)
+                            }
+
+                            intent.data = null
                         }
-
-                        intent.data = null
                     }
-                    Intent.ACTION_SEND -> {
-                        intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
-                            mediaItem = MediaItem.fromUri(it)
-                        }
 
-                        intent.removeExtra(Intent.EXTRA_TEXT)
-                    }
+                    // prepare for playback
+                    mediaController?.prepare()
                 }
-                if (mediaItem.localConfiguration?.uri.toString().isWebUrl()) {
-                    binding.playbackDownload.visibility = View.VISIBLE
-                }
-                if (mediaController?.currentMediaItem == null) {
-                    mediaController?.setMediaItem(mediaItem)
-                }
-
-                mediaController?.prepare()
             }
         },
             MoreExecutors.directExecutor()
