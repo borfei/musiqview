@@ -93,6 +93,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
         crashLogs?.setOnPreferenceClickListener {
             val logs = File(requireContext().dataDir, "crash")
             val dialog = MaterialAlertDialogBuilder(activity)
+                .setIcon(R.drawable.dialog_logs_48)
                 .setTitle(R.string.dialog_crash_logs_title)
                 .setNegativeButton(R.string.dialog_crash_logs_negative) { _, _ -> }
 
@@ -135,6 +136,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
                 appendLine(getString(R.string.dialog_device_info_message_os_security_patch, Build.VERSION.SECURITY_PATCH))
             }
             MaterialAlertDialogBuilder(activity)
+                .setIcon(R.drawable.dialog_device_info_48)
                 .setTitle(R.string.dialog_device_info_title)
                 .setMessage(messageBuilder)
                 .setNegativeButton(R.string.dialog_device_info_negative) { _, _ -> }
