@@ -16,6 +16,7 @@ import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.core.widget.doOnTextChanged
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
@@ -45,14 +46,13 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
     private lateinit var binding: ActivityMusicBinding
     private lateinit var preferences: SharedPreferences
 
+    private var displayMetadata: Boolean = true
+
     private val loopHandler: Handler? = Looper.myLooper()?.let { Handler(it) }
     private var loopRunnable: Runnable? = null
     private var loopInterval: Int = 0
     private var mediaController: MediaController? = null
     private var mediaItem: MediaItem = MediaItem.EMPTY
-
-    private var headerFormat: String = "%title%"
-    private var subheaderFormat: String = "%album_artist%"
 
     private var animateLayoutChanges: Boolean = true
     private var immersiveMode: ImmersiveMode = ImmersiveMode.LANDSCAPE_ONLY
@@ -64,9 +64,8 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
 
         // Initialize preferences
         preferences = application.asApp().getPreferences()
+        displayMetadata = preferences.getBoolean("interface_display_metadata", displayMetadata)
         loopInterval = preferences.getInt("playback_duration_interval", loopInterval)
-        headerFormat = preferences.getString("interface_header_format", headerFormat).toString()
-        subheaderFormat = preferences.getString("interface_subheader_format", subheaderFormat).toString()
         animateLayoutChanges = preferences.getBoolean("other_animate_layout_changes", animateLayoutChanges)
         immersiveMode = when (preferences.getString("other_immersive_mode", "landscape")) {
             "enabled" -> {
@@ -112,6 +111,13 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 false
             }
         })
+        // When text changes for title and sub-title, toggle visibility based on text count
+        binding.title.doOnTextChanged { _, _, _, count ->
+            binding.title.visibility = if (count > 0) View.VISIBLE else View.GONE
+        }
+        binding.subtitle.doOnTextChanged { _, _, _, count ->
+            binding.subtitle.visibility = if (count > 0) View.VISIBLE else View.GONE
+        }
         // Animate layout changes by depending on the preference check
         if (animateLayoutChanges) {
             binding.playbackControls.layoutTransition = LayoutTransition()
@@ -140,7 +146,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 binding.playbackSeekText.visibility = View.VISIBLE
             }
         })
-
         binding.playbackSeek.addOnChangeListener { _, value, fromUser ->
             if (!fromUser) {
                 return@addOnChangeListener
@@ -153,27 +158,26 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             mediaController?.addListener(this)
             update()
 
-            // Accept media URI from intent if there isn't any current media item
-            if (mediaController?.currentMediaItem == null) {
-                intent?.let {
-                    // Determine it's action before getting the intent data
-                    //
-                    // With Intent.ACTION_VIEW, it's clear that the intent came from
-                    // the one defined in AndroidManifest.xml
-                    when (intent.action) {
-                        Intent.ACTION_VIEW -> {
-                            intent.data?.let {
-                                mediaItem = MediaItem.fromUri(it)
-                            }
-
-                            intent.data = null
+            // Store media URI from intent as a local variable to keep track of information
+            intent?.let {
+                // Determine it's action before getting the intent data
+                //
+                // With Intent.ACTION_VIEW, it's clear that the intent came from
+                // the one defined in AndroidManifest.xml
+                when (intent.action) {
+                    Intent.ACTION_VIEW -> {
+                        intent.data?.let {
+                            mediaItem = MediaItem.fromUri(it)
                         }
-                    }
 
-                    // Set as current media item & prepare playback
-                    mediaController?.setMediaItem(mediaItem)
-                    mediaController?.prepare()
+                        intent.data = null
+                    }
                 }
+            }
+            // If there's no media item set, load the previously-stored media item & prepare playback
+            if (mediaController?.currentMediaItem == null) {
+                mediaController?.setMediaItem(mediaItem)
+                mediaController?.prepare()
             }
         },
             MoreExecutors.directExecutor()
@@ -231,66 +235,16 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updateInfo(metadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
-        // parse header/sub-header formatters
-        var parsedHeader = headerFormat // we use the format to use String.replace later
-        var parsedSubheader = subheaderFormat // same goes to this variable too
-        val formats = hashMapOf(
-            "%album_artist%" to metadata.albumArtist,
-            "%album_title%" to metadata.albumTitle,
-            "%artist%" to metadata.artist,
-            "%composer%" to metadata.composer,
-            "%description%" to metadata.description,
-            "%display_title%" to metadata.displayTitle,
-            "%genre%" to metadata.genre,
-            "%subtitle%" to metadata.subtitle,
-            "%trackNumber%" to metadata.trackNumber.toString(), // cast from int to string
-            "%writer%" to metadata.writer,
-            "%title%" to metadata.title,
-        )
-        for ((format, value) in formats) {
-            if (value.isNullOrBlank()) {
-                // when value is null or blank, replace it with a placeholder instead
-                parsedHeader = parsedHeader.replace(format, "<unknown>")
-                parsedSubheader = parsedSubheader.replace(format, "<unknown>")
-                continue
-            }
-
-            parsedHeader = parsedHeader.replace(format, value.toString())
-            parsedSubheader = parsedSubheader.replace(format, value.toString())
-        }
-
-        binding.infoHeader.text = parsedHeader
-        binding.infoSubheader.text = parsedSubheader
-
-        // Information texts may be hidden when their text length is less than zero
-        binding.infoHeader.visibility = when (parsedHeader.isNotEmpty()) {
-            true -> {
-                View.VISIBLE
-            }
-            false -> {
-                View.GONE
-            }
-        }
-        binding.infoSubheader.visibility = when (parsedSubheader.isNotEmpty()) {
-            true -> {
-                View.VISIBLE
-            }
-            false -> {
-                View.GONE
-            }
-        }
-
-        // Load cover art from metadata
-        val artworkData = metadata.artworkData ?: byteArrayOf(1)
-        var artworkBitmap = BitmapFactory.decodeByteArray(artworkData, 0, artworkData.size)
-
-        if (artworkBitmap == null) {
-            artworkBitmap = Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
-        }
+        // Set title/subtitle to the available metadata, if available
+        // When metadata is unavailable (or it's preference is false), use file name instead
+        val info = parseInfo(metadata)
+        binding.title.text = info.first
+        binding.subtitle.text = info.second
+        // Load artwork from metadata, if available
         Glide.with(this)
-            .load(artworkBitmap)
+            .load(parseArtwork(metadata.artworkData ?: byteArrayOf(1)))
             .transition(withCrossFade())
-            .into(binding.coverArt)
+            .into(binding.artwork)
     }
 
     private fun updateSeek(value: Long = mediaController?.currentPosition ?: 0) {
@@ -324,6 +278,28 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         updateInfo()
         updateSeek()
         updateState()
+    }
+
+    private fun parseInfo(metadata: MediaMetadata): Pair<String, String> {
+        var title = mediaItem.localConfiguration?.uri?.lastPathSegment ?: String()
+        var subtitle = String() // empty fallback
+
+        if (displayMetadata) {
+            metadata.title?.let {
+                title = it.toString()
+            }
+            metadata.artist?.let {
+                val artists = it.split("; ", ", ")
+                subtitle = artists.joinToString()
+            }
+        }
+
+        return Pair(title, subtitle)
+    }
+
+    private fun parseArtwork(data: ByteArray): Bitmap {
+        val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
+        return bitmap ?: Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
     }
 
     private fun parseSeekPosition(position: Long): String {

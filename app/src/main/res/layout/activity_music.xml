@@ -23,13 +23,13 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/info_header"
+                android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Material3.ActionBar.Title" />
 
             <TextView
-                android:id="@+id/info_subheader"
+                android:id="@+id/subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Material3.ActionBar.Subtitle" />
@@ -40,10 +40,10 @@
             android:layout_height="250dp">
 
             <ImageView
-                android:id="@+id/cover_art"
+                android:id="@+id/artwork"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/content_description_cover_art" />
+                android:contentDescription="@string/content_description_artwork" />
         </com.google.android.material.card.MaterialCardView>
 
         <Space

@@ -22,16 +22,11 @@
     <PreferenceCategory
         app:title="@string/preference_interface">
 
-        <EditTextPreference
-            app:key="interface_header_format"
-            app:defaultValue="@string/preference_interface_header_format_default"
-            app:title="@string/preference_interface_header_format"
-            app:useSimpleSummaryProvider="true" />
-        <EditTextPreference
-            app:key="interface_subheader_format"
-            app:defaultValue="@string/preference_interface_subheader_format_default"
-            app:title="@string/preference_interface_subheader_format"
-            app:useSimpleSummaryProvider="true" />
+        <CheckBoxPreference
+            app:key="interface_display_metadata"
+            app:defaultValue="true"
+            app:summary="@string/preference_interface_display_metadata_summary"
+            app:title="@string/preference_interface_display_metadata" />
     </PreferenceCategory>
     <PreferenceCategory
         app:title="@string/preference_playback">
