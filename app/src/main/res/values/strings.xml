@@ -34,7 +34,10 @@
     <string name="preference_playback">Playback</string>
     <string name="preference_playback_audio_focus">Audio focus</string>
     <string name="preference_playback_audio_focus_summary">Prevent audio playback from simultaneously playing with other apps</string>
-    <string name="preference_playback_duration_interval">Duration interval</string>
+    <string name="preference_playback_duration_interval">Duration interval (in ms)</string>
+    <string name="preference_playback_duration_interval_summary">The amount of milliseconds to delay before updating the duration</string>
+    <string name="preference_playback_max_cache_size">Max cache size (in MB)</string>
+    <string name="preference_playback_max_cache_size_summary">The maximum cache size for the playback to store</string>
     <string name="preference_other">Other</string>
     <string name="preference_other_animate_layout_changes">Animate layout changes</string>
     <string name="preference_other_animate_layout_changes_summary">Certain elements will be animated depending how the layout is changed</string>
