@@ -55,8 +55,8 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
     private var mediaItem: MediaItem = MediaItem.EMPTY
 
     private var animateLayoutChanges: Boolean = true
-    private var immersiveMode: ImmersiveMode = ImmersiveMode.LANDSCAPE_ONLY
     private var wakeLock: Boolean = false
+    private var immersiveMode: ImmersiveMode = ImmersiveMode.LANDSCAPE_ONLY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +67,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         displayMetadata = preferences.getBoolean("interface_display_metadata", displayMetadata)
         loopInterval = preferences.getInt("playback_duration_interval", loopInterval)
         animateLayoutChanges = preferences.getBoolean("other_animate_layout_changes", animateLayoutChanges)
+        wakeLock = preferences.getBoolean("other_wake_lock", wakeLock)
         immersiveMode = when (preferences.getString("other_immersive_mode", "landscape")) {
             "enabled" -> {
                 ImmersiveMode.ENABLED
@@ -81,7 +82,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 immersiveMode
             }
         }
-        wakeLock = preferences.getBoolean("other_wake_lock", false)
 
         // Inflate activity view using ViewBinding
         binding = ActivityMusicBinding.inflate(layoutInflater)

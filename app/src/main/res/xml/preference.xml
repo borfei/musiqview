@@ -3,11 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
+        app:icon="@drawable/baseline_color_lens_24"
         app:title="@string/preference_looks">
 
         <ListPreference
             app:key="looks_theme"
-            app:icon="@drawable/baseline_brightness_6_24"
             app:defaultValue="auto"
             app:entries="@array/preference_themes"
             app:entryValues="@array/preference_themes_values"
@@ -15,11 +15,11 @@
             app:useSimpleSummaryProvider="true" />
         <CheckBoxPreference
             app:key="looks_dynamic_colors"
-            app:icon="@drawable/baseline_color_lens_24"
             app:defaultValue="false"
             app:title="@string/preference_looks_dynamic_colors" />
     </PreferenceCategory>
     <PreferenceCategory
+        app:icon="@drawable/baseline_auto_awesome_24"
         app:title="@string/preference_interface">
 
         <CheckBoxPreference
@@ -29,11 +29,11 @@
             app:title="@string/preference_interface_display_metadata" />
     </PreferenceCategory>
     <PreferenceCategory
+        app:icon="@drawable/baseline_speaker_24"
         app:title="@string/preference_playback">
 
         <CheckBoxPreference
             app:key="playback_audio_focus"
-            app:icon="@drawable/baseline_speaker_24"
             app:defaultValue="true"
             app:title="@string/preference_playback_audio_focus"
             app:summary="@string/preference_playback_audio_focus_summary" />
@@ -55,6 +55,10 @@
             app:defaultValue="true"
             app:title="@string/preference_other_animate_layout_changes"
             app:summary="@string/preference_other_animate_layout_changes_summary" />
+        <CheckBoxPreference
+            app:key="other_wake_lock"
+            app:title="@string/preference_other_wake_lock"
+            app:summary="@string/preference_other_wake_lock_summary" />
         <ListPreference
             app:key="other_immersive_mode"
             app:defaultValue="landscape"
@@ -62,17 +66,13 @@
             app:entryValues="@array/preference_immersive_mode_values"
             app:title="@string/preference_other_immersive_mode"
             app:useSimpleSummaryProvider="true" />
-        <SwitchPreference
-            app:key="other_wake_lock"
-            app:title="@string/preference_other_wake_lock"
-            app:summary="@string/preference_other_wake_lock_summary" />
     </PreferenceCategory>
     <PreferenceCategory
+        app:icon="@drawable/baseline_info_24"
         app:title="@string/preference_about">
 
         <Preference
             app:key="about_name"
-            app:icon="@drawable/baseline_audio_file_24"
             app:title="@string/preference_about_name"
             app:summary="@string/preference_about_version" />
         <Preference
@@ -92,6 +92,7 @@
     </PreferenceCategory>
     <PreferenceCategory
         app:key="experiments"
+        app:icon="@drawable/baseline_science_24"
         app:title="@string/preference_experiments">
 
         <CheckBoxPreference
