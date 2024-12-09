@@ -11,23 +11,23 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import io.github.feivegian.music.R
 import io.github.feivegian.music.databinding.ActivityPreferenceBinding
-import io.github.feivegian.music.fragments.PreferenceFragment
-import io.github.feivegian.music.extensions.adjustMarginsForSystemBarInsets
 import io.github.feivegian.music.extensions.adjustPaddingForSystemBarInsets
+import io.github.feivegian.music.fragments.PreferenceFragment
 
 class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private lateinit var binding: ActivityPreferenceBinding
     private lateinit var restartSnackbar: Snackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
 
         binding = ActivityPreferenceBinding.inflate(layoutInflater)
         binding.toolbar.adjustPaddingForSystemBarInsets(top=true)
-        binding.preference.adjustMarginsForSystemBarInsets(left=true, right=true, bottom=true)
+        binding.preferenceRoot.adjustPaddingForSystemBarInsets(left=true, right=true, bottom=true)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+
         supportActionBar?.setTitle(R.string.preference_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 

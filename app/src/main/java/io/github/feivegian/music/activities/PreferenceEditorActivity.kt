@@ -32,13 +32,11 @@ class PreferenceEditorActivity : AppCompatActivity() {
     private lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
 
         binding = ActivityPreferenceEditorBinding.inflate(layoutInflater)
         binding.toolbar.adjustPaddingForSystemBarInsets(top=true)
-        binding.settingsListReloader.adjustPaddingForSystemBarInsets(left=true, right=true, bottom=true)
-        binding.settingsCreateItem.adjustMarginsForSystemBarInsets(left=true, right=true, bottom=true)
         binding.settingsCreateItem.adjustPaddingForSystemBarInsets(left=true, right=true, bottom=true)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
