@@ -2,12 +2,13 @@
 A music player, made simple yet customizable for Android.
 
 ## Overview
-<img src="docs/images/preview.png" alt="Preview" width="50%">
+<img src="docs/images/preview.png" alt="Preview" width="30%">
 
-Music is designed to integrate seamlessly with other apps and system functions through intent filters,
-enabling users to play audio files directly from various external sources.
+Music is designed to integrate seamlessly with other apps through intent filters,
+enabling users to play audio files directly from various external sources, without leaving.
 
-It aims to provide a responsive and user-friendly experience while leveraging Android's powerful intent-filters.
+It aims to provide a simple & user-friendly interface with the design following the
+Material 3 guidelines, and media playback powered by ExoPlayer through Media3 API.
 
 ## Download
 Get the [latest build](https://github.com/feivegian/music/releases/latest) on the Releases page.
@@ -28,21 +29,6 @@ $ apksigner sign --ks my-release-key.jks --out app-release.apk app-release-unsig
 
 > [!IMPORTANT]
 > *When building a release build, you must install `zipalign`, `apksigner`, and have your own keystore.*
-
-## FAQs
-
-### What motivated you to make this?
-There are plenty of Android music players around the internet that considered good,
-but they suck at playing audio content from intent filters, and most of the time,
-they only care about their own music library. Which makes intent filters useless.
-
-I created this project exclusively for intent filters, forget about libraries, use the file manager.
-Use this in-case you want to hear an audio content without ever leaving your application.
-
-### This project is too simple.
-You already heard that right, *simple*. This project is designed to make it simple so that
-whenever you play a media content quickly, you don't want to go to another application just so
-you could hear it. **Keep it simple stupid!**
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
