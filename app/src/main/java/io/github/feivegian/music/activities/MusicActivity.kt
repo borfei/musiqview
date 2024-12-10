@@ -17,7 +17,7 @@ import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import androidx.core.view.children
+import androidx.core.view.descendants
 import androidx.core.widget.doOnTextChanged
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -119,7 +119,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         } else {
             null
         }
-        binding.root.children.forEach { view ->
+        binding.root.descendants.forEach { view ->
             if (view is ViewGroup) {
                 view.layoutTransition = if (animateLayoutChanges) {
                     LayoutTransition()
