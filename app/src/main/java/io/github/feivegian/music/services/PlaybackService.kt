@@ -11,6 +11,7 @@ import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.google.common.util.concurrent.ListenableFuture
@@ -21,6 +22,7 @@ import io.github.feivegian.music.BuildConfig
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
     private lateinit var preferences: SharedPreferences
     private var audioFocus: Boolean = true
+    private var constantBitrateSeeking: Boolean = false
     private var wakeLock: Boolean = false
 
     private var cache: SimpleCache? = null
@@ -32,6 +34,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         super.onCreate()
         preferences = application.asApp().getPreferences()
         audioFocus = preferences.getBoolean("playback_audio_focus", audioFocus)
+        constantBitrateSeeking = preferences.getBoolean("playback_constant_bitrate_seeking", constantBitrateSeeking)
         maxCacheSize = preferences.getInt("playback_max_cache_size", maxCacheSize.toInt()).toLong()
         wakeLock = preferences.getBoolean("other_wake_lock", wakeLock)
 
@@ -42,7 +45,9 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
             .setCache(cache!!)
             .setUpstreamDataSourceFactory(DefaultDataSource.Factory(this))
 
-        val mediaSourceFactory = DefaultMediaSourceFactory(this)
+        val extractorsFactory = DefaultExtractorsFactory()
+            .setConstantBitrateSeekingEnabled(constantBitrateSeeking)
+        val mediaSourceFactory = DefaultMediaSourceFactory(this, extractorsFactory)
             .setDataSourceFactory(cacheDataSourceFactory)
         val player = ExoPlayer.Builder(this)
             .setAudioAttributes(AudioAttributes.DEFAULT, audioFocus)

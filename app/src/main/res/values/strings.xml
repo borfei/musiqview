@@ -41,6 +41,8 @@
     <string name="preference_playback">Playback</string>
     <string name="preference_playback_audio_focus">Audio focus</string>
     <string name="preference_playback_audio_focus_summary">Prevent audio playback from simultaneously playing with other apps</string>
+    <string name="preference_playback_constant_bitrate_seeking">Constant bitrate seeking</string>
+    <string name="preference_playback_constant_bitrate_seeking_summary">Do approximate seeking by using a constant bitrate assumption</string>
     <string name="preference_playback_duration_interval">Duration interval (in ms)</string>
     <string name="preference_playback_duration_interval_summary">The amount of milliseconds to delay before updating the duration</string>
     <string name="preference_playback_max_cache_size">Max cache size (in MB)</string>
