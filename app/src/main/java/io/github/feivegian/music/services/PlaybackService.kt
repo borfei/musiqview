@@ -20,6 +20,7 @@ import androidx.media3.session.MediaSessionService
 import com.google.common.util.concurrent.ListenableFuture
 import io.github.feivegian.music.App.Companion.asApp
 import io.github.feivegian.music.BuildConfig
+import java.io.File
 
 @UnstableApi
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
@@ -41,7 +42,8 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         maxCacheSize = preferences.getInt("playback_max_cache_size", maxCacheSize.toInt()).toLong()
         wakeLock = preferences.getBoolean("other_wake_lock", wakeLock)
 
-        cache = SimpleCache(cacheDir,
+        cache = SimpleCache(
+            File(cacheDir, "media"),
             LeastRecentlyUsedCacheEvictor((maxCacheSize * 1024) * 1024), // convert to byte size
             application.asApp().getDatabaseProvider())
         val cacheDataSourceFactory = CacheDataSource.Factory()
