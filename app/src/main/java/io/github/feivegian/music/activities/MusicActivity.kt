@@ -28,6 +28,7 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
@@ -35,6 +36,7 @@ import io.github.feivegian.music.App.Companion.asApp
 import io.github.feivegian.music.R
 import io.github.feivegian.music.databinding.ActivityMusicBinding
 import io.github.feivegian.music.extensions.adjustPaddingForSystemBarInsets
+import io.github.feivegian.music.extensions.getName
 import io.github.feivegian.music.extensions.setImmersiveMode
 import io.github.feivegian.music.services.PlaybackService
 import java.util.Locale
@@ -173,7 +175,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         controllerFuture.addListener({
             mediaController = controllerFuture.get()
             mediaController?.addListener(this)
-            update()
 
             // Store media URI from intent as a local variable to keep track of information
             intent?.let {
@@ -181,20 +182,20 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 //
                 // With Intent.ACTION_VIEW, it's clear that the intent came from
                 // the one defined in AndroidManifest.xml
-                when (intent.action) {
-                    Intent.ACTION_VIEW -> {
-                        intent.data?.let {
-                            mediaItem = MediaItem.fromUri(it)
-                        }
-
-                        intent.data = null
+                if (intent.action == Intent.ACTION_VIEW) {
+                    intent.data?.let {
+                        mediaItem = MediaItem.fromUri(it)
+                        updateInfo(mediaItem.mediaMetadata)
                     }
                 }
             }
-            // If there's no media item set, load the previously-stored media item & prepare playback
+            // If there's no media item set, load the stored media item & prepare playback
+            // Otherwise, update the entire UI with the currently loaded media item
             if (mediaController?.currentMediaItem == null) {
                 mediaController?.setMediaItem(mediaItem)
                 mediaController?.prepare()
+            } else {
+                update()
             }
         },
             MoreExecutors.directExecutor()
@@ -260,6 +261,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         val info = parseInfo(metadata)
         binding.title.text = info.first
         binding.subtitle.text = info.second
+
         // Load artwork from metadata, if available
         Glide.with(this)
             .load(parseArtwork(metadata.artworkData ?: byteArrayOf(1)))
@@ -301,7 +303,8 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun parseInfo(metadata: MediaMetadata): Pair<String, String> {
-        var title = mediaItem.localConfiguration?.uri?.lastPathSegment ?: String()
+        val filename = mediaItem.localConfiguration?.uri?.getName(this)
+        var title = filename ?: String() // empty fallback when nothing
         var subtitle = String() // empty fallback
 
         if (displayMetadata) {
