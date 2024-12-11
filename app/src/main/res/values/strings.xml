@@ -9,7 +9,7 @@
     <!-- Welcome strings -->
     <string name="welcome_header">Welcome to %1$s!</string>
     <string name="welcome_permission">This application does not require permissions for scanning media content.</string>
-    <string name="welcome_instruction">Instead of using a music library, use a file manager and play one of favorite song using this application!</string>
+    <string name="welcome_instruction">Instead of using a music library, use a file manager and play one of favorite songs using this application!</string>
     <string name="welcome_tip">Pro tip: For one-click experience, set this as the default music app.</string>
     <string name="welcome_hide_launcher">Hide %1$s from home screen</string>
     <string name="welcome_continue">Got it!</string>
