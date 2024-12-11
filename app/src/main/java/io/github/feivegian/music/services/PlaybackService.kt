@@ -1,6 +1,7 @@
 package io.github.feivegian.music.services
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.TrackSelectionParameters.AudioOffloadPreferences
@@ -11,6 +12,8 @@ import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
+import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy
 import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -45,9 +48,16 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
             .setCache(cache!!)
             .setUpstreamDataSourceFactory(DefaultDataSource.Factory(this))
 
+        val loadErrorHandlingPolicy = object: DefaultLoadErrorHandlingPolicy() {
+            override fun getRetryDelayMsFor(loadErrorInfo: LoadErrorHandlingPolicy.LoadErrorInfo): Long {
+                Log.e(TAG, "Load Error", loadErrorInfo.exception)
+                return super.getRetryDelayMsFor(loadErrorInfo)
+            }
+        }
         val extractorsFactory = DefaultExtractorsFactory()
             .setConstantBitrateSeekingEnabled(constantBitrateSeeking)
         val mediaSourceFactory = DefaultMediaSourceFactory(this, extractorsFactory)
+            .setLoadErrorHandlingPolicy(loadErrorHandlingPolicy)
             .setDataSourceFactory(cacheDataSourceFactory)
         val player = ExoPlayer.Builder(this)
             .setAudioAttributes(AudioAttributes.DEFAULT, audioFocus)
@@ -112,4 +122,8 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = mediaSession
+
+    companion object {
+        const val TAG = "PlaybackService"
+    }
 }
