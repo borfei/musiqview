@@ -2,9 +2,20 @@ package io.github.feivegian.musicview.extensions
 
 import android.app.Application
 import android.app.UiModeManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
+
+/**
+ * Restarts the application with the specified activity's [ComponentName].
+ *
+ */
+fun Application.restart(componentName: ComponentName) {
+    startActivity(Intent.makeRestartActivityTask(componentName))
+    Runtime.getRuntime().exit(0)
+}
 
 /**
  * Changes the night mode of the [Application] instance
