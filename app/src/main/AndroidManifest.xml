@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MusicActivity"
+            android:name=".activities.PlaybackActivity"
             android:configChanges="orientation"
             android:excludeFromRecents="true"
             android:exported="true"

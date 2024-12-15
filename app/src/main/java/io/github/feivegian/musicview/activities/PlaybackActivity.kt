@@ -33,7 +33,7 @@ import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
 import io.github.feivegian.musicview.App.Companion.asApp
 import io.github.feivegian.musicview.R
-import io.github.feivegian.musicview.databinding.ActivityMusicBinding
+import io.github.feivegian.musicview.databinding.ActivityPlaybackBinding
 import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
 import io.github.feivegian.musicview.extensions.getName
 import io.github.feivegian.musicview.extensions.setImmersiveMode
@@ -41,12 +41,12 @@ import io.github.feivegian.musicview.services.PlaybackService
 import java.util.Locale
 
 @SuppressLint("UnsafeOptInUsageError")
-class MusicActivity : AppCompatActivity(), Player.Listener {
+class PlaybackActivity : AppCompatActivity(), Player.Listener {
     enum class ImmersiveMode {
         DISABLED, ENABLED, LANDSCAPE_ONLY
     }
 
-    private lateinit var binding: ActivityMusicBinding
+    private lateinit var binding: ActivityPlaybackBinding
     private lateinit var preferences: SharedPreferences
 
     private var displayMetadata: Boolean = true
@@ -87,7 +87,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         }
 
         // Inflate activity view using ViewBinding
-        binding = ActivityMusicBinding.inflate(layoutInflater)
+        binding = ActivityPlaybackBinding.inflate(layoutInflater)
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
 
