@@ -51,6 +51,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     private var loopHandler: Handler? = null
     private var loopRunnable: Runnable? = null
     private var loopInterval: Int = 0
+
     private var mediaController: MediaController? = null
     private var mediaItem: MediaItem = MediaItem.EMPTY
 
