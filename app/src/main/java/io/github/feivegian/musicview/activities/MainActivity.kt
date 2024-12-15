@@ -13,6 +13,8 @@ import io.github.feivegian.musicview.extensions.setActivityEnabled
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
+    private var hasContinued: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         // Register continue click listener
         binding.welcomeContinue.setOnClickListener {
+            hasContinued = true
             finish()
         }
     }
@@ -38,8 +41,8 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        // When the activity is destroyed, disable it afterwards
-        if (packageManager.isActivityEnabled(this)) {
+        // When the activity is destroyed and hasContinued is true, disable it afterwards
+        if (packageManager.isActivityEnabled(this) && hasContinued) {
             packageManager.setActivityEnabled(this, false)
             Log.d(TAG, "Disabled activity; reinstall to make it appear again")
         }
