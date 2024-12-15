@@ -42,8 +42,8 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
 
         // When the activity is destroyed and hasContinued is true, disable it afterwards
-        if (packageManager.isActivityEnabled(this) && hasContinued) {
-            packageManager.setActivityEnabled(this, false)
+        if (packageManager.isActivityEnabled(this, this::class.java) && hasContinued) {
+            packageManager.setActivityEnabled(this, this::class.java, false)
             Log.d(TAG, "Disabled activity; reinstall to make it appear again")
         }
     }
