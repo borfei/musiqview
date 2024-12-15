@@ -74,10 +74,6 @@
     <!-- Dialog strings -->
     <string name="dialog_playback_error_title">Playback error</string>
     <string name="dialog_playback_error_negative">Close</string>
-    <string name="dialog_restart_title">Restart application</string>
-    <string name="dialog_restart_message">Are you sure you want to restart? Unsaved changes will be lost.</string>
-    <string name="dialog_restart_positive">Yes</string>
-    <string name="dialog_restart_negative">No</string>
     <string name="dialog_crash_logs_title">Crash Logs</string>
     <string name="dialog_crash_logs_neutral">Clear</string>
     <string name="dialog_crash_logs_negative">Close</string>
