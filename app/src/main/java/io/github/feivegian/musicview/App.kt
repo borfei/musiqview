@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
-import io.github.feivegian.musicview.extensions.changeNightMode
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -29,14 +28,10 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, T
         Thread.setDefaultUncaughtExceptionHandler(this)
         Log.i(TAG, "Uncaught exceptions will now be handled by this instance")
 
-        // Init application theme & dynamic colors based on saved preferences
+        // Init dynamic colors based on saved preferences
         preferences.registerOnSharedPreferenceChangeListener(this)
         Log.i(TAG, "Registered a custom OnSharedPreferenceChangeListener")
 
-        preferences.getString(PREFERENCE_LOOKS_THEME, "auto")?.let {
-            Log.d(TAG, "Set night mode: $it")
-            changeNightMode(it)
-        }
         preferences.getBoolean(PREFERENCE_LOOKS_DYNAMIC_COLORS, false).let {
             Log.d(TAG, "Set dynamic colors enabled: $it")
 
@@ -75,7 +70,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, T
 
     companion object {
         const val TAG = "App"
-        const val PREFERENCE_LOOKS_THEME = "looks_theme"
         const val PREFERENCE_LOOKS_DYNAMIC_COLORS = "looks_dynamic_colors"
 
         /**
