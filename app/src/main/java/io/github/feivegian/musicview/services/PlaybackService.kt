@@ -1,4 +1,4 @@
-package io.github.feivegian.music.services
+package io.github.feivegian.musicview.services
 
 import android.content.SharedPreferences
 import android.util.Log
@@ -18,8 +18,8 @@ import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.google.common.util.concurrent.ListenableFuture
-import io.github.feivegian.music.App.Companion.asApp
-import io.github.feivegian.music.BuildConfig
+import io.github.feivegian.musicview.App.Companion.asApp
+import io.github.feivegian.musicview.BuildConfig
 import java.io.File
 
 @UnstableApi

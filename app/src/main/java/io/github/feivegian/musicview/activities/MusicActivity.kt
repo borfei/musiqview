@@ -1,4 +1,4 @@
-package io.github.feivegian.music.activities
+package io.github.feivegian.musicview.activities
 
 import android.animation.LayoutTransition
 import android.annotation.SuppressLint
@@ -31,13 +31,13 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withC
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
-import io.github.feivegian.music.App.Companion.asApp
-import io.github.feivegian.music.R
-import io.github.feivegian.music.databinding.ActivityMusicBinding
-import io.github.feivegian.music.extensions.adjustPaddingForSystemBarInsets
-import io.github.feivegian.music.extensions.getName
-import io.github.feivegian.music.extensions.setImmersiveMode
-import io.github.feivegian.music.services.PlaybackService
+import io.github.feivegian.musicview.App.Companion.asApp
+import io.github.feivegian.musicview.R
+import io.github.feivegian.musicview.databinding.ActivityMusicBinding
+import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
+import io.github.feivegian.musicview.extensions.getName
+import io.github.feivegian.musicview.extensions.setImmersiveMode
+import io.github.feivegian.musicview.services.PlaybackService
 import java.util.Locale
 
 @SuppressLint("UnsafeOptInUsageError")

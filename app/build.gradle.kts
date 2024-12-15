@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "io.github.feivegian.music"
+    namespace = "io.github.feivegian.musicview"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "io.github.feivegian.music"
+        applicationId = "io.github.feivegian.musicview"
         minSdk = 24
         targetSdk = 35
         versionCode = 6
