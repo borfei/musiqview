@@ -21,6 +21,7 @@ import androidx.core.view.descendants
 import androidx.core.widget.doOnTextChanged
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Metadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Player.DISCONTINUITY_REASON_SEEK
@@ -224,6 +225,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
+        Log.e(TAG, "Playback error occurred: ${error.message}")
 
         MaterialAlertDialogBuilder(this)
             .setIcon(R.drawable.dialog_error_48)
@@ -242,6 +244,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         reason: Int
     ) {
         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+        Log.d(TAG, "onPositionDiscontinuity: from ${oldPosition.positionMs} to ${newPosition.positionMs}")
 
         if (reason == DISCONTINUITY_REASON_SEEK) {
             updateSeek(newPosition.positionMs)
