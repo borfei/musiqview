@@ -2,15 +2,12 @@ package io.github.feivegian.musicview
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.app.UiModeManager
-import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.media3.database.DatabaseProvider
+import android.util.Log
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
+import io.github.feivegian.musicview.extensions.changeNightMode
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -18,43 +15,48 @@ import java.util.Locale
 import kotlin.system.exitProcess
 
 @SuppressLint("UnsafeOptInUsageError")
-class App : Application(), Thread.UncaughtExceptionHandler {
-    private lateinit var preferences: SharedPreferences
-    private lateinit var databaseProvider: StandaloneDatabaseProvider
-
-    private var theme: String = "auto"
-    private var dynamicColors: Boolean = false
+class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, Thread.UncaughtExceptionHandler {
+    val preferences: SharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(this)
+    }
+    val databaseProvider: StandaloneDatabaseProvider by lazy {
+        StandaloneDatabaseProvider(this)
+    }
 
     override fun onCreate() {
         super.onCreate()
-        // Init preferences & toggle required values
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        theme = preferences.getString("looks_theme", "auto").toString()
-        dynamicColors = preferences.getBoolean("looks_dynamic_colors", false)
-
-        dynamicColors.let {
-            if (it && DynamicColors.isDynamicColorAvailable()) {
-                DynamicColors.applyToActivitiesIfAvailable(this)
-            }
-        }
-
-        // Initialize database provider for media caching
-        databaseProvider = StandaloneDatabaseProvider(this)
         // Initialize custom uncaught exception handler
         Thread.setDefaultUncaughtExceptionHandler(this)
+        Log.i(TAG, "Uncaught exceptions will now be handled by this instance")
+
+        // Init application theme & dynamic colors based on saved preferences
+        preferences.registerOnSharedPreferenceChangeListener(this)
+        Log.i(TAG, "Registered a custom OnSharedPreferenceChangeListener")
+
+        preferences.getString(PREFERENCE_LOOKS_THEME, "auto")?.let {
+            Log.d(TAG, "Set night mode: $it")
+            changeNightMode(it)
+        }
+        preferences.getBoolean(PREFERENCE_LOOKS_DYNAMIC_COLORS, false).let {
+            Log.d(TAG, "Set dynamic colors enabled: $it")
+
+            if (it) {
+                if (DynamicColors.isDynamicColorAvailable()) {
+                    DynamicColors.applyToActivitiesIfAvailable(this)
+                } else {
+                    Log.w(TAG, "Dynamic colors is not available on this device")
+                }
+            }
+        }
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        Log.d(TAG, "Preference changed: $key")
     }
 
     override fun uncaughtException(t: Thread, e: Throwable) {
         generateTraceLog(e)
         exitProcess(-1)
-    }
-
-    fun getPreferences(): SharedPreferences {
-        return preferences
-    }
-
-    fun getDatabaseProvider(): DatabaseProvider {
-        return databaseProvider
     }
 
     private fun generateTraceLog(e: Throwable) {
@@ -72,65 +74,18 @@ class App : Application(), Thread.UncaughtExceptionHandler {
     }
 
     companion object {
-        /**
-         * Returns the current [Application] instance and casts as [App].
-         *
-         * @return [App]
-         */
-        fun Application.asApp(): App {
-            return this as App
-        }
+        const val TAG = "App"
+        const val PREFERENCE_LOOKS_THEME = "looks_theme"
+        const val PREFERENCE_LOOKS_DYNAMIC_COLORS = "looks_dynamic_colors"
 
         /**
-         * Changes the UI mode of the [Application] instance
+         * A simple conversion from [Application] class to [App]
          *
-         * @param[mode] The new mode, must be a value of [UiModeManager] or [AppCompatDelegate]
+         * @param[application] The instance that will convert to, must not be null.
+         * @return[App]
          */
-        fun Application.changeUiMode(mode: Int) {
-            if (Build.VERSION.SDK_INT >= 31) {
-                val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-                uiModeManager.setApplicationNightMode(mode)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(mode)
-            }
-        }
-
-        /**
-         * Changes the UI mode of the [Application] instance
-         *
-         * This is a cast-as method, which calls the Int-accepted [changeUiMode]
-         * @param[mode] The new mode, accepted values are "light", "dark", "auto"
-         */
-        fun Application.changeUiMode(mode: String) {
-            if (Build.VERSION.SDK_INT >= 31) {
-                val modeInt = when (mode.lowercase()) {
-                    "light" -> {
-                        UiModeManager.MODE_NIGHT_NO
-                    }
-                    "dark" -> {
-                        UiModeManager.MODE_NIGHT_YES
-                    }
-                    else -> {
-                        UiModeManager.MODE_NIGHT_AUTO
-                    }
-                }
-
-                changeUiMode(modeInt)
-            } else {
-                val modeInt = when (mode.lowercase()) {
-                    "light" -> {
-                        AppCompatDelegate.MODE_NIGHT_NO
-                    }
-                    "dark" -> {
-                        AppCompatDelegate.MODE_NIGHT_YES
-                    }
-                    else -> {
-                        AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
-                    }
-                }
-
-                AppCompatDelegate.setDefaultNightMode(modeInt)
-            }
+        fun fromInstance(application: Application): App {
+            return application as App
         }
     }
 }

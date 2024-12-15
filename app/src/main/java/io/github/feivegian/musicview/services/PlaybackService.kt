@@ -1,6 +1,5 @@
 package io.github.feivegian.musicview.services
 
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -18,38 +17,36 @@ import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.google.common.util.concurrent.ListenableFuture
-import io.github.feivegian.musicview.App.Companion.asApp
+import io.github.feivegian.musicview.App
 import io.github.feivegian.musicview.BuildConfig
 import java.io.File
 
 @UnstableApi
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
-    private lateinit var preferences: SharedPreferences
-    private var audioFocus: Boolean = true
-    private var constantBitrateSeeking: Boolean = false
-    private var wakeLock: Boolean = false
-
     private var cache: SimpleCache? = null
-    private var maxCacheSize: Long = 512 // in megabytes
-
     private var mediaSession: MediaSession? = null
 
     override fun onCreate() {
         super.onCreate()
-        preferences = application.asApp().getPreferences()
-        audioFocus = preferences.getBoolean("playback_audio_focus", audioFocus)
-        constantBitrateSeeking = preferences.getBoolean("playback_constant_bitrate_seeking", constantBitrateSeeking)
-        maxCacheSize = preferences.getInt("playback_max_cache_size", maxCacheSize.toInt()).toLong()
-        wakeLock = preferences.getBoolean("other_wake_lock", wakeLock)
+        val app = App.fromInstance(application)
+        val preferences = app.preferences
+
+        val audioFocus =
+            preferences.getBoolean(PREFERENCE_PLAYBACK_AUDIO_FOCUS, true)
+        val constantBitrateSeeking =
+            preferences.getBoolean(PREFERENCE_PLAYBACK_CONSTANT_BITRATE_SEEKING, false)
+        val maxCacheSize =
+            preferences.getInt(PREFERENCE_PLAYBACK_MAX_CACHE_SIZE, 512).toLong()
+        val wakeLock =
+            preferences.getBoolean(PREFERENCE_OTHER_WAKE_LOCK, false)
 
         cache = SimpleCache(
             File(cacheDir, "media"),
             LeastRecentlyUsedCacheEvictor((maxCacheSize * 1024) * 1024), // convert to byte size
-            application.asApp().getDatabaseProvider())
+            app.databaseProvider)
         val cacheDataSourceFactory = CacheDataSource.Factory()
             .setCache(cache!!)
             .setUpstreamDataSourceFactory(DefaultDataSource.Factory(this))
-
         val loadErrorHandlingPolicy = object: DefaultLoadErrorHandlingPolicy() {
             override fun getRetryDelayMsFor(loadErrorInfo: LoadErrorHandlingPolicy.LoadErrorInfo): Long {
                 Log.e(TAG, "Load Error", loadErrorInfo.exception)
@@ -127,5 +124,9 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
 
     companion object {
         const val TAG = "PlaybackService"
+        const val PREFERENCE_PLAYBACK_AUDIO_FOCUS = "playback_audio_focus"
+        const val PREFERENCE_PLAYBACK_CONSTANT_BITRATE_SEEKING = "playback_constant_bitrate_seeking"
+        const val PREFERENCE_PLAYBACK_MAX_CACHE_SIZE = "playback_max_cache_size"
+        const val PREFERENCE_OTHER_WAKE_LOCK = "other_wake_lock"
     }
 }

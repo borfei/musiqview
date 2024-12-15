@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.github.feivegian.musicview.App.Companion.asApp
+import io.github.feivegian.musicview.App
 import io.github.feivegian.musicview.R
 import io.github.feivegian.musicview.databinding.ActivityPreferenceEditorBinding
 import io.github.feivegian.musicview.databinding.ViewholderRowSettingBinding
@@ -28,7 +28,10 @@ import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
 
 class PreferenceEditorActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPreferenceEditorBinding
-    private lateinit var preferences: SharedPreferences
+
+    val preferences: SharedPreferences by lazy {
+        App.fromInstance(application).preferences
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -42,8 +45,6 @@ class PreferenceEditorActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.preference_editor_title)
-
-        preferences = application.asApp().getPreferences()
 
         onBackPressedDispatcher.addCallback(object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

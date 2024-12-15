@@ -4,13 +4,13 @@ import android.animation.LayoutTransition
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -31,7 +31,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withC
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
-import io.github.feivegian.musicview.App.Companion.asApp
+import io.github.feivegian.musicview.App
 import io.github.feivegian.musicview.R
 import io.github.feivegian.musicview.databinding.ActivityPlaybackBinding
 import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
@@ -42,14 +42,11 @@ import java.util.Locale
 
 @SuppressLint("UnsafeOptInUsageError")
 class PlaybackActivity : AppCompatActivity(), Player.Listener {
-    enum class ImmersiveMode {
-        DISABLED, ENABLED, LANDSCAPE_ONLY
-    }
-
     private lateinit var binding: ActivityPlaybackBinding
-    private lateinit var preferences: SharedPreferences
 
-    private var displayMetadata: Boolean = true
+    private var isMetadataDisplayed: Boolean = true
+    private var isLayoutAnimated: Boolean = true
+    private var isWakeLock: Boolean = false
 
     private var loopHandler: Handler? = null
     private var loopRunnable: Runnable? = null
@@ -57,33 +54,24 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     private var mediaController: MediaController? = null
     private var mediaItem: MediaItem = MediaItem.EMPTY
 
-    private var animateLayoutChanges: Boolean = true
-    private var wakeLock: Boolean = false
-    private var immersiveMode: ImmersiveMode = ImmersiveMode.LANDSCAPE_ONLY
-
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         // Initialize preferences
-        preferences = application.asApp().getPreferences()
-        displayMetadata = preferences.getBoolean("interface_display_metadata", displayMetadata)
-        loopInterval = preferences.getInt("playback_duration_interval", loopInterval)
-        animateLayoutChanges = preferences.getBoolean("other_animate_layout_changes", animateLayoutChanges)
-        wakeLock = preferences.getBoolean("other_wake_lock", wakeLock)
-        immersiveMode = when (preferences.getString("other_immersive_mode", "landscape")) {
-            "enabled" -> {
-                ImmersiveMode.ENABLED
-            }
-            "disabled" -> {
-                ImmersiveMode.DISABLED
-            }
-            "landscape" -> {
-                ImmersiveMode.LANDSCAPE_ONLY
-            }
-            else -> {
-                immersiveMode
-            }
+        val preferences = App.fromInstance(application).preferences
+
+        preferences.getBoolean(PREFERENCE_INTERFACE_DISPLAY_METADATA, isMetadataDisplayed).let {
+            isMetadataDisplayed = it
+        }
+        preferences.getInt(PREFERENCE_PLAYBACK_DURATION_INTERVAL, loopInterval).let {
+            loopInterval = it
+        }
+        preferences.getBoolean(PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES, isLayoutAnimated).let {
+            isLayoutAnimated = it
+        }
+        preferences.getBoolean(PREFERENCE_OTHER_WAKE_LOCK, isWakeLock).let {
+            isWakeLock = it
         }
 
         // Inflate activity view using ViewBinding
@@ -104,34 +92,37 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             loopRunnable?.let { loopHandler?.postDelayed(it, loopInterval.toLong()) }
         }
 
-        // Toggle immersive mode by depending on the preference check
-        // If set to LANDSCAPE_ONLY, immersive mode will be enabled if current orientation is landscape
-        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(when (immersiveMode) {
-            ImmersiveMode.ENABLED -> {
-                true
-            }
-            ImmersiveMode.LANDSCAPE_ONLY -> {
-                resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-            }
-            else -> {
-                false
-            }
-        })
-        // Animate every layout change by depending on the preference check
-        binding.root.layoutTransition = if (animateLayoutChanges) {
+        // Make all ViewGroups animate when their child orders are changed
+        // If PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES is false, then they won't be animated
+        binding.root.layoutTransition = if (isLayoutAnimated) {
             LayoutTransition()
         } else {
             null
         }
         binding.root.descendants.forEach { view ->
             if (view is ViewGroup) {
-                view.layoutTransition = if (animateLayoutChanges) {
+                view.layoutTransition = if (isLayoutAnimated) {
                     LayoutTransition()
                 } else {
                     null
                 }
             }
         }
+        // Set immersive mode to enabled if the following conditions are met:
+        //  If "enabled" -> hide system bars
+        //  If "landscape" -> only hide system bars if orientation is landscape
+        //  Otherwise, don't hide the system bars
+        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(when (preferences.getString(PREFERENCE_OTHER_IMMERSIVE_MODE, "landscape")) {
+            "enabled" -> {
+                true
+            }
+            "landscape" -> {
+                resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+            }
+            else -> {
+                false
+            }
+        })
         // When text changes for title and sub-title, toggle visibility based on text count
         binding.title.doOnTextChanged { _, _, _, count ->
             binding.title.visibility = if (count > 0) View.VISIBLE else View.GONE
@@ -172,6 +163,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             }
         }
         controllerFuture.addListener({
+            Log.d(TAG, "Media session connected")
             mediaController = controllerFuture.get()
             mediaController?.addListener(this)
 
@@ -265,7 +257,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         // Load artwork from metadata, if available
         val artworkData = parseArtwork(metadata.artworkData ?: byteArrayOf(1))
 
-        if (animateLayoutChanges) {
+        if (isLayoutAnimated) {
             Glide.with(this)
                 .load(artworkData)
                 .transition(withCrossFade())
@@ -294,7 +286,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     private fun updateState(isPlaying: Boolean = mediaController?.isPlaying ?: false) {
         binding.playbackState.isChecked = isPlaying
 
-        if (wakeLock) {
+        if (isWakeLock) {
             when (isPlaying) {
                 true -> { window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
                 false -> { window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
@@ -313,7 +305,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         var title = filename ?: String() // empty fallback when nothing
         var subtitle = String() // empty fallback
 
-        if (displayMetadata) {
+        if (isMetadataDisplayed) {
             metadata.title?.let {
                 title = it.toString()
             }
@@ -343,5 +335,14 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         } else {
             getString(R.string.playback_seek_format_short, valueMinutes, String.format(locale, "%1$02d", valueSeconds))
         }
+    }
+
+    companion object {
+        const val TAG = "PlaybackActivity"
+        const val PREFERENCE_INTERFACE_DISPLAY_METADATA = "interface_display_metadata"
+        const val PREFERENCE_PLAYBACK_DURATION_INTERVAL = "playback_duration_interval"
+        const val PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES = "other_animate_layout_changes"
+        const val PREFERENCE_OTHER_WAKE_LOCK = "other_wake_lock"
+        const val PREFERENCE_OTHER_IMMERSIVE_MODE = "other_immersive_mode"
     }
 }
