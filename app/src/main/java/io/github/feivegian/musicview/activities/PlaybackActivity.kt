@@ -258,15 +258,17 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         }
     }
 
-    private fun updateInfo(metadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
+    private fun updateInfo(mediaMetadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
+        Log.d(TAG, "Info update called")
+
         // Set title/subtitle to the available metadata, if available
         // When metadata is unavailable (or it's preference is false), use file name instead
-        val info = parseInfo(metadata)
+        val info = parseInfo(mediaMetadata)
         binding.title.text = info.first
         binding.subtitle.text = info.second
 
         // Load artwork from metadata, if available
-        val artworkData = parseArtwork(metadata.artworkData ?: byteArrayOf(1))
+        val artworkData = parseArtwork(mediaMetadata.artworkData ?: byteArrayOf(1))
 
         if (isLayoutAnimated) {
             Glide.with(this)
@@ -279,6 +281,8 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updateSeek(value: Long = mediaController?.currentPosition ?: 0) {
+        Log.d(TAG, "Seek update called")
+
         // convert position into float (pain)
         var seekValue = (value + 0.0f) / (mediaController?.duration ?: 0)
         // seekValue cannot be greater than 1.0f or lesser than 0.0f
@@ -295,6 +299,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updateState(isPlaying: Boolean = mediaController?.isPlaying ?: false) {
+        Log.d(TAG, "Playback state update called")
         binding.playbackState.isChecked = isPlaying
 
         if (isWakeLock) {
@@ -326,11 +331,13 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             }
         }
 
+        Log.d(TAG, "parseInfo returned: (first: $title, second: $subtitle)")
         return Pair(title, subtitle)
     }
 
     private fun parseArtwork(data: ByteArray): Bitmap {
         val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
+        Log.d(TAG, "parseArtwork returned: (bytes: ${bitmap.byteCount})")
         return bitmap ?: Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
     }
 
@@ -340,6 +347,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         val valueMinutes = valueMicroseconds / 60
         val valueSeconds = valueMicroseconds % 60
 
+        Log.d(TAG, "parseSeekPosition returned: (value: $position)")
         return if (valueMicroseconds >= 360) {
             val valueHours = valueMicroseconds / 360
             getString(R.string.playback_seek_format_long, valueHours, valueMinutes, String.format(locale, "%1$02d", valueSeconds))

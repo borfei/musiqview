@@ -27,11 +27,11 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, T
         // Initialize custom uncaught exception handler
         Thread.setDefaultUncaughtExceptionHandler(this)
         Log.i(TAG, "Uncaught exceptions will now be handled by this instance")
-
-        // Init dynamic colors based on saved preferences
+        // Register custom shared preference change listener
         preferences.registerOnSharedPreferenceChangeListener(this)
         Log.i(TAG, "Registered a custom OnSharedPreferenceChangeListener")
 
+        // Init dynamic colors based on saved preferences
         preferences.getBoolean(PREFERENCE_LOOKS_DYNAMIC_COLORS, false).let {
             Log.d(TAG, "Set dynamic colors enabled: $it")
 
