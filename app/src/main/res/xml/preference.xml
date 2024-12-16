@@ -13,10 +13,6 @@
             app:entryValues="@array/preference_themes_values"
             app:title="@string/preference_looks_theme"
             app:useSimpleSummaryProvider="true" />
-        <CheckBoxPreference
-            app:key="looks_dynamic_colors"
-            app:defaultValue="false"
-            app:title="@string/preference_looks_dynamic_colors" />
     </PreferenceCategory>
     <PreferenceCategory
         app:icon="@drawable/baseline_auto_awesome_24"

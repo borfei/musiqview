@@ -24,25 +24,14 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, T
 
     override fun onCreate() {
         super.onCreate()
+        // Initialize dynamic colors by default
+        DynamicColors.applyToActivitiesIfAvailable(this)
         // Initialize custom uncaught exception handler
         Thread.setDefaultUncaughtExceptionHandler(this)
         Log.i(TAG, "Uncaught exceptions will now be handled by this instance")
         // Register custom shared preference change listener
         preferences.registerOnSharedPreferenceChangeListener(this)
         Log.i(TAG, "Registered a custom OnSharedPreferenceChangeListener")
-
-        // Init dynamic colors based on saved preferences
-        preferences.getBoolean(PREFERENCE_LOOKS_DYNAMIC_COLORS, false).let {
-            Log.d(TAG, "Set dynamic colors enabled: $it")
-
-            if (it) {
-                if (DynamicColors.isDynamicColorAvailable()) {
-                    DynamicColors.applyToActivitiesIfAvailable(this)
-                } else {
-                    Log.w(TAG, "Dynamic colors is not available on this device")
-                }
-            }
-        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -70,7 +59,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, T
 
     companion object {
         const val TAG = "App"
-        const val PREFERENCE_LOOKS_DYNAMIC_COLORS = "looks_dynamic_colors"
 
         /**
          * A simple conversion from [Application] class to [App]
