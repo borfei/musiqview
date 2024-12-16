@@ -1,5 +1,6 @@
 package io.github.feivegian.musicview.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
@@ -10,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import io.github.feivegian.musicview.R
 import io.github.feivegian.musicview.databinding.ActivityPreferenceBinding
 import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
+import io.github.feivegian.musicview.extensions.isActivityEnabled
 import io.github.feivegian.musicview.extensions.restart
 import io.github.feivegian.musicview.fragments.PreferenceFragment
 
@@ -19,6 +21,12 @@ class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefe
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        // Start MainActivity if it hasn't been disabled
+        if (packageManager.isActivityEnabled(this, MainActivity::class.java)) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
 
         // Inflate layout using ViewBinding
         binding = ActivityPreferenceBinding.inflate(layoutInflater)

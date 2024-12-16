@@ -10,10 +10,10 @@
     <string name="welcome_header">Welcome to %1$s!</string>
     <string name="welcome_permission">%1$s does not require permissions for scanning media content.</string>
     <string name="welcome_instruction">In fact, it doesn\'t even have a music library. Just use %1$s for previewing audio content in your device!</string>
-    <string name="welcome_configuration">To customize %1$s, use the app list via device\'s settings.</string>
+    <string name="welcome_configuration">To customize %1$s later, use the app list via device\'s settings.</string>
     <string name="welcome_tip">Pro tip: For one-click experience, set this as the default music app.</string>
-    <string name="welcome_hide_launcher">Hide %1$s from home screen</string>
-    <string name="welcome_continue">Got it!</string>
+    <string name="welcome_continue">Continue</string>
+    <string name="welcome_customize">Customize</string>
     <!-- Playback strings -->
     <string name="playback_seek_default">0:00</string>
     <string name="playback_seek_format_short">%1$d:%2$s</string>
