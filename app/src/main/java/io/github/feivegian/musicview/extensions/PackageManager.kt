@@ -16,9 +16,6 @@ import android.content.pm.PackageManager
  * @param[enabled] Whether the activity should be enabled
  */
 fun <T: Any> PackageManager.setActivityEnabled(context: Context, activity: Class<T>, enabled: Boolean) {
-    if (!activity.isAssignableFrom(Activity::class.java)) {
-        throw IllegalArgumentException("The specified activity class is invalid")
-    }
     val newState = if (enabled) {
         PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
     } else {
@@ -39,9 +36,6 @@ fun <T: Any> PackageManager.isActivityEnabled(context: Context, activity: Class<
     val componentName = ComponentName(context, activity)
     val state = getComponentEnabledSetting(componentName)
 
-    if (!activity.isAssignableFrom(Activity::class.java)) {
-        throw IllegalArgumentException("The specified activity class is invalid")
-    }
     when (state) {
         PackageManager.COMPONENT_ENABLED_STATE_DEFAULT -> {
             return true
