@@ -20,12 +20,15 @@ class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefe
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        // Inflate layout using ViewBinding
         binding = ActivityPreferenceBinding.inflate(layoutInflater)
         binding.toolbar.adjustPaddingForSystemBarInsets(top=true)
         binding.preferenceRoot.adjustPaddingForSystemBarInsets(left=true, right=true, bottom=true)
+        // Set the root view as binding's root view & the action bar as toolbar
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
+        // Tweaks for the action bar
         supportActionBar?.setTitle(R.string.preference_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
