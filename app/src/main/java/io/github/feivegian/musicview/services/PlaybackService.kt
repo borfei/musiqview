@@ -36,7 +36,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         val constantBitrateSeeking =
             preferences.getBoolean(PREFERENCE_PLAYBACK_CONSTANT_BITRATE_SEEKING, false)
         val maxCacheSize =
-            preferences.getInt(PREFERENCE_PLAYBACK_MAX_CACHE_SIZE, 512).toLong()
+            preferences.getInt(PREFERENCE_PLAYBACK_MAX_CACHE_SIZE, 32).toLong()
         val wakeLock =
             preferences.getBoolean(PREFERENCE_OTHER_WAKE_LOCK, false)
 
