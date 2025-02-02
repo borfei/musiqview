@@ -142,7 +142,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         binding.playbackOpenWith.setOnClickListener {
             val openWithIntent = Intent(Intent.ACTION_VIEW)
             openWithIntent.setDataAndType(mediaItem.localConfiguration?.uri, "audio/*")
-            startActivity(openWithIntent)
+            startActivity(Intent.createChooser(openWithIntent, null))
         }
         binding.playbackSeek.setLabelFormatter { value ->
             val duration = mediaController?.duration ?: 0
