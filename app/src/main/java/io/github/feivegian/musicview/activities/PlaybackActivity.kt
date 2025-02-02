@@ -1,7 +1,6 @@
 package io.github.feivegian.musicview.activities
 
 import android.animation.LayoutTransition
-import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
 import android.content.res.Configuration
@@ -15,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.descendants
@@ -24,6 +24,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Player.DISCONTINUITY_REASON_SEEK
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.bumptech.glide.Glide
@@ -41,7 +42,6 @@ import io.github.feivegian.musicview.extensions.setImmersiveMode
 import io.github.feivegian.musicview.services.PlaybackService
 import java.util.Locale
 
-@SuppressLint("UnsafeOptInUsageError")
 class PlaybackActivity : AppCompatActivity(), Player.Listener {
     private lateinit var binding: ActivityPlaybackBinding
 
@@ -56,6 +56,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     private var mediaController: MediaController? = null
     private var mediaItem: MediaItem = MediaItem.EMPTY
 
+    @OptIn(UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -80,9 +81,11 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         binding = ActivityPlaybackBinding.inflate(layoutInflater)
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
+
         // Connect activity to media session
         val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
         val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+
         // Initialize duration updater
         durationUpdateHandler = Handler(Looper.myLooper() ?: Looper.getMainLooper())
         durationUpdateRunnable = Runnable {
@@ -92,6 +95,9 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
                 durationUpdateHandler?.postDelayed(it, durationUpdateInterval.toLong())
             }
         }
+
+        // Manually select the media filename text view to begin marquee animation
+        binding.mediaFilename.isSelected = true
 
         // Make all ViewGroups animate when their child orders are changed
         // If PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES is false, then they won't be animated
@@ -124,12 +130,15 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
                 false
             }
         })
-        // When text changes for title and sub-title, toggle visibility based on text count
-        binding.title.doOnTextChanged { _, _, _, count ->
-            binding.title.visibility = if (count > 0) View.VISIBLE else View.GONE
+        // When text changes for media filename/title/artists, toggle visibility based on text count
+        binding.mediaFilename.doOnTextChanged { _, _, _, count ->
+            binding.mediaFilename.visibility = if (count > 0) View.VISIBLE else View.GONE
         }
-        binding.subtitle.doOnTextChanged { _, _, _, count ->
-            binding.subtitle.visibility = if (count > 0) View.VISIBLE else View.GONE
+        binding.mediaTitle.doOnTextChanged { _, _, _, count ->
+            binding.mediaTitle.visibility = if (count > 0) View.VISIBLE else View.GONE
+        }
+        binding.mediaArtists.doOnTextChanged { _, _, _, count ->
+            binding.mediaArtists.visibility = if (count > 0) View.VISIBLE else View.GONE
         }
         // Register playback control listeners
         binding.playbackState.addOnCheckedChangeListener { _, isChecked ->
@@ -139,28 +148,28 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
                 mediaController?.pause()
             }
         }
-        binding.playbackOpenWith.setOnClickListener {
-            val openWithIntent = Intent(Intent.ACTION_VIEW)
-            openWithIntent.setDataAndType(mediaItem.localConfiguration?.uri, "audio/*")
-            startActivity(Intent.createChooser(openWithIntent, null))
+        binding.playbackOpenExternal.setOnClickListener {
+            val openExternalIntent = Intent(Intent.ACTION_VIEW)
+            openExternalIntent.setDataAndType(mediaItem.localConfiguration?.uri, "audio/*")
+            startActivity(Intent.createChooser(openExternalIntent, null))
         }
-        binding.playbackSeek.setLabelFormatter { value ->
+        /*
+        binding.playbackSeekSlider?.setLabelFormatter { value ->
             val duration = mediaController?.duration ?: 0
             val valueLong = ((value + 0.0) * duration).toLong()
             parseSeekPosition(valueLong)
         }
-        binding.playbackSeek.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
+        */
+        binding.playbackSeekSlider.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
-                binding.playbackSeekText.visibility = View.INVISIBLE
                 mediaController?.pause()
             }
 
             override fun onStopTrackingTouch(slider: Slider) {
-                binding.playbackSeekText.visibility = View.VISIBLE
                 mediaController?.play()
             }
         })
-        binding.playbackSeek.addOnChangeListener { _, value, fromUser ->
+        binding.playbackSeekSlider.addOnChangeListener { _, value, fromUser ->
             if (fromUser) {
                 val currentDuration = mediaController?.duration
                 mediaController?.seekTo(((value + 0.0) * (currentDuration ?: 0)).toLong())
@@ -246,40 +255,55 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         }
     }
 
-    private fun updateInfo(mediaMetadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
-        // Set title/subtitle to the available metadata, if available
-        // When metadata is unavailable (or it's preference is false), use file name instead
-        val info = parseInfo(mediaMetadata)
-        binding.title.text = info.first
-        binding.subtitle.text = info.second
+    private fun updateInfo(metadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
+        // Set media filename/title/artists to the available metadata
+        //
+        // If metadata is unavailable, or is opted to hide by user
+        // we'll be displaying the media filename instead, leaving the other two to be hidden
+        if (!isMetadataDisplayed) {
+            binding.mediaFilename.text = mediaItem.localConfiguration?.uri?.getName(this)
+            binding.mediaTitle.text = String()
+            binding.mediaArtists.text = String()
+        } else {
+            metadata.title?.let {
+                binding.mediaTitle.text = it.toString()
+            }
+            metadata.artist?.let {
+                val artists = it.split("; ", ", ")
+                binding.mediaArtists.text = artists.joinToString()
+            }
+        }
 
         // Load artwork from metadata, if available
-        val artworkData = parseArtwork(mediaMetadata.artworkData ?: byteArrayOf(1))
+        val artworkData = parseArtwork(metadata.artworkData ?: byteArrayOf(1))
 
         if (isLayoutAnimated) {
             Glide.with(this)
                 .load(artworkData)
                 .transition(withCrossFade())
-                .into(binding.artwork)
+                .into(binding.mediaArtwork)
         } else {
-            binding.artwork.setImageBitmap(artworkData)
+            binding.mediaArtwork.setImageBitmap(artworkData)
         }
     }
 
-    private fun updateSeek(value: Long = mediaController?.currentPosition ?: 0) {
-        // Convert position into float
-        var seekValue = (value + 0.0f) / (mediaController?.duration ?: 0)
-        // seekValue cannot be greater than 1.0f or lesser than 0.0f
-        if (seekValue > 1.0f) {
-            seekValue = 1.0f
-        } else if (seekValue < 0.0f) {
-            seekValue = 0.0f
+    private fun updateSeek(position: Long = mediaController?.currentPosition ?: 0,
+                           duration: Long = mediaController?.duration ?: 0) {
+        // Create float-based position value
+        var positionFloat = (position + 0.0f) / (mediaController?.duration ?: 0)
+
+        // float-based position value cannot be greater than 1.0f or lesser than 0.0f
+        if (positionFloat > 1.0f) {
+            positionFloat = 1.0f
+        } else if (positionFloat < 0.0f) {
+            positionFloat = 0.0f
         }
 
-        // Update slider value using the float value
-        // Also update it's text value by using the Long value
-        binding.playbackSeek.value = seekValue
-        binding.playbackSeekText.text = parseSeekPosition(value)
+        // Update the playback slider value using it's float-based position
+        // Also update it's text start/end value by using the Long values
+        binding.playbackSeekSlider.value = positionFloat
+        binding.playbackSeekTextPosition.text = parseDuration(position)
+        binding.playbackSeekTextDuration.text = parseDuration(duration)
     }
 
     private fun updateState(isPlaying: Boolean = mediaController?.isPlaying ?: false) {
@@ -296,11 +320,11 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         }
         if (isWakeLock) {
             if (isPlaying) {
+                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Append FLAG_KEEP_SCREEN_ON to window flags")
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Added FLAG_KEEP_SCREEN_ON to window flags")
             } else {
+                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Remove FLAG_KEEP_SCREEN_ON from window flags")
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Removed FLAG_KEEP_SCREEN_ON from window flags")
             }
         }
     }
@@ -311,38 +335,17 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         updateState()
     }
 
-    private fun parseInfo(metadata: MediaMetadata): Pair<String, String> {
-        val filename = mediaItem.localConfiguration?.uri?.getName(this)
-        var title = filename ?: String() // empty fallback when nothing
-        var subtitle = String() // empty fallback
-
-        if (isMetadataDisplayed) {
-            metadata.title?.let {
-                title = it.toString()
-            }
-            metadata.artist?.let {
-                val artists = it.split("; ", ", ")
-                subtitle = artists.joinToString()
-            }
-        }
-
-        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "parseInfo returned: (first: $title, second: $subtitle)")
-        return Pair(title, subtitle)
-    }
-
     private fun parseArtwork(data: ByteArray): Bitmap {
         val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
-        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "parseArtwork returned: (byte size: ${data.size})")
         return bitmap ?: Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
     }
 
-    private fun parseSeekPosition(position: Long): String {
+    private fun parseDuration(value: Long): String {
         val locale = Locale.getDefault()
-        val valueMicroseconds = position / 1000
+        val valueMicroseconds = value / 1000
         val valueMinutes = valueMicroseconds / 60
         val valueSeconds = valueMicroseconds % 60
 
-        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "parseSeekPosition returned: (value: $position)")
         return if (valueMicroseconds >= 360) {
             val valueHours = valueMicroseconds / 360
             getString(R.string.playback_seek_format_long, valueHours, valueMinutes, String.format(locale, "%1$02d", valueSeconds))

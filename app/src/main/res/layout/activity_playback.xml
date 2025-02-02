@@ -4,32 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
-    android:paddingStart="32dp"
-    android:paddingEnd="64dp"
+    android:paddingStart="30dp"
+    android:paddingEnd="60dp"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Material3.ActionBar.Title" />
-
-    <TextView
-        android:id="@+id/subtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Material3.ActionBar.Subtitle" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="8dp" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="250dp"
         android:layout_height="250dp">
 
         <ImageView
-            android:id="@+id/artwork"
+            android:id="@+id/mediaArtwork"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/content_description_artwork" />
@@ -37,46 +21,95 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="8dp" />
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/mediaFilename"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:requiresFadingEdge="none"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.Material3.LabelMedium" />
+
+    <TextView
+        android:id="@+id/mediaTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
+
+    <TextView
+        android:id="@+id/mediaArtists"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
 
     <LinearLayout
-        android:id="@+id/playback_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/playback_seek_text_position"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/playback_seek_text_default"
+            android:textAppearance="@style/TextAppearance.Material3.LabelSmall" />
+
+        <com.google.android.material.slider.Slider
+            style="@style/Widget.Material3.Slider.Legacy"
+            android:id="@+id/playback_seek_slider"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:contentDescription="@string/content_description_playback_seek"
+            app:labelBehavior="gone" />
+
+        <TextView
+            android:id="@+id/playback_seek_text_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/playback_seek_text_default"
+            android:textAppearance="@style/TextAppearance.Material3.LabelSmall" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/playback_control_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
-            style="?attr/materialIconButtonOutlinedStyle"
+            style="?attr/materialIconButtonFilledStyle"
             android:id="@+id/playback_state"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/content_description_playback_state"
             android:checkable="true"
             app:icon="@drawable/button_playback_state" />
 
-        <com.google.android.material.button.MaterialButton
-            style="?attr/materialIconButtonOutlinedStyle"
-            android:id="@+id/playback_open_with"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/content_description_playback_open_with"
-            app:icon="@drawable/baseline_open_with_24" />
-
-        <com.google.android.material.slider.Slider
-            style="@style/Widget.Material3.Slider.Legacy"
-            android:id="@+id/playback_seek"
-            android:contentDescription="@string/content_description_playback_seek"
+        <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/playback_seek_text"
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:id="@+id/playback_open_external"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="@string/playback_seek_default"
-            android:textAppearance="@style/TextAppearance.Material3.LabelSmall" />
+            android:contentDescription="@string/content_description_playback_open_with"
+            android:text="@string/playback_open_external_text" />
     </LinearLayout>
 </LinearLayout>

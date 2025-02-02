@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -21,8 +22,11 @@
             android:configChanges="orientation"
             android:excludeFromRecents="true"
             android:exported="true"
+            android:launchMode="singleInstance"
             android:noHistory="true"
-            android:theme="@style/AppTheme.Overlay">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Overlay"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
