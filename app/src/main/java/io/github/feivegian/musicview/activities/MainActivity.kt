@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import io.github.feivegian.musicview.Constants
 import io.github.feivegian.musicview.R
 import io.github.feivegian.musicview.databinding.ActivityMainBinding
 import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
@@ -49,11 +50,7 @@ class MainActivity : AppCompatActivity() {
         // When the activity is destroyed and hideOnDestroy is true, disable it afterwards
         if (packageManager.isActivityEnabled(this, this::class.java) && hideOnDestroy) {
             packageManager.setActivityEnabled(this, this::class.java, false)
-            Log.d(TAG, "Disabled activity; use app settings to re-enable it back")
+            Log.d(Constants.TAG_ACTIVITY_MAIN, "Disabled activity; use app settings to re-enable it back")
         }
-    }
-
-    companion object {
-        const val TAG = "MainActivity"
     }
 }

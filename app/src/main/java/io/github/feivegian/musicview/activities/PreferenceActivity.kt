@@ -80,8 +80,4 @@ class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefe
             }
             .show()
     }
-
-    companion object {
-        const val TAG = "SettingsActivity"
-    }
 }
