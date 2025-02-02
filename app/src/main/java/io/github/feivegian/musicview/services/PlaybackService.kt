@@ -73,8 +73,6 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         mediaSession = MediaSession.Builder(this, player)
             .setCallback(this)
             .build()
-
-        mediaSession?.player?.playWhenReady = true
     }
 
     override fun onDestroy() {

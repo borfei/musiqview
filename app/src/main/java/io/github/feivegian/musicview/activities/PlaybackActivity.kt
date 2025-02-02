@@ -146,20 +146,18 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         binding.playbackSeek.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
                 binding.playbackSeekText.visibility = View.INVISIBLE
+                mediaController?.pause()
             }
 
             override fun onStopTrackingTouch(slider: Slider) {
                 binding.playbackSeekText.visibility = View.VISIBLE
-
-                // This is the only way to get the playback resume
-                if (mediaController?.isPlaying == false) {
-                    mediaController?.play()
-                }
+                mediaController?.play()
             }
         })
         binding.playbackSeek.addOnChangeListener { _, value, fromUser ->
             if (fromUser) {
-                mediaController?.seekTo(((value + 0.0) * (mediaController?.duration ?: 0)).toLong())
+                val currentDuration = mediaController?.duration
+                mediaController?.seekTo(((value + 0.0) * (currentDuration ?: 0)).toLong())
             }
         }
         controllerFuture.addListener({
@@ -186,6 +184,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             if (mediaController?.currentMediaItem == null) {
                 mediaController?.setMediaItem(mediaItem)
                 mediaController?.prepare()
+                mediaController?.playWhenReady = true
                 Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Preparing media URI")
             } else {
                 update()
