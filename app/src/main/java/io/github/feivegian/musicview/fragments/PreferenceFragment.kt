@@ -74,7 +74,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
         }
         name?.setOnPreferenceClickListener {
             if (!BuildConfig.DEBUG) {
-                // Non-debug builds are not allowed to have these features
+                // Non-debug builds are not allowed to access these features
                 return@setOnPreferenceClickListener false
             }
             if (uec >= 5) {
