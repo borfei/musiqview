@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
         binding.welcomeCustomize.setOnClickListener {
-            hideOnDestroy = true
             startActivity(Intent(this, PreferenceActivity::class.java))
             finish()
         }
