@@ -131,13 +131,18 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         binding.subtitle.doOnTextChanged { _, _, _, count ->
             binding.subtitle.visibility = if (count > 0) View.VISIBLE else View.GONE
         }
-        // Register playback controls listeners
+        // Register playback control listeners
         binding.playbackState.addOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 mediaController?.play()
             } else {
                 mediaController?.pause()
             }
+        }
+        binding.playbackOpenWith?.setOnClickListener {
+            val openWithIntent = Intent(Intent.ACTION_VIEW)
+            openWithIntent.setDataAndType(mediaItem.localConfiguration?.uri, "audio/*")
+            startActivity(openWithIntent)
         }
         binding.playbackSeek.setLabelFormatter { value ->
             val duration = mediaController?.duration ?: 0

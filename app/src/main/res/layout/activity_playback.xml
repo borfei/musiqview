@@ -54,6 +54,14 @@
             android:checkable="true"
             app:icon="@drawable/button_playback_state" />
 
+        <com.google.android.material.button.MaterialButton
+            style="?attr/materialIconButtonOutlinedStyle"
+            android:id="@+id/playback_open_with"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/content_description_playback_open_with"
+            app:icon="@drawable/baseline_open_with_24" />
+
         <com.google.android.material.slider.Slider
             style="@style/Widget.Material3.Slider.Legacy"
             android:id="@+id/playback_seek"
