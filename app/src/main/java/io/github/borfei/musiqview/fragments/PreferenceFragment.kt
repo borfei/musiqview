@@ -28,17 +28,20 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
 
     private lateinit var activity: PreferenceActivity
     private lateinit var customTabsIntent: CustomTabsIntent
-    private lateinit var application: App
-    private lateinit var preferences: SharedPreferences
 
-    private var uec: Int = 0
+    private val app: App by lazy {
+        App.fromInstance(activity.application)
+    }
+    private val preferences: SharedPreferences by lazy {
+        app.preferences
+    }
+
+    private var experimentsUnlockCount: Int = 0
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preference, rootKey)
         activity = requireActivity() as PreferenceActivity
         customTabsIntent = CustomTabsIntent.Builder().build()
-        application = App.fromInstance(activity.application)
-        preferences = application.preferences
         preferences.registerOnSharedPreferenceChangeListener(this)
 
         val theme = findPreference<ListPreference>("looks_theme")
@@ -55,7 +58,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
         experiments?.isVisible = experimentsUnlock?.isChecked == true
 
         theme?.setOnPreferenceChangeListener { _, newValue ->
-            application.changeNightMode(newValue as String)
+            app.changeNightMode(newValue as String)
             true
         }
         durationInterval?.setOnPreferenceChangeListener { pref, newValue ->
@@ -75,15 +78,15 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
                 // Non-debug builds are not allowed to access these features
                 return@setOnPreferenceClickListener false
             }
-            if (uec >= 5) {
+            if (experimentsUnlockCount >= 5) {
                 if (experimentsUnlock?.isChecked == false) {
                     experimentsUnlock.isChecked = true
                     activity.recreate()
                 }
 
-                uec = 0 // reset to zero after unlocking experiments
+                experimentsUnlockCount = 0 // reset to zero after unlocking experiments
             } else {
-                uec += 1
+                experimentsUnlockCount += 1
             }
 
             true
