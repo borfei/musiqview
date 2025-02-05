@@ -1,4 +1,4 @@
-package io.github.feivegian.musicview.fragments
+package io.github.borfei.musiqview.fragments
 
 import android.content.SharedPreferences
 import android.net.Uri
@@ -14,12 +14,12 @@ import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.github.feivegian.musicview.App
-import io.github.feivegian.musicview.BuildConfig
-import io.github.feivegian.musicview.Constants
-import io.github.feivegian.musicview.R
-import io.github.feivegian.musicview.activities.PreferenceActivity
-import io.github.feivegian.musicview.extensions.changeNightMode
+import io.github.borfei.musiqview.App
+import io.github.borfei.musiqview.BuildConfig
+import io.github.borfei.musiqview.Constants
+import io.github.borfei.musiqview.R
+import io.github.borfei.musiqview.activities.PreferenceActivity
+import io.github.borfei.musiqview.extensions.changeNightMode
 import java.io.File
 
 class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {

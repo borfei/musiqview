@@ -1,4 +1,4 @@
-package io.github.feivegian.musicview.activities
+package io.github.borfei.musiqview.activities
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
@@ -7,11 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.snackbar.Snackbar
-import io.github.feivegian.musicview.R
-import io.github.feivegian.musicview.databinding.ActivityPreferenceBinding
-import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
-import io.github.feivegian.musicview.extensions.restart
-import io.github.feivegian.musicview.fragments.PreferenceFragment
+import io.github.borfei.musiqview.R
+import io.github.borfei.musiqview.databinding.ActivityPreferenceBinding
+import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
+import io.github.borfei.musiqview.extensions.restart
+import io.github.borfei.musiqview.fragments.PreferenceFragment
 
 class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private lateinit var binding: ActivityPreferenceBinding

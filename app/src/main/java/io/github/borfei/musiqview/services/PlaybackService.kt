@@ -1,4 +1,4 @@
-package io.github.feivegian.musicview.services
+package io.github.borfei.musiqview.services
 
 import android.util.Log
 import androidx.media3.common.AudioAttributes
@@ -17,9 +17,9 @@ import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.google.common.util.concurrent.ListenableFuture
-import io.github.feivegian.musicview.App
-import io.github.feivegian.musicview.BuildConfig
-import io.github.feivegian.musicview.Constants
+import io.github.borfei.musiqview.App
+import io.github.borfei.musiqview.BuildConfig
+import io.github.borfei.musiqview.Constants
 import java.io.File
 
 @UnstableApi

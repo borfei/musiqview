@@ -1,4 +1,4 @@
-package io.github.feivegian.musicview.extensions
+package io.github.borfei.musiqview.extensions
 
 import android.content.Context
 import android.net.Uri
