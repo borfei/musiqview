@@ -25,6 +25,10 @@ import java.io.File
 
 @SuppressLint("UnsafeOptInUsageError")
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
+    companion object {
+        const val TAG = "PlaybackService"
+    }
+
     private var cache: SimpleCache? = null
     private var mediaSession: MediaSession? = null
 
@@ -51,7 +55,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
             .setUpstreamDataSourceFactory(DefaultDataSource.Factory(this))
         val loadErrorHandlingPolicy = object: DefaultLoadErrorHandlingPolicy() {
             override fun getRetryDelayMsFor(loadErrorInfo: LoadErrorHandlingPolicy.LoadErrorInfo): Long {
-                Log.e(Constants.TAG_SERVICE_PLAYBACK, "Load Error", loadErrorInfo.exception)
+                Log.e(TAG, "Load Error", loadErrorInfo.exception)
                 return super.getRetryDelayMsFor(loadErrorInfo)
             }
         }
