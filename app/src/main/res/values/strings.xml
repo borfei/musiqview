@@ -4,11 +4,10 @@
     <!-- Content descriptions -->
     <string name="content_description_artwork">Artwork for current media</string>
     <string name="content_description_playback_state">Play or pause current media</string>
-    <string name="content_description_playback_open_with">Open current media in external app</string>
+    <string name="content_description_playback_options">Show playback options</string>
     <string name="content_description_playback_seek">Seek media position</string>
     <!-- Playback strings -->
-    <string name="playback_seek_text_default">00:00</string>
-    <string name="playback_open_external_text">Open in external app</string>
+    <string name="playback_seek_text">00:00</string>
     <!-- Preference strings -->
     <string name="preference_title">Settings</string>
     <string name="preference_looks">Look and Feel</string>
@@ -63,4 +62,7 @@
     <string name="dialog_device_info_message_os_sdk_version">OS SDK version: %1$d</string>
     <string name="dialog_device_info_message_os_security_patch">OS security patch: %1$s</string>
     <string name="dialog_device_info_negative">Close</string>
+    <!-- Menu strings -->
+    <string name="menu_playback_stop">Stop playback</string>>
+    <string name="menu_playback_open_external">Open in …</string>
 </resources>

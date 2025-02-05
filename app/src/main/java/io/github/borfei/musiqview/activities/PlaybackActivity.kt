@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.WindowCompat
 import androidx.core.view.descendants
 import androidx.core.widget.doOnTextChanged
@@ -157,11 +158,32 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
                 mediaController?.pause()
             }
         }
-        binding.playbackOpenExternal.setOnClickListener {
-            val currentMediaItem = mediaController?.currentMediaItem
-            val openExternalIntent = Intent(Intent.ACTION_VIEW)
-            openExternalIntent.setDataAndType(currentMediaItem?.localConfiguration?.uri, "audio/*")
-            startActivity(Intent.createChooser(openExternalIntent, null))
+        binding.playbackOptions.setOnClickListener { view ->
+            val popup = PopupMenu(this, view)
+            popup.menuInflater.inflate(R.menu.playback_options, popup.menu)
+
+            popup.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.playback_stop -> {
+                        mediaController?.playWhenReady = false
+                        mediaController?.stop()
+                        mediaController?.seekTo(0)
+                    }
+                    R.id.playback_open_external -> {
+                        val currentMediaItem = mediaController?.currentMediaItem
+                        val openExternalIntent = Intent(Intent.ACTION_VIEW)
+                        openExternalIntent.setDataAndType(currentMediaItem?.localConfiguration?.uri, "audio/*")
+                        startActivity(Intent.createChooser(openExternalIntent, null))
+                    }
+                }
+
+                true
+            }
+            popup.setOnDismissListener {
+                // do nothing
+            }
+
+            popup.show()
         }
         binding.playbackSeekSlider.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {

@@ -62,7 +62,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:singleLine="true"
-            android:text="@string/playback_seek_text_default"
+            android:text="@string/playback_seek_text"
             android:textAppearance="@style/TextAppearance.Material3.LabelSmall" />
 
         <com.google.android.material.slider.Slider
@@ -80,7 +80,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:singleLine="true"
-            android:text="@string/playback_seek_text_default"
+            android:text="@string/playback_seek_text"
             android:textAppearance="@style/TextAppearance.Material3.LabelSmall" />
     </LinearLayout>
 
@@ -99,17 +99,12 @@
             android:checkable="true"
             app:icon="@drawable/button_playback_state" />
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.Material3.Button.TonalButton"
-            android:id="@+id/playback_open_external"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:id="@+id/playback_options"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:contentDescription="@string/content_description_playback_open_with"
-            android:text="@string/playback_open_external_text" />
+            android:contentDescription="@string/content_description_playback_options"
+            app:icon="@drawable/baseline_more_vert_24" />
     </LinearLayout>
 </LinearLayout>
