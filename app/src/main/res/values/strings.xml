@@ -6,23 +6,9 @@
     <string name="content_description_playback_state">Play or pause current media</string>
     <string name="content_description_playback_open_with">Open current media in external app</string>
     <string name="content_description_playback_seek">Seek media position</string>
-    <string name="content_description_preference_editor_add">Add a new preference item</string>
     <!-- Playback strings -->
     <string name="playback_seek_text_default">00:00</string>
     <string name="playback_open_external_text">Open in external app</string>
-    <!-- Preference editor strings -->
-    <string name="preference_editor_title">Preference editor</string>
-    <string name="preference_editor_edit_item_title">Edit preference item</string>
-    <string name="preference_editor_edit_item_title_alt">New preference item</string>
-    <string name="preference_editor_edit_item_type">Type:</string>
-    <string name="preference_editor_edit_item_key_hint">Key</string>
-    <string name="preference_editor_edit_item_key_empty">Key must not be empty</string>
-    <string name="preference_editor_edit_item_value_hint">Value</string>
-    <string name="preference_editor_edit_item_value_empty">Value must not be empty</string>
-    <string name="preference_editor_delete_item_title">Delete preference item</string>
-    <string name="preference_editor_delete_item_message">Are you sure you want to delete %1$s?</string>
-    <string name="preference_editor_delete_item_positive">Yes</string>
-    <string name="preference_editor_delete_item_negative">No</string>
     <!-- Preference strings -->
     <string name="preference_title">Settings</string>
     <string name="preference_looks">Look and Feel</string>
@@ -59,10 +45,6 @@
     <string name="preference_experiments_crash_logs">Crash Logs</string>
     <string name="preference_experiments_crash_logs_empty">No crash logs found.</string>
     <string name="preference_experiments_device_info">Device Information</string>
-    <string name="preference_experiments_preference_editor">Preference Editor</string>
-    <!-- Snackbar strings -->
-    <string name="snackbar_restart_required">There are modified changes that require restart to take effect.</string>
-    <string name="snackbar_restart_required_action">Restart</string>
     <!-- Dialog strings -->
     <string name="dialog_playback_error_title">Playback error</string>
     <string name="dialog_playback_error_negative">Close</string>
@@ -82,9 +64,4 @@
     <string name="dialog_device_info_message_os_sdk_version">OS SDK version: %1$d</string>
     <string name="dialog_device_info_message_os_security_patch">OS security patch: %1$s</string>
     <string name="dialog_device_info_negative">Close</string>
-    <string name="dialog_preference_edit_positive">OK</string>
-    <string name="dialog_preference_edit_negative">Cancel</string>
-    <string name="dialog_preference_edit_alert_title">Warning</string>
-    <string name="dialog_preference_edit_alert_message">Changing preferences directly without pure knowledge can lead to crashes, use at your own risk!</string>
-    <string name="dialog_preference_edit_alert_positive">I understand</string>
 </resources>
