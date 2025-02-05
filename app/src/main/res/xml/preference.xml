@@ -69,13 +69,10 @@
             app:key="other_wake_lock"
             app:title="@string/preference_other_wake_lock"
             app:summary="@string/preference_other_wake_lock_summary" />
-        <ListPreference
+        <CheckBoxPreference
             app:key="other_immersive_mode"
-            app:defaultValue="landscape"
-            app:entries="@array/preference_immersive_mode"
-            app:entryValues="@array/preference_immersive_mode_values"
             app:title="@string/preference_other_immersive_mode"
-            app:useSimpleSummaryProvider="true" />
+            app:summary="@string/preference_other_immersive_mode_summary" />
     </PreferenceCategory>
     <PreferenceCategory
         app:icon="@drawable/baseline_info_24"
