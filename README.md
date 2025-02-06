@@ -19,17 +19,15 @@ and simple. It also utilizes [Media3](https://developer.android.com/media/media3
 It's the same way as you build a project using Android Studio, no steps needed.
 
 Although if you prefer the hacker way, you can use Gradle tasks instead:
-- Debug:
-    - ```shell
-        $ ./gradlew assembleDebug
-        $ ./gradlew installDebug # install to connected device
-        ```
-- Release:
-- ```shell
-    $ ./gradlew assembleRelease
-    $ zipalign -v -p 4 app-release-unsigned.apk app-release-unsigned-aligned.apk
-    $ apksigner sign --ks my-release-key.jks --out app-release.apk app-release-unsigned-aligned.apk
-    ```
+```shell
+# For debug variants
+$ ./gradlew assembleDebug
+$ ./gradlew installDebug # install to connected device
+# For release variants
+$ ./gradlew assembleRelease
+$ zipalign -v -p 4 app-release-unsigned.apk app-release-unsigned-aligned.apk
+$ apksigner sign --ks my-release-key.jks --out app-release.apk app-release-unsigned-aligned.apk
+```
 
 > [!IMPORTANT]
 > When building a release build using **the hacker way**, you must provide your own keystore.
