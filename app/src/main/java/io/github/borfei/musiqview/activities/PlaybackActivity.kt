@@ -3,7 +3,6 @@ package io.github.borfei.musiqview.activities
 import android.animation.LayoutTransition
 import android.content.ComponentName
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
@@ -33,8 +32,6 @@ import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
-import io.github.borfei.musiqview.App
-import io.github.borfei.musiqview.Constants
 import io.github.borfei.musiqview.R
 import io.github.borfei.musiqview.databinding.ActivityPlaybackBinding
 import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
@@ -81,15 +78,8 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
 
     private var isMetadataDisplayed: Boolean = true
     private var isLayoutAnimated: Boolean = true
-    private var isImmersive: Boolean = false
+    private var isImmersive: Boolean = true
     private var isWakeLock: Boolean = false
-
-    private val app: App by lazy {
-        App.fromInstance(application)
-    }
-    private val preferences: SharedPreferences by lazy {
-        app.preferences
-    }
 
     private val durationUpdateHandler: Handler by lazy {
         Handler(Looper.myLooper() ?: Looper.getMainLooper())
@@ -119,15 +109,6 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         // Finally for inflater, set the activity's view to it's proper content
         setContentView(binding.root)
 
-        // Load preferences and the activity's preference variables
-        preferences.let {
-            durationUpdateInterval = it.getInt(Constants.PREFERENCE_PLAYBACK_DURATION_INTERVAL, durationUpdateInterval)
-
-            isMetadataDisplayed = it.getBoolean(Constants.PREFERENCE_INTERFACE_DISPLAY_METADATA, isMetadataDisplayed)
-            isLayoutAnimated = it.getBoolean(Constants.PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES, isLayoutAnimated)
-            isWakeLock = it.getBoolean(Constants.PREFERENCE_OTHER_WAKE_LOCK, isWakeLock)
-            isImmersive = it.getBoolean(Constants.PREFERENCE_OTHER_IMMERSIVE_MODE, isImmersive)
-        }
         // Make sure the root layout's transition manager is initialized
         // if isLayoutAnimated is set to true
         //

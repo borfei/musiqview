@@ -14,9 +14,7 @@ import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.google.common.util.concurrent.ListenableFuture
-import io.github.borfei.musiqview.App
 import io.github.borfei.musiqview.BuildConfig
-import io.github.borfei.musiqview.Constants
 
 @SuppressLint("UnsafeOptInUsageError")
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
@@ -28,15 +26,10 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
 
     override fun onCreate() {
         super.onCreate()
-        val app = App.fromInstance(application)
-        val preferences = app.preferences
 
-        val audioFocus =
-            preferences.getBoolean(Constants.PREFERENCE_PLAYBACK_AUDIO_FOCUS, true)
-        val constantBitrateSeeking =
-            preferences.getBoolean(Constants.PREFERENCE_PLAYBACK_CONSTANT_BITRATE_SEEKING, false)
-        val wakeLock =
-            preferences.getBoolean(Constants.PREFERENCE_OTHER_WAKE_LOCK, false)
+        val audioFocus = true
+        val constantBitrateSeeking = false
+        val wakeLock = false
 
         val loadErrorHandlingPolicy = object: DefaultLoadErrorHandlingPolicy() {
             override fun getRetryDelayMsFor(loadErrorInfo: LoadErrorHandlingPolicy.LoadErrorInfo): Long {
@@ -44,10 +37,12 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
                 return super.getRetryDelayMsFor(loadErrorInfo)
             }
         }
+
         val extractorsFactory = DefaultExtractorsFactory()
             .setConstantBitrateSeekingEnabled(constantBitrateSeeking)
         val mediaSourceFactory = DefaultMediaSourceFactory(this, extractorsFactory)
             .setLoadErrorHandlingPolicy(loadErrorHandlingPolicy)
+
         val player = ExoPlayer.Builder(this)
             .setAudioAttributes(AudioAttributes.DEFAULT, audioFocus)
             .setWakeMode(if (wakeLock) C.WAKE_MODE_LOCAL else C.WAKE_MODE_NONE)
@@ -56,6 +51,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         val audioOffloadPreferences = AudioOffloadPreferences.Builder()
             .setAudioOffloadMode(AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED)
             .build()
+
         player.trackSelectionParameters = player.trackSelectionParameters.buildUpon()
             .setAudioOffloadPreferences(audioOffloadPreferences)
             .build()
