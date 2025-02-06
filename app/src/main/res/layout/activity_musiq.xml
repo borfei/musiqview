@@ -8,7 +8,7 @@
     android:paddingStart="30dp"
     android:paddingEnd="60dp"
     android:orientation="vertical"
-    tools:context=".activities.PlaybackActivity">
+    tools:context=".MusiqActivity">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="250dp"
