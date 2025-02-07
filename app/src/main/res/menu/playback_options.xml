@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/playback_stop"
-        android:title="@string/menu_playback_stop" />
-    <item
-        android:id="@+id/playback_open_external"
-        android:title="@string/menu_playback_open_external" />
-</menu>

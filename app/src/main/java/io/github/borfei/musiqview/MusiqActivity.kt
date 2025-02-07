@@ -1,32 +1,30 @@
 package io.github.borfei.musiqview
 
-import android.animation.LayoutTransition
 import android.content.ComponentName
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.MenuCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.descendants
 import androidx.core.widget.doOnTextChanged
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Player.DISCONTINUITY_REASON_SEEK
+import androidx.media3.common.Player.REPEAT_MODE_ALL
+import androidx.media3.common.Player.REPEAT_MODE_OFF
+import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.Player.STATE_READY
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
@@ -35,7 +33,6 @@ import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
 import io.github.borfei.musiqview.extensions.getName
 import io.github.borfei.musiqview.extensions.setImmersiveMode
 import io.github.borfei.musiqview.extensions.toBitmap
-import io.github.borfei.musiqview.services.PlaybackService
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -45,11 +42,6 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
     }
 
     private lateinit var binding: ActivityMusiqBinding
-
-    private var isMetadataDisplayed: Boolean = true
-    private var isLayoutAnimated: Boolean = true
-    private var isImmersive: Boolean = true
-    private var isWakeLock: Boolean = false
 
     private val durationUpdateHandler: Handler by lazy {
         Handler(Looper.myLooper() ?: Looper.getMainLooper())
@@ -69,41 +61,20 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
     private var mediaController: MediaController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Enable edge-to-edge for easy integration with system bars
         enableEdgeToEdge()
-
         super.onCreate(savedInstanceState)
-        // Inflate activity layout via ViewBinding and adjust padding for system bar insets
+
         binding = ActivityMusiqBinding.inflate(layoutInflater)
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
-        // Finally for inflater, set the activity's view to it's proper content
         setContentView(binding.root)
 
-        // Make sure the root layout's transition manager is initialized
-        // if isLayoutAnimated is set to true
-        //
-        // The descendants of the root layout is also affected by isLayoutAnimated
-        binding.root.layoutTransition = if (isLayoutAnimated) {
-            LayoutTransition()
-        } else {
-            null
-        }
-        binding.root.descendants.forEach { view ->
-            if (view is ViewGroup) {
-                view.layoutTransition = if (isLayoutAnimated) {
-                    LayoutTransition()
-                } else {
-                    null
-                }
-            }
-        }
-        // Register certain view listeners
         binding.mediaTitle.doOnTextChanged { _, _, _, count ->
             binding.mediaTitle.visibility = if (count > 0) View.VISIBLE else View.GONE
         }
         binding.mediaArtists.doOnTextChanged { _, _, _, count ->
             binding.mediaArtists.visibility = if (count > 0) View.VISIBLE else View.GONE
         }
+
         binding.playbackState.addOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 mediaController?.play()
@@ -111,38 +82,15 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
                 mediaController?.pause()
             }
         }
-        binding.playbackOptions.setOnClickListener { view ->
-            val popup = PopupMenu(this, view)
-            popup.menuInflater.inflate(R.menu.playback_options, popup.menu)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                popup.menu.setGroupDividerEnabled(true)
-            } else {
-                MenuCompat.setGroupDividerEnabled(popup.menu, true)
-            }
-            popup.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.playback_stop -> {
-                        mediaController?.playWhenReady = false
-                        mediaController?.stop()
-                        mediaController?.seekTo(0)
-                    }
-                    R.id.playback_open_external -> {
-                        val currentMediaItem = mediaController?.currentMediaItem
-                        val openExternalIntent = Intent(Intent.ACTION_VIEW)
-                        openExternalIntent.setDataAndType(currentMediaItem?.localConfiguration?.uri, "audio/*")
-                        startActivity(Intent.createChooser(openExternalIntent, null))
-                    }
-                }
-
-                true
-            }
-            popup.setOnDismissListener {
-                // do nothing
-            }
-
-            popup.show()
+        binding.playbackRepeat.addOnCheckedChangeListener { _, isChecked ->
+            mediaController?.repeatMode = if (isChecked) REPEAT_MODE_ALL else REPEAT_MODE_OFF
         }
+
+        binding.playbackOptions.setOnClickListener {
+            // TODO: Implement options menu here
+            Toast.makeText(this, R.string.under_construction, Toast.LENGTH_LONG).show()
+        }
+
         binding.playbackSeekSlider.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
                 mediaController?.pause()
@@ -152,6 +100,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
                 mediaController?.play()
             }
         })
+
         binding.playbackSeekSlider.addOnChangeListener { _, value, fromUser ->
             if (fromUser) {
                 val currentDuration = mediaController?.duration
@@ -159,17 +108,12 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
             }
         }
 
-        // Toggle system immersive mode based on isImmersive's value
-        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(isImmersive)
-        // Hotfix for marquee text animation (by default it will not animate itself unless selected)
-        binding.mediaFilename.isSelected = true
+        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(false)
+        val mediaSessionToken = SessionToken(this, ComponentName(this, MusiqService::class.java))
+        val mediaControllerFuture = MediaController.Builder(this, mediaSessionToken).buildAsync()
 
-        // Initialize media session token & media controller
-        val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
-        val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
-
-        controllerFuture.addListener({
-            mediaController = controllerFuture.get()
+        mediaControllerFuture.addListener({
+            mediaController = mediaControllerFuture.get()
             mediaController?.addListener(this)
 
             // If an intent URI has received, load it as a media item
@@ -185,16 +129,12 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
             // Make sure to begin the playback when ready and prepared
             mediaController?.playWhenReady = true
-        },
-            MoreExecutors.directExecutor()
-        )
+        }, MoreExecutors.directExecutor())
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        // Cancel all pending callbacks of duration updater
         durationUpdateHandler.removeCallbacksAndMessages(null)
-        // Disconnect from media session
         mediaController?.removeListener(this)
         mediaController?.release()
     }
@@ -213,9 +153,21 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         if (playbackState == STATE_READY) {
             mediaController?.currentMediaItem?.let {
                 binding.mediaFilename.text = it.localConfiguration?.uri?.getName(this)
+                binding.mediaFilename.isSelected = true
             }
+            mediaController?.duration?.let {
+                updateDuration(it)
+            }
+        }
+    }
 
-            mediaController?.duration?.let { updateDuration(it) }
+    override fun onIsLoadingChanged(isLoading: Boolean) {
+        super.onIsLoadingChanged(isLoading)
+
+        if (isLoading) {
+            binding.playbackLoadIndicator.visibility = View.VISIBLE
+        } else {
+            binding.playbackLoadIndicator.visibility = View.GONE
         }
     }
 
@@ -224,12 +176,17 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         updateState(isPlaying)
     }
 
+    override fun onRepeatModeChanged(repeatMode: Int) {
+        super.onRepeatModeChanged(repeatMode)
+        val isRepeating = repeatMode == REPEAT_MODE_ALL || repeatMode == REPEAT_MODE_ONE
+        binding.playbackRepeat.isChecked = isRepeating
+    }
+
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
 
         // When error occurs, display it's message in a MaterialAlertDialog
         MaterialAlertDialogBuilder(this)
-            .setIcon(R.drawable.dialog_error_48)
             .setTitle(R.string.dialog_playback_error_title)
             .setMessage(error.message)
             .setNegativeButton(R.string.dialog_playback_error_negative) { _, _ ->
@@ -253,33 +210,18 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updateMetadata(metadata: MediaMetadata) {
-        // Display available media metadata
-        if (!isMetadataDisplayed) {
-            binding.mediaTitle.text = String()
-            binding.mediaArtists.text = String()
-        } else {
-            metadata.title?.let {
-                binding.mediaTitle.text = it.toString()
-            }
-            metadata.artist?.let {
-                val artists = it.split("; ", ", ")
-                binding.mediaArtists.text = artists.joinToString()
-            }
-        }
-
-        // Display available media artwork
-        //
-        // If isLayoutAnimated is true, we'll use Glide to have a cross-fade animation
-        // otherwise, we have to use ImageView's built-in setImageBitmap method instead
-        val mediaArtworkData = metadata.artworkData ?: byteArrayOf(1)
-        val mediaArtworkBitmap = mediaArtworkData.toBitmap()
-
-        if (isLayoutAnimated) {
+        metadata.artworkData?.let {
             Glide.with(this)
-                .load(mediaArtworkBitmap)
+                .load(it.toBitmap())
+                .transition(withCrossFade())
                 .into(binding.mediaArtwork)
-        } else {
-            binding.mediaArtwork.setImageBitmap(mediaArtworkBitmap)
+        }
+        metadata.title?.let {
+            binding.mediaTitle.text = it.toString()
+        }
+        metadata.artist?.let {
+            val artists = it.split("; ", ", ")
+            binding.mediaArtists.text = artists.joinToString()
         }
     }
 
@@ -302,7 +244,6 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updateState(isPlaying: Boolean) {
-        // Set playback state checked to isPlaying
         binding.playbackState.isChecked = isPlaying
 
         // Start the duration updater if isPlaying is true
@@ -315,13 +256,6 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
                 durationUpdateHandler.post(durationUpdateRunnable)
             } else {
                 it.removeCallbacksAndMessages(null)
-            }
-        }
-        if (isWakeLock) {
-            if (isPlaying) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            } else {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
         }
     }

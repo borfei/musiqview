@@ -62,7 +62,4 @@
     <color name="md_theme_dark_surfaceTint">#88D990</color>
     <color name="md_theme_dark_outlineVariant">#424940</color>
     <color name="md_theme_dark_scrim">#000000</color>
-    <!-- Background dimming colors -->
-    <color name="background_dim_dark">#80000000</color>
-    <color name="background_dim_normal">#00000000</color>
 </resources>

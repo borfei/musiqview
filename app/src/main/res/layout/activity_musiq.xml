@@ -4,29 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:gravity="center_vertical"
-    android:paddingStart="30dp"
-    android:paddingEnd="60dp"
+    android:paddingStart="32dp"
+    android:paddingEnd="64dp"
     android:orientation="vertical"
     tools:context=".MusiqActivity">
 
+
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="250dp"
-        android:layout_height="250dp">
+        android:layout_width="200dp"
+        android:layout_height="200dp">
 
         <ImageView
-            android:id="@+id/mediaArtwork"
+            android:id="@+id/media_artwork"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/content_description_artwork" />
+            android:contentDescription="@string/content_description_artwork"
+            android:scaleType="fitCenter" />
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/playback_load_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
     </com.google.android.material.card.MaterialCardView>
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="10dp" />
+        android:layout_height="16dp" />
 
     <TextView
-        android:id="@+id/mediaFilename"
+        android:id="@+id/media_filename"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
@@ -34,28 +45,32 @@
         android:requiresFadingEdge="none"
         android:scrollHorizontally="true"
         android:singleLine="true"
+        android:text="@string/filename_placeholder"
         android:textAlignment="viewStart"
         android:textAppearance="@style/TextAppearance.Material3.LabelMedium" />
 
     <TextView
-        android:id="@+id/mediaTitle"
+        android:id="@+id/media_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:textAlignment="viewStart"
-        android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
+        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+        android:visibility="gone" />
 
     <TextView
-        android:id="@+id/mediaArtists"
+        android:id="@+id/media_artists"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:textAlignment="viewStart"
-        android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:orientation="horizontal">
 
         <TextView
@@ -92,14 +107,31 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.google.android.material.button.MaterialButton
-            style="?attr/materialIconButtonFilledStyle"
-            android:id="@+id/playback_state"
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/playback_toggle_group"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+                android:id="@+id/playback_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/content_description_playback_state"
+                app:icon="@drawable/selector_playback_state" />
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+                android:id="@+id/playback_repeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/content_description_playback_repeat"
+                app:icon="@drawable/selector_playback_repeat" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <Space
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/content_description_playback_state"
-            android:checkable="true"
-            app:icon="@drawable/button_playback_state" />
+            android:layout_weight="1" />
 
         <com.google.android.material.button.MaterialButton
             style="?attr/materialIconButtonFilledTonalStyle"
@@ -107,6 +139,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:contentDescription="@string/content_description_playback_options"
+            android:visibility="gone"
             app:icon="@drawable/baseline_more_vert_24" />
     </LinearLayout>
 </LinearLayout>

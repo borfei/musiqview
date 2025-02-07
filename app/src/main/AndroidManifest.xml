@@ -18,16 +18,23 @@
         android:theme="@style/AppTheme">
 
         <activity
+            android:name=".LauncherActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".MusiqActivity"
             android:configChanges="orientation"
             android:excludeFromRecents="true"
             android:exported="true"
             android:launchMode="singleInstance"
             android:noHistory="true"
-            android:resizeableActivity="false"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Overlay"
-            tools:ignore="DiscouragedApi,LockedOrientationActivity,NonResizeableActivity">
+            tools:ignore="DiscouragedApi,LockedOrientationActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -40,7 +47,7 @@
         </activity>
 
         <service
-            android:name=".services.PlaybackService"
+            android:name=".MusiqService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback">
             <intent-filter>

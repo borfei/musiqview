@@ -1,17 +1,19 @@
 <resources>
     <string name="app_name">Musiqview</string>
-    <!-- Content descriptions -->
     <string name="content_description_artwork">Artwork for current media</string>
+    <string name="content_description_launcher_icon">Icon</string>
     <string name="content_description_playback_state">Play or pause current media</string>
+    <string name="content_description_playback_repeat">Repeat current media</string>
     <string name="content_description_playback_options">Show playback options</string>
     <string name="content_description_playback_seek">Seek media position</string>
-    <!-- Playback strings -->
-    <string name="playback_seek_text">00:00</string>
-    <string name="playback_seek_text_format">%02d:%02d</string>
-    <!-- Dialog strings -->
     <string name="dialog_playback_error_title">Playback error</string>
     <string name="dialog_playback_error_negative">Close</string>
-    <!-- Menu strings -->
-    <string name="menu_playback_stop">Stop playback</string>>
-    <string name="menu_playback_open_external">Open in …</string>
+    <string name="filename_placeholder">[unknown file]</string>
+    <string name="launcher_greeting">Welcome to %1$s!</string>
+    <string name="launcher_instructions">To get started, simply use your file manager and open your audio files using %1$s.\n\nIf you want to let %2$s! handle audio files automatically, set it as the default music app.</string>
+    <string name="launcher_set_default">Set as default app</string>
+    <string name="launcher_finish">Finish set-up</string>
+    <string name="playback_seek_text">00:00</string>
+    <string name="playback_seek_text_format">%02d:%02d</string>
+    <string name="under_construction">Hey! This feature is still under construction..</string>
 </resources>
