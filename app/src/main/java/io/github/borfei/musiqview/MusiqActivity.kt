@@ -3,8 +3,6 @@ package io.github.borfei.musiqview
 import android.animation.LayoutTransition
 import android.content.ComponentName
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -36,41 +34,14 @@ import io.github.borfei.musiqview.databinding.ActivityMusiqBinding
 import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
 import io.github.borfei.musiqview.extensions.getName
 import io.github.borfei.musiqview.extensions.setImmersiveMode
+import io.github.borfei.musiqview.extensions.toBitmap
 import io.github.borfei.musiqview.services.PlaybackService
-import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 class MusiqActivity : AppCompatActivity(), Player.Listener {
     companion object {
         const val TAG = "PlaybackActivity"
-
-        /**
-         * Decode the ByteArray-based data into BitmapFactory
-         * which can then by used to create a proper Bitmap as the return value.
-         *
-         * If you want to create a empty bitmap, use 1 byte instead.
-         *
-         * @param[data] The data you want to convert.
-         * @return[Bitmap]
-         */
-        fun byteArrayToBitmap(data: ByteArray): Bitmap {
-
-            val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
-            return bitmap ?: Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
-        }
-
-        /**
-         * Converts duration into timestamp (mm:ss)
-         *
-         * @param[duration] The duration you want to convert.
-         * @return[String]
-         */
-        fun durationToTimestamp(duration: Duration): String {
-            return duration.toComponents { minutes, seconds, _ ->
-                "%02d:%02d".format(minutes, seconds)
-            }
-        }
     }
 
     private lateinit var binding: ActivityMusiqBinding
@@ -301,7 +272,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         // If isLayoutAnimated is true, we'll use Glide to have a cross-fade animation
         // otherwise, we have to use ImageView's built-in setImageBitmap method instead
         val mediaArtworkData = metadata.artworkData ?: byteArrayOf(1)
-        val mediaArtworkBitmap = byteArrayToBitmap(mediaArtworkData)
+        val mediaArtworkBitmap = mediaArtworkData.toBitmap()
 
         if (isLayoutAnimated) {
             Glide.with(this)
@@ -313,15 +284,21 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updateDuration(duration: Long) {
-        // Update playback seek duration text from timestamp-based media position
-        binding.playbackSeekTextDuration.text = durationToTimestamp(duration.toDuration(DurationUnit.MILLISECONDS))
+        // Update playback seek duration text to duration-to-timestamp value
+        duration.toDuration(DurationUnit.MILLISECONDS).toComponents { minutes, seconds, _ ->
+            binding.playbackSeekTextDuration.text =
+                getString(R.string.playback_seek_text_format).format(minutes, seconds)
+        }
     }
 
     private fun updateSeek(position: Long) {
-        // Update playback seek slider from media position
+        // Update playback seek slider from specified position
         binding.playbackSeekSlider.value = (position + 0.0f) / (mediaController?.duration ?: 0)
-        // Update playback seek position text from timestamp-based media position
-        binding.playbackSeekTextPosition.text = durationToTimestamp(position.toDuration(DurationUnit.MILLISECONDS))
+        // Update playback seek position text to position-to-timestamp value
+        position.toDuration(DurationUnit.MILLISECONDS).toComponents { minutes, seconds, _ ->
+            binding.playbackSeekTextPosition.text =
+                getString(R.string.playback_seek_text_format).format(minutes, seconds)
+        }
     }
 
     private fun updateState(isPlaying: Boolean) {
