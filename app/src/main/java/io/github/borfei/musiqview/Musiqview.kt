@@ -1,6 +1,5 @@
 package io.github.borfei.musiqview
 
-import android.annotation.SuppressLint
 import android.app.Application
 import com.google.android.material.color.DynamicColors
 import java.io.File
@@ -9,20 +8,7 @@ import java.util.Date
 import java.util.Locale
 import kotlin.system.exitProcess
 
-@SuppressLint("UnsafeOptInUsageError")
 class Musiqview : Application(), Thread.UncaughtExceptionHandler {
-    companion object {
-        /**
-         * A simple conversion from [Application] class to [Musiqview]
-         *
-         * @param[application] The instance that will convert to, must not be null.
-         * @return[Musiqview]
-         */
-        fun fromInstance(application: Application): Musiqview {
-            return application as Musiqview
-        }
-    }
-
     override fun onCreate() {
         super.onCreate()
         DynamicColors.applyToActivitiesIfAvailable(this)
