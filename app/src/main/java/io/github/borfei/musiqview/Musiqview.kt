@@ -16,17 +16,17 @@ class Musiqview : Application(), Thread.UncaughtExceptionHandler {
     }
 
     override fun uncaughtException(t: Thread, e: Throwable) {
-        generateTraceLog(e)
+        generateErrorLog(e)
         exitProcess(-1)
     }
 
-    private fun generateTraceLog(e: Throwable) {
+    private fun generateErrorLog(e: Throwable) {
         val dateTime = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val logDir = File(dataDir, "crash")
-        val file = File(logDir, "$dateTime.log")
+        val directory = File(dataDir, "crash")
+        val file = File(directory, "$dateTime.log")
 
         apply {
-            logDir.mkdirs()
+            directory.mkdirs()
             file.createNewFile()
         }
         file.printWriter().use { out ->
