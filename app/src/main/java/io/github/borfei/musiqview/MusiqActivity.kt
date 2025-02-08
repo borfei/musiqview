@@ -64,6 +64,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(false)
         binding = ActivityMusiqBinding.inflate(layoutInflater)
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
@@ -91,24 +92,25 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
             Toast.makeText(this, R.string.under_construction, Toast.LENGTH_LONG).show()
         }
 
-        binding.playbackSeekSlider.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
-            override fun onStartTrackingTouch(slider: Slider) {
-                mediaController?.pause()
-            }
+        binding.playbackSeekSlider.apply {
+            addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
+                override fun onStartTrackingTouch(slider: Slider) {
+                    mediaController?.pause()
+                }
 
-            override fun onStopTrackingTouch(slider: Slider) {
-                mediaController?.play()
-            }
-        })
+                override fun onStopTrackingTouch(slider: Slider) {
+                    mediaController?.play()
+                }
+            })
 
-        binding.playbackSeekSlider.addOnChangeListener { _, value, fromUser ->
-            if (fromUser) {
-                val currentDuration = mediaController?.duration
-                mediaController?.seekTo(((value + 0.0) * (currentDuration ?: 0)).toLong())
+            addOnChangeListener { _, value, fromUser ->
+                if (fromUser) {
+                    val currentDuration = mediaController?.duration
+                    mediaController?.seekTo(((value + 0.0) * (currentDuration ?: 0)).toLong())
+                }
             }
         }
 
-        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(false)
         val mediaSessionToken = SessionToken(this, ComponentName(this, MusiqService::class.java))
         val mediaControllerFuture = MediaController.Builder(this, mediaSessionToken).buildAsync()
 
