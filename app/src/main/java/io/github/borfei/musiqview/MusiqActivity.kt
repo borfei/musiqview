@@ -152,7 +152,6 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         if (playbackState == STATE_READY) {
             mediaController?.currentMediaItem?.let {
                 binding.mediaFilename.text = it.localConfiguration?.uri?.getName(this)
-                binding.mediaFilename.isSelected = true
             }
             mediaController?.duration?.let {
                 updateDuration(it)

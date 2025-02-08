@@ -36,14 +36,11 @@
         android:layout_width="match_parent"
         android:layout_height="16dp" />
 
-    <TextView
+    <io.github.borfei.musiqview.ui.MarqueeTextView
         android:id="@+id/media_filename"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"
-        android:scrollHorizontally="true"
-        android:singleLine="true"
         android:text="@string/filename_placeholder"
         android:textAlignment="viewStart"
         android:textAppearance="?attr/textAppearanceLabelMedium" />
