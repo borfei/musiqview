@@ -149,9 +149,6 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
     override fun onPlaybackStateChanged(playbackState: Int) {
         super.onPlaybackStateChanged(playbackState)
 
-        // If playback state is ready, we'll:
-        // - Update the seek duration text to media duration
-        // - Display the audio file's proper filename
         if (playbackState == STATE_READY) {
             mediaController?.currentMediaItem?.let {
                 binding.mediaFilename.text = it.localConfiguration?.uri?.getName(this)
