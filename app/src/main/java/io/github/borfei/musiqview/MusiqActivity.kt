@@ -117,7 +117,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
                 updatePlaybackDuration()
             }
 
-            Player.STATE_ENDED -> finish()
+            Player.STATE_ENDED -> {}
             Player.STATE_IDLE -> {}
         }
     }
