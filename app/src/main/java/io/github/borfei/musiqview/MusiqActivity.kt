@@ -16,17 +16,11 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
-import androidx.media3.common.Player.DISCONTINUITY_REASON_SEEK
-import androidx.media3.common.Player.REPEAT_MODE_ALL
-import androidx.media3.common.Player.REPEAT_MODE_OFF
-import androidx.media3.common.Player.REPEAT_MODE_ONE
-import androidx.media3.common.Player.STATE_READY
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
 import io.github.borfei.musiqview.databinding.ActivityMusiqBinding
 import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
@@ -38,25 +32,14 @@ import kotlin.time.toDuration
 
 class MusiqActivity : AppCompatActivity(), Player.Listener {
     companion object {
-        const val TAG = "PlaybackActivity"
+        const val TAG = "MusiqActivity"
     }
 
     private lateinit var binding: ActivityMusiqBinding
 
-    private val durationUpdateHandler: Handler by lazy {
-        Handler(Looper.myLooper() ?: Looper.getMainLooper())
-    }
-    private val durationUpdateRunnable: Runnable by lazy {
-        Runnable {
-            mediaController?.currentPosition?.let {
-                updateSeek(it)
-            }
-            durationUpdateRunnable.let {
-                durationUpdateHandler.postDelayed(it, durationUpdateInterval.toLong())
-            }
-        }
-    }
-    private var durationUpdateInterval: Int = 1000
+    private var seekUpdateHandler: Handler? = null
+    private var seekUpdateRunnable: Runnable? = null
+    private val seekUpdateInterval: Long = 1000
 
     private var mediaController: MediaController? = null
 
@@ -64,126 +47,88 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(false)
         binding = ActivityMusiqBinding.inflate(layoutInflater)
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
 
-        binding.mediaTitle.doOnTextChanged { _, _, _, count ->
-            binding.mediaTitle.visibility = if (count > 0) View.VISIBLE else View.GONE
-        }
-        binding.mediaArtists.doOnTextChanged { _, _, _, count ->
-            binding.mediaArtists.visibility = if (count > 0) View.VISIBLE else View.GONE
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            setImmersiveMode(false)
         }
 
-        binding.playbackState.addOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                mediaController?.play()
-            } else {
-                mediaController?.pause()
+        seekUpdateHandler =
+            Handler(Looper.myLooper() ?: Looper.getMainLooper())
+        seekUpdateRunnable = Runnable {
+            mediaController?.currentPosition?.let {
+                updatePlaybackSeek(it)
             }
-        }
-        binding.playbackRepeat.addOnCheckedChangeListener { _, isChecked ->
-            mediaController?.repeatMode = if (isChecked) REPEAT_MODE_ALL else REPEAT_MODE_OFF
-        }
-
-        binding.playbackOptions.setOnClickListener {
-            // TODO: Implement options menu here
-            Toast.makeText(this, R.string.under_construction, Toast.LENGTH_LONG).show()
-        }
-
-        binding.playbackSeekSlider.apply {
-            addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
-                override fun onStartTrackingTouch(slider: Slider) {
-                    mediaController?.pause()
-                }
-
-                override fun onStopTrackingTouch(slider: Slider) {
-                    mediaController?.play()
-                }
-            })
-
-            addOnChangeListener { _, value, fromUser ->
-                if (fromUser) {
-                    val currentDuration = mediaController?.duration
-                    mediaController?.seekTo(((value + 0.0) * (currentDuration ?: 0)).toLong())
-                }
+            seekUpdateRunnable?.let {
+                seekUpdateHandler?.postDelayed(it, seekUpdateInterval)
             }
         }
 
-        val mediaSessionToken = SessionToken(this, ComponentName(this, MusiqService::class.java))
-        val mediaControllerFuture = MediaController.Builder(this, mediaSessionToken).buildAsync()
-
-        mediaControllerFuture.addListener({
-            mediaController = mediaControllerFuture.get()
-            mediaController?.addListener(this)
-
-            // If an intent URI has received, load it as a media item
-            intent?.let {
-                if (intent.action == Intent.ACTION_VIEW) {
-                    intent.data?.let {
-                        Log.d(TAG, "Received Intent URI: $it")
-                        mediaController?.setMediaItem(MediaItem.fromUri(it))
-                        mediaController?.prepare()
-                    }
-                }
-            }
-
-            // Make sure to begin the playback when ready and prepared
-            mediaController?.playWhenReady = true
-        }, MoreExecutors.directExecutor())
+        initializeViews()
+        initializeMediaController()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        durationUpdateHandler.removeCallbacksAndMessages(null)
+        Log.i(TAG, "Freeing service as it is no longer needed")
         mediaController?.removeListener(this)
         mediaController?.release()
     }
 
+    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+        super.onMediaItemTransition(mediaItem, reason)
+        Log.d(TAG, "mediaItem: $mediaItem (reason: $reason)")
+
+        mediaItem?.localConfiguration?.uri?.let {
+            binding.mediaFilename.text = it.getName(this)
+        }
+    }
+
     override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
         super.onMediaMetadataChanged(mediaMetadata)
-        updateMetadata(mediaMetadata)
+        Log.v(TAG, "mediaMetadata: $mediaMetadata")
+        updateMediaMetadata(mediaMetadata)
     }
 
     override fun onPlaybackStateChanged(playbackState: Int) {
         super.onPlaybackStateChanged(playbackState)
+        Log.d(TAG, "playbackState: $playbackState")
 
-        if (playbackState == STATE_READY) {
-            mediaController?.currentMediaItem?.let {
-                binding.mediaFilename.text = it.localConfiguration?.uri?.getName(this)
+        when (playbackState) {
+            Player.STATE_BUFFERING -> {
+                binding.playbackLoadIndicator.show()
+                binding.playbackState.isEnabled = false
             }
-            mediaController?.duration?.let {
-                updateDuration(it)
+            Player.STATE_READY -> {
+                binding.playbackLoadIndicator.hide()
+                binding.playbackState.isEnabled = true
+                updatePlaybackDuration()
             }
-        }
-    }
 
-    override fun onIsLoadingChanged(isLoading: Boolean) {
-        super.onIsLoadingChanged(isLoading)
-
-        if (isLoading && mediaController?.isPlaying == false) {
-            binding.playbackLoadIndicator.visibility = View.VISIBLE
-        } else {
-            binding.playbackLoadIndicator.visibility = View.GONE
+            Player.STATE_ENDED -> finish()
+            Player.STATE_IDLE -> {}
         }
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         super.onIsPlayingChanged(isPlaying)
-        updateState(isPlaying)
+        Log.v(TAG, "isPlaying: $isPlaying")
+        updatePlaybackState(isPlaying)
     }
 
     override fun onRepeatModeChanged(repeatMode: Int) {
         super.onRepeatModeChanged(repeatMode)
-        val isRepeating = repeatMode == REPEAT_MODE_ALL || repeatMode == REPEAT_MODE_ONE
-        binding.playbackRepeat.isChecked = isRepeating
+        Log.v(TAG, "repeatMode: $repeatMode")
+        binding.playbackRepeat.isChecked = repeatMode == Player.REPEAT_MODE_ALL
     }
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
+        Log.e(TAG, error.stackTraceToString())
 
-        // When error occurs, display it's message in a MaterialAlertDialog
+        // Display playback error message in an alert dialog
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.dialog_playback_error_title)
             .setMessage(error.message)
@@ -200,60 +145,117 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         reason: Int
     ) {
         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+        Log.v(TAG, "Discontinuity reason: $reason")
+        Log.v(TAG, "Discontinuity old position: ${oldPosition.positionMs}")
+        Log.v(TAG, "Discontinuity new position: ${newPosition.positionMs}")
 
-        // If the reason is seeking, update the seek position
-        if (reason == DISCONTINUITY_REASON_SEEK) {
-            updateSeek(newPosition.positionMs)
+        // If this event was called due to user seeking, update the UI seek state
+        if (reason == Player.DISCONTINUITY_REASON_SEEK) {
+            updatePlaybackSeek(newPosition.positionMs)
         }
     }
 
-    private fun updateMetadata(metadata: MediaMetadata) {
-        metadata.artworkData?.let {
+    private fun updateMediaMetadata(mediaMetadata: MediaMetadata) {
+        mediaMetadata.artworkData?.let {
             Glide.with(this)
                 .load(it.toBitmap())
                 .transition(withCrossFade())
                 .into(binding.mediaArtwork)
         }
-        metadata.title?.let {
+        mediaMetadata.title?.let {
             binding.mediaTitle.text = it.toString()
         }
-        metadata.artist?.let {
+        mediaMetadata.artist?.let {
             val artists = it.split("; ", ", ")
             binding.mediaArtists.text = artists.joinToString()
         }
     }
 
-    private fun updateDuration(duration: Long) {
-        // Update playback seek duration text to duration-to-timestamp value
-        duration.toDuration(DurationUnit.MILLISECONDS).toComponents { minutes, seconds, _ ->
-            binding.playbackSeekTextDuration.text =
-                getString(R.string.playback_seek_text_format).format(minutes, seconds)
-        }
-    }
-
-    private fun updateSeek(position: Long) {
-        // Update playback seek slider from specified position
+    private fun updatePlaybackSeek(position: Long) {
         binding.playbackSeekSlider.value = (position + 0.0f) / (mediaController?.duration ?: 0)
-        // Update playback seek position text to position-to-timestamp value
+
         position.toDuration(DurationUnit.MILLISECONDS).toComponents { minutes, seconds, _ ->
-            binding.playbackSeekTextPosition.text =
-                getString(R.string.playback_seek_text_format).format(minutes, seconds)
+            binding.playbackSeekTextPosition.text = getString(R.string.playback_seek_text_format).format(minutes, seconds)
         }
     }
 
-    private fun updateState(isPlaying: Boolean) {
+    private fun updatePlaybackDuration() {
+        mediaController?.duration?.let {
+            it.toDuration(DurationUnit.MILLISECONDS).toComponents { minutes, seconds, _ ->
+                binding.playbackSeekTextDuration.text = getString(R.string.playback_seek_text_format).format(minutes, seconds)
+            }
+        }
+    }
+
+    private fun updatePlaybackState(isPlaying: Boolean) {
         binding.playbackState.isChecked = isPlaying
 
-        // Start the duration updater if isPlaying is true
-        // otherwise if false, we have to stop it's pending callbacks & messages
-        //
-        // Same goes for the wake lock acquisition, if true, keep the screen on
-        // otherwise, remove the appropriate flag from the application window flags
-        durationUpdateHandler.let {
-            if (isPlaying) {
-                durationUpdateHandler.post(durationUpdateRunnable)
+        if (isPlaying) {
+            seekUpdateRunnable?.let {
+                seekUpdateHandler?.post(it)
+            }
+        } else {
+            seekUpdateHandler?.removeCallbacksAndMessages(null)
+        }
+    }
+
+    private fun initializeMediaController() {
+        val mediaSessionToken = SessionToken(this, ComponentName(this, MusiqService::class.java))
+        val mediaControllerFuture = MediaController.Builder(this, mediaSessionToken).buildAsync()
+
+        mediaControllerFuture.addListener({
+            Log.i(TAG, "Service initialization success")
+            mediaController = mediaControllerFuture.get()
+            mediaController?.addListener(this)
+
+            // If an intent URI has received, load it as a media item
+            intent?.let {
+                if (intent.action == Intent.ACTION_VIEW) {
+                    intent.data?.let {
+                        Log.d(TAG, "Intent URI: $it")
+                        mediaController?.setMediaItem(MediaItem.fromUri(it))
+                        mediaController?.prepare()
+                    }
+                }
+            }
+
+            // Make sure to begin the playback when ready and prepared
+            mediaController?.playWhenReady = true
+        }, MoreExecutors.directExecutor())
+    }
+
+    private fun initializeViews() {
+        binding.mediaTitle.doOnTextChanged { _, _, _, count ->
+            binding.mediaTitle.visibility = if (count > 0) View.VISIBLE else View.GONE
+        }
+        binding.mediaArtists.doOnTextChanged { _, _, _, count ->
+            binding.mediaArtists.visibility = if (count > 0) View.VISIBLE else View.GONE
+        }
+
+        binding.playbackState.addOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                mediaController?.play()
             } else {
-                it.removeCallbacksAndMessages(null)
+                mediaController?.pause()
+            }
+        }
+        binding.playbackRepeat.addOnCheckedChangeListener { _, isChecked ->
+            mediaController?.repeatMode = if (isChecked) {
+                Player.REPEAT_MODE_ALL
+            } else {
+                Player.REPEAT_MODE_OFF
+            }
+        }
+
+        binding.playbackOptions.setOnClickListener {
+            // TODO: Implement options menu here
+            Toast.makeText(this, R.string.under_construction, Toast.LENGTH_LONG).show()
+        }
+
+        binding.playbackSeekSlider.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) {
+                val currentDuration = mediaController?.duration
+                mediaController?.seekTo(((value + 0.0) * (currentDuration ?: 0)).toLong())
             }
         }
     }
