@@ -1,12 +1,12 @@
 package io.github.borfei.musiqview
 
 import android.content.ComponentName
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -26,6 +26,8 @@ import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
 import io.github.borfei.musiqview.extensions.getName
 import io.github.borfei.musiqview.extensions.setImmersiveMode
 import io.github.borfei.musiqview.extensions.toBitmap
+import io.github.borfei.musiqview.ui.MediaInfoAlertDialog
+import io.github.borfei.musiqview.ui.MenuBottomSheetDialog
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -241,6 +243,13 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
             binding.mediaArtists.visibility = if (count > 0) View.VISIBLE else View.GONE
         }
 
+        binding.playbackSeekSlider.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) {
+                val currentDuration = mediaController?.duration
+                mediaController?.seekTo(((value + 0.0) * (currentDuration ?: 0)).toLong())
+            }
+        }
+
         binding.playbackState.addOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 mediaController?.play()
@@ -256,16 +265,31 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
             }
         }
 
-        binding.playbackOptions.setOnClickListener {
-            // TODO: Implement options menu here
-            Toast.makeText(this, R.string.under_construction, Toast.LENGTH_LONG).show()
-        }
+        binding.otherMenu.setOnClickListener {
+            val menuBottomSheetDialog = MenuBottomSheetDialog()
 
-        binding.playbackSeekSlider.addOnChangeListener { _, value, fromUser ->
-            if (fromUser) {
-                val currentDuration = mediaController?.duration
-                mediaController?.seekTo(((value + 0.0) * (currentDuration ?: 0)).toLong())
+            menuBottomSheetDialog.setOnViewMediaInfoListener {
+                val currentUri = mediaController?.currentMediaItem?.localConfiguration?.uri
+                val currentMediaMetadata = mediaController?.mediaMetadata
+
+                if (currentUri != null && currentMediaMetadata != null) {
+                    val mediaInfoAlertDialog = MediaInfoAlertDialog(currentMediaMetadata, currentUri)
+                    mediaInfoAlertDialog.show(supportFragmentManager, MediaInfoAlertDialog.TAG)
+                    it.dismissNow()
+                }
             }
+            menuBottomSheetDialog.setOnOpenExternalListener { dialog ->
+                mediaController?.currentMediaItem?.let { mediaItem ->
+                    val uri = mediaItem.localConfiguration?.uri
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    uri?.let { intent.setDataAndTypeAndNormalize(it, "audio/*") }
+                    startActivity(Intent.createChooser(intent, null))
+                }
+
+                dialog.dismissNow()
+            }
+
+            menuBottomSheetDialog.show(supportFragmentManager, MenuBottomSheetDialog.TAG)
         }
     }
 }

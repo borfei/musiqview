@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_title"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_title"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_display_title"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_display_title"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_artist"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_artist"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_writer"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_writer"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_composer"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_composer"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_album"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_album"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_album_artist"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_album_artist"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_disc_number"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_disc_number"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_track_number"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_track_number"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_total_discs"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_total_discs"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_total_tracks"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_total_tracks"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_duration"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_duration"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="?attr/textAppearanceBodyMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/media_info_filename"
+                android:textAlignment="viewStart" />
+
+            <io.github.borfei.musiqview.ui.MarqueeTextView
+                style="?attr/textAppearanceLabelMedium"
+                android:id="@+id/media_info_filename"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/media_info_entry_placeholder" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
