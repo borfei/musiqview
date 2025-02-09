@@ -72,14 +72,14 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.i(TAG, "Freeing service as it is no longer needed")
+        Log.i(TAG, "Releasing media controller")
         mediaController?.removeListener(this)
         mediaController?.release()
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
         super.onMediaItemTransition(mediaItem, reason)
-        Log.d(TAG, "mediaItem: $mediaItem (reason: $reason)")
+        Log.d(TAG, "onMediaItemTransition: mediaItem = $mediaItem, reason = $reason")
 
         mediaItem?.localConfiguration?.uri?.let {
             binding.mediaFilename.text = it.getName(this)
@@ -88,13 +88,13 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
     override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
         super.onMediaMetadataChanged(mediaMetadata)
-        Log.v(TAG, "mediaMetadata: $mediaMetadata")
+        Log.v(TAG, "onMediaMetadataChanged: mediaMetadata = $mediaMetadata")
         updateMediaMetadata(mediaMetadata)
     }
 
     override fun onPlaybackStateChanged(playbackState: Int) {
         super.onPlaybackStateChanged(playbackState)
-        Log.d(TAG, "playbackState: $playbackState")
+        Log.d(TAG, "onPlaybackStateChanged: playbackState = $playbackState")
 
         when (playbackState) {
             Player.STATE_BUFFERING -> {
@@ -114,19 +114,19 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         super.onIsPlayingChanged(isPlaying)
-        Log.v(TAG, "isPlaying: $isPlaying")
+        Log.v(TAG, "onIsPlayingChanged: isPlaying = $isPlaying")
         updatePlaybackState(isPlaying)
     }
 
     override fun onRepeatModeChanged(repeatMode: Int) {
         super.onRepeatModeChanged(repeatMode)
-        Log.v(TAG, "repeatMode: $repeatMode")
+        Log.v(TAG, "onRepeatModeChanged: repeatMode = $repeatMode")
         binding.playbackRepeat.isChecked = repeatMode == Player.REPEAT_MODE_ALL
     }
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        Log.e(TAG, error.stackTraceToString())
+        Log.e(TAG, "onPlayerError: ${error.message}")
 
         // Display playback error message in an alert dialog
         MaterialAlertDialogBuilder(this)
@@ -145,9 +145,10 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         reason: Int
     ) {
         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-        Log.v(TAG, "Discontinuity reason: $reason")
-        Log.v(TAG, "Discontinuity old position: ${oldPosition.positionMs}")
-        Log.v(TAG, "Discontinuity new position: ${newPosition.positionMs}")
+        Log.v(TAG, "onPositionDiscontinuity: " +
+                "oldPosition = $oldPosition, " +
+                "newPosition = $newPosition, " +
+                "reason = $reason")
 
         // If this event was called due to user seeking, update the UI seek state
         if (reason == Player.DISCONTINUITY_REASON_SEEK) {
@@ -204,7 +205,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         val mediaControllerFuture = MediaController.Builder(this, mediaSessionToken).buildAsync()
 
         mediaControllerFuture.addListener({
-            Log.i(TAG, "Service initialization success")
+            Log.i(TAG, "Media controller initialized")
             mediaController = mediaControllerFuture.get()
             mediaController?.addListener(this)
 
