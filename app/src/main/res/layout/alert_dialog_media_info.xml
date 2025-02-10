@@ -32,7 +32,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -55,7 +56,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -78,7 +80,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -101,7 +104,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -124,7 +128,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
         <Space
@@ -151,7 +156,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -174,7 +180,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -197,7 +204,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -220,7 +228,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -243,7 +252,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -266,7 +276,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
         <Space
@@ -293,7 +304,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
 
         <LinearLayout
@@ -316,7 +328,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical|end"
-                android:text="@string/media_info_entry_placeholder" />
+                android:text="@string/media_info_entry_placeholder"
+                android:textIsSelectable="true" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
