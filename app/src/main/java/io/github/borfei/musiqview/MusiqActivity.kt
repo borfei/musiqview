@@ -189,8 +189,8 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updatePlaybackSeek(position: Long) {
-        binding.playbackSeekSlider.value = (position + 0.0f) / (mediaController?.duration ?: 0)
-
+        binding.playbackSeekSlider.value =
+            ((position + 0.0f) / (mediaController?.duration ?: 0)).coerceIn(0.0f, 1.0f)
         position.toDuration(DurationUnit.MILLISECONDS).toComponents { minutes, seconds, _ ->
             binding.playbackSeekTextPosition.text = getString(R.string.playback_seek_text_format).format(minutes, seconds)
         }
