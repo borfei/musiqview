@@ -73,7 +73,7 @@ class MediaInfoAlertDialog : DialogFragment() {
         }
 
         arguments?.getString("albumTitle")?.let {
-            binding.mediaInfoAlbum.text = it
+            binding.mediaInfoAlbumTitle.text = it
         }
         arguments?.getString("albumArtist")?.let {
             binding.mediaInfoAlbumArtist.text = it
