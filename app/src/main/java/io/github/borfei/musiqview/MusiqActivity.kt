@@ -270,7 +270,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
             menuBottomSheetDialog.setOnViewMediaInfoListener {
                 if (mediaController != null) {
-                    val mediaInfoAlertDialog = MediaInfoAlertDialog(mediaController!!)
+                    val mediaInfoAlertDialog = MediaInfoAlertDialog.newInstance(mediaController!!)
                     mediaInfoAlertDialog.show(supportFragmentManager, MediaInfoAlertDialog.TAG)
                     it.dismissNow()
                 }
