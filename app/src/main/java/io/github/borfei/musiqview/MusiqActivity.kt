@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -19,7 +20,6 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.common.util.concurrent.MoreExecutors
 import io.github.borfei.musiqview.databinding.ActivityMusiqBinding
 import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
@@ -137,16 +137,8 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
         Log.e(TAG, "onPlayerError: ${error.message}")
-
-        // Display playback error message in an alert dialog
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.dialog_playback_error_title)
-            .setMessage(error.message)
-            .setNegativeButton(R.string.dialog_playback_error_negative) { _, _ ->
-                finish()
-            }
-            .setCancelable(false)
-            .show()
+        Toast.makeText(applicationContext, error.message, Toast.LENGTH_LONG).show()
+        finish()
     }
 
     override fun onPositionDiscontinuity(
