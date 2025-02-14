@@ -19,7 +19,7 @@
             android:name=".LauncherActivity"
             android:configChanges="orientation"
             android:exported="true"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/AppTheme.Transparent.Dimmed">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +33,7 @@
             android:exported="true"
             android:launchMode="singleInstance"
             android:noHistory="true"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/AppTheme.Transparent.Dimmed">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
