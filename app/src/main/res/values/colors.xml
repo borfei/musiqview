@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Icon color background -->
+    <color name="ic_launcher_background">#3DDC84</color>
+
     <!-- MD3 color scheme -->
     <color name="seed">#1b6d31</color>
     <color name="md_theme_light_primary">#1A6C30</color>

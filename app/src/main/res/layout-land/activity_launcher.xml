@@ -18,11 +18,11 @@
         android:orientation="vertical">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:background="@drawable/ic_launcher_background"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@color/ic_launcher_background"
             android:contentDescription="@string/content_description_launcher_icon"
-            app:srcCompat="@drawable/ic_launcher_foreground"
+            app:srcCompat="@drawable/launcher_brand"
             app:shapeAppearance="?attr/shapeAppearanceCornerSmall" />
 
         <Space
