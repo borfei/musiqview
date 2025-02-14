@@ -36,6 +36,6 @@
     </style>
     <style name="AppTheme.Transparent.Dimmed" parent="AppTheme.Transparent">
         <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.90</item>
+        <item name="android:backgroundDimAmount">0.85</item>
     </style>
 </resources>
