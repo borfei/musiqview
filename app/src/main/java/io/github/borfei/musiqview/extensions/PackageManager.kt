@@ -2,6 +2,7 @@ package io.github.borfei.musiqview.extensions
 
 import android.app.Activity
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 
@@ -14,14 +15,14 @@ import android.content.pm.PackageManager
  *
  * @param[enabled] Whether the activity should be enabled
  */
-fun PackageManager.setActivityEnabled(activity: Activity, enabled: Boolean) {
+fun PackageManager.setActivityEnabled(context: Context, clazz: Class<*>, enabled: Boolean) {
     val newState = if (enabled) {
         PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
     } else {
         PackageManager.COMPONENT_ENABLED_STATE_DISABLED
     }
     setComponentEnabledSetting(
-        ComponentName(activity, activity.javaClass),
+        ComponentName(context, clazz),
         newState,
         PackageManager.DONT_KILL_APP)
 }
@@ -31,8 +32,8 @@ fun PackageManager.setActivityEnabled(activity: Activity, enabled: Boolean) {
  *
  * @return[Boolean]
  */
-fun PackageManager.isActivityEnabled(activity: Activity): Boolean {
-    val componentName = ComponentName(activity, activity.javaClass)
+fun PackageManager.isActivityEnabled(context: Context, clazz: Class<*>): Boolean {
+    val componentName = ComponentName(context, clazz)
     val state = getComponentEnabledSetting(componentName)
 
     when (state) {
