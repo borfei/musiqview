@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -24,7 +23,6 @@ import com.google.common.util.concurrent.MoreExecutors
 import io.github.borfei.musiqview.databinding.ActivityMusiqBinding
 import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
 import io.github.borfei.musiqview.extensions.getName
-import io.github.borfei.musiqview.extensions.setImmersiveMode
 import io.github.borfei.musiqview.extensions.toBitmap
 import io.github.borfei.musiqview.ui.MediaInfoAlertDialog
 import io.github.borfei.musiqview.ui.MenuBottomSheetDialog
@@ -38,6 +36,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
     private lateinit var binding: ActivityMusiqBinding
 
+    // used for updating seek every millisecond
     private var seekUpdateHandler: Handler? = null
     private var seekUpdateRunnable: Runnable? = null
 
@@ -50,10 +49,6 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         binding = ActivityMusiqBinding.inflate(layoutInflater)
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
-
-        WindowCompat.getInsetsController(window, window.decorView).apply {
-            setImmersiveMode(false)
-        }
 
         seekUpdateHandler =
             Handler(Looper.myLooper() ?: Looper.getMainLooper())
