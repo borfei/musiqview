@@ -53,10 +53,6 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
 
-        if (packageManager.isActivityEnabled(this, LauncherActivity::class.java)) {
-            packageManager.setActivityEnabled(this, LauncherActivity::class.java, false)
-            Log.i(TAG, "Launcher activity enabled, disabling since playback has begun")
-        }
         WindowCompat.getInsetsController(window, window.decorView).apply {
             setImmersiveMode(false)
         }
