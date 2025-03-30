@@ -19,8 +19,11 @@ You can obtain the latest build of the latest Git commit [here](https://nightly.
 > When using the nightly builds, you will experience bugs that aren't usually
 > present in the stable release. Consider opening a new issue if you can find one.
 
+> [!TIP]
+> Nightly builds only last for 30-days
+
 ## Older Releases
-Version `1.x.x` and `2.x.x` can be found [here](https://www.dropbox.com/scl/fo/jpjckonzkq4cyikut62vf/ACJPtPmIVhp7T6E5PypsLXo?rlkey=g5sjtuem32ena4iu2y5hvn0vl&st=6dzfxghn&dl=0).
+Version `1.x.x` and `2.x.x` can be found [here](https://drive.google.com/drive/folders/1H0irfCdz1x9o9cuqLKGirTaFoW87yyVZ0).
 
 ## Contribution
 Any kind of contribution to the source code is greatly
