@@ -7,11 +7,11 @@ glide = "4.16.0"
 junit = "4.13.2"
 junit-version = "1.2.1"
 material = "1.12.0"
-media3-common = "1.6.1"
-media3-exoplayer = "1.6.1"
-media3-session = "1.6.1"
+media3-common = "1.7.1"
+media3-exoplayer = "1.7.1"
+media3-session = "1.7.1"
 plugin-android = "8.10.0"
-plugin-ktx = "1.9.22"
+plugin-ktx = "2.0.21"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
