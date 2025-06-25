@@ -269,11 +269,8 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
             val menuBottomSheetDialog = MenuBottomSheetDialog()
 
             menuBottomSheetDialog.setOnViewMediaInfoListener {
-                val currentUri = mediaController?.currentMediaItem?.localConfiguration?.uri
-                val currentMediaMetadata = mediaController?.mediaMetadata
-
-                if (currentUri != null && currentMediaMetadata != null) {
-                    val mediaInfoAlertDialog = MediaInfoAlertDialog(currentMediaMetadata, currentUri)
+                if (mediaController != null) {
+                    val mediaInfoAlertDialog = MediaInfoAlertDialog(mediaController!!)
                     mediaInfoAlertDialog.show(supportFragmentManager, MediaInfoAlertDialog.TAG)
                     it.dismissNow()
                 }
