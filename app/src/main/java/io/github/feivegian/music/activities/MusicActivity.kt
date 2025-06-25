@@ -153,8 +153,8 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             mediaController?.addListener(this)
             update()
 
-            // Accept media URI from intent if mediaItem is set to an empty MediaItem
-            if (mediaItem == MediaItem.EMPTY) {
+            // Accept media URI from intent if there isn't any current media item
+            if (mediaController?.currentMediaItem == null) {
                 intent?.let {
                     // Determine it's action before getting the intent data
                     //
