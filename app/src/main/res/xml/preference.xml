@@ -34,47 +34,43 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
     <PreferenceCategory
-        app:title="@string/preference_behavior">
+        app:title="@string/preference_playback">
 
-        <PreferenceCategory
-            app:title="@string/preference_behavior_playback">
+        <CheckBoxPreference
+            app:key="playback_audio_focus"
+            app:icon="@drawable/baseline_speaker_24"
+            app:defaultValue="true"
+            app:title="@string/preference_playback_audio_focus"
+            app:summary="@string/preference_playback_audio_focus_summary" />
+        <SeekBarPreference
+            app:key="playback_duration_interval"
+            app:icon="@drawable/baseline_timer_24"
+            app:defaultValue="1000"
+            app:min="0"
+            android:max="10000"
+            app:title="@string/preference_playback_duration_interval"
+            app:showSeekBarValue="true" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:title="@string/preference_other">
 
-            <CheckBoxPreference
-                app:key="playback_audio_focus"
-                app:icon="@drawable/baseline_speaker_24"
-                app:defaultValue="true"
-                app:title="@string/preference_behavior_playback_audio_focus"
-                app:summary="@string/preference_behavior_playback_audio_focus_summary" />
-            <SeekBarPreference
-                app:key="playback_duration_interval"
-                app:icon="@drawable/baseline_timer_24"
-                app:defaultValue="1000"
-                app:min="0"
-                android:max="10000"
-                app:title="@string/preference_behavior_playback_duration_interval"
-                app:showSeekBarValue="true" />
-        </PreferenceCategory>
-        <PreferenceCategory
-            app:title="@string/preference_behavior_other">
-
-            <CheckBoxPreference
-                app:key="other_animate_layout_changes"
-                app:icon="@drawable/baseline_animation_24"
-                app:defaultValue="true"
-                app:title="@string/preference_behavior_other_animate_layout_changes"
-                app:summary="@string/preference_behavior_other_animate_layout_changes_summary" />
-            <ListPreference
-                app:key="other_immersive_mode"
-                app:defaultValue="landscape"
-                app:entries="@array/preference_immersive_mode"
-                app:entryValues="@array/preference_immersive_mode_values"
-                app:title="@string/preference_behavior_other_immersive_mode"
-                app:useSimpleSummaryProvider="true" />
-            <SwitchPreference
-                app:key="other_wake_lock"
-                app:title="@string/preference_behavior_other_wake_lock"
-                app:summary="@string/preference_behavior_other_wake_lock_summary" />
-        </PreferenceCategory>
+        <CheckBoxPreference
+            app:key="other_animate_layout_changes"
+            app:icon="@drawable/baseline_animation_24"
+            app:defaultValue="true"
+            app:title="@string/preference_other_animate_layout_changes"
+            app:summary="@string/preference_other_animate_layout_changes_summary" />
+        <ListPreference
+            app:key="other_immersive_mode"
+            app:defaultValue="landscape"
+            app:entries="@array/preference_immersive_mode"
+            app:entryValues="@array/preference_immersive_mode_values"
+            app:title="@string/preference_other_immersive_mode"
+            app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:key="other_wake_lock"
+            app:title="@string/preference_other_wake_lock"
+            app:summary="@string/preference_other_wake_lock_summary" />
     </PreferenceCategory>
     <PreferenceCategory
         app:title="@string/preference_about">
