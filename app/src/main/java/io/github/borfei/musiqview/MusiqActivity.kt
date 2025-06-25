@@ -1,7 +1,6 @@
 package io.github.borfei.musiqview
 
 import android.content.ComponentName
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -39,7 +38,6 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
     private var seekUpdateHandler: Handler? = null
     private var seekUpdateRunnable: Runnable? = null
-    private val seekUpdateInterval: Long = 1000
 
     private var mediaController: MediaController? = null
 
@@ -62,7 +60,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
                 updatePlaybackSeek(it)
             }
             seekUpdateRunnable?.let {
-                seekUpdateHandler?.postDelayed(it, seekUpdateInterval)
+                seekUpdateHandler?.post(it)
             }
         }
 
@@ -70,20 +68,30 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         initializeMediaController()
     }
 
+    override fun onStart() {
+        seekUpdateRunnable?.let { seekUpdateHandler?.post(it) }
+        super.onStart()
+    }
+
+    override fun onStop() {
+        seekUpdateHandler?.removeCallbacksAndMessages(null)
+        super.onStop()
+    }
+
     override fun onDestroy() {
-        super.onDestroy()
         Log.i(TAG, "Releasing media controller")
         mediaController?.removeListener(this)
         mediaController?.release()
+
+        seekUpdateHandler = null
+        seekUpdateRunnable = null
+        super.onDestroy()
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
         super.onMediaItemTransition(mediaItem, reason)
         Log.d(TAG, "onMediaItemTransition: mediaItem = $mediaItem, reason = $reason")
-
-        mediaItem?.localConfiguration?.uri?.let {
-            binding.mediaFilename.text = it.getName(this)
-        }
+        updateMediaFilename()
     }
 
     override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
@@ -156,6 +164,12 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         }
     }
 
+    private fun updateMediaFilename() {
+        mediaController?.currentMediaItem?.localConfiguration?.uri?.let {
+            binding.mediaFilename.text = it.getName(this)
+        }
+    }
+
     private fun updateMediaMetadata(mediaMetadata: MediaMetadata) {
         mediaMetadata.artworkData?.let {
             Glide.with(this)
@@ -190,14 +204,6 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
     private fun updatePlaybackState(isPlaying: Boolean) {
         binding.playbackState.isChecked = isPlaying
-
-        if (isPlaying) {
-            seekUpdateRunnable?.let {
-                seekUpdateHandler?.post(it)
-            }
-        } else {
-            seekUpdateHandler?.removeCallbacksAndMessages(null)
-        }
     }
 
     private fun initializeMediaController() {
@@ -209,19 +215,21 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
             mediaController = mediaControllerFuture.get()
             mediaController?.addListener(this)
 
-            // If an intent URI has received, load it as a media item
-            intent?.let {
-                if (intent.action == Intent.ACTION_VIEW) {
-                    intent.data?.let {
-                        Log.d(TAG, "Intent URI: $it")
-                        mediaController?.setMediaItem(MediaItem.fromUri(it))
-                        mediaController?.prepare()
-                    }
+            if (mediaController?.currentMediaItem != null) {
+                mediaController?.mediaMetadata?.let { updateMediaMetadata(it) }
+                mediaController?.currentPosition?.let { updatePlaybackSeek(it) }
+                mediaController?.isPlaying?.let { updatePlaybackState(it) }
+                updateMediaFilename()
+                updatePlaybackDuration()
+            } else {
+                intent?.data?.let {
+                    Log.d(TAG, "Intent URI: $it")
+                    mediaController?.setMediaItem(MediaItem.fromUri(it))
+                    mediaController?.prepare()
                 }
-            }
 
-            // Make sure to begin the playback when ready and prepared
-            mediaController?.playWhenReady = true
+                mediaController?.playWhenReady = true
+            }
         }, MoreExecutors.directExecutor())
     }
 
