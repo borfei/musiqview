@@ -4,13 +4,14 @@
     <!-- Content descriptions -->
     <string name="content_description_artwork">Artwork for current media</string>
     <string name="content_description_playback_state">Play or pause current media</string>
-    <string name="content_description_playback_open_with">Open current media with…</string>
+    <string name="content_description_playback_open_with">Open current media in external app</string>
     <string name="content_description_playback_seek">Seek media position</string>
     <string name="content_description_preference_editor_add">Add a new preference item</string>
     <!-- Playback strings -->
-    <string name="playback_seek_default">0:00</string>
+    <string name="playback_seek_text_default">0:00</string>
     <string name="playback_seek_format_short">%1$d:%2$s</string>
     <string name="playback_seek_format_long">%1$d:%2$d:%3$s</string>
+    <string name="playback_open_external_text">Open in external app</string>
     <!-- Preference editor strings -->
     <string name="preference_editor_title">Preference editor</string>
     <string name="preference_editor_edit_item_title">Edit preference item</string>
