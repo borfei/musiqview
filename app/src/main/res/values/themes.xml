@@ -28,12 +28,14 @@
         <item name="colorPrimaryInverse">@color/md_theme_dark_inversePrimary</item>
     </style>
     <style name="AppTheme.Transparent" parent="AppTheme">
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.85</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.Transparent.Dimmed" parent="AppTheme.Transparent">
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.90</item>
     </style>
 </resources>
