@@ -26,6 +26,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
 
     // TODO: Implement custom cache size
     private lateinit var cacheDatabaseProvider: StandaloneDatabaseProvider
+    private var cache: SimpleCache? = null
     private val maxCacheBytes: Long = 2147483648 // 2GB
 
     private var mediaSession: MediaSession? = null
@@ -37,9 +38,9 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         wakeLock = preferences.getBoolean("other_wake_lock", false)
 
         cacheDatabaseProvider = StandaloneDatabaseProvider(this)
-        val cache = SimpleCache(cacheDir, LeastRecentlyUsedCacheEvictor(maxCacheBytes), cacheDatabaseProvider)
+        cache = SimpleCache(cacheDir, LeastRecentlyUsedCacheEvictor(maxCacheBytes), cacheDatabaseProvider)
         val cacheDataSourceFactory = CacheDataSource.Factory()
-            .setCache(cache)
+            .setCache(cache!!)
             .setUpstreamDataSourceFactory(DefaultDataSource.Factory(this))
 
         val player = ExoPlayer.Builder(this)
@@ -56,8 +57,11 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
 
     override fun onDestroy() {
         mediaSession?.run {
+            cache?.release()
+            cache = null
             player.release()
             release()
+
             mediaSession = null
         }
 
