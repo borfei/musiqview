@@ -1,12 +1,12 @@
-package io.github.spir0th.music.fragments
+package io.github.feivegian.music.fragments
 
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
-import io.github.spir0th.music.R
-import io.github.spir0th.music.activities.PreferenceActivity
+import io.github.feivegian.music.R
+import io.github.feivegian.music.activities.PreferenceActivity
 
 class PreferenceFragment : PreferenceFragmentCompat() {
     private lateinit var activity: PreferenceActivity

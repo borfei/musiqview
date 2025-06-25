@@ -1,4 +1,4 @@
-package io.github.spir0th.music.fragments
+package io.github.feivegian.music.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,9 +6,9 @@ import android.widget.Toast
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.jakewharton.processphoenix.ProcessPhoenix
-import io.github.spir0th.music.BuildConfig
-import io.github.spir0th.music.R
-import io.github.spir0th.music.activities.PreferenceActivity
+import io.github.feivegian.music.BuildConfig
+import io.github.feivegian.music.R
+import io.github.feivegian.music.activities.PreferenceActivity
 
 class AboutFragment : PreferenceFragmentCompat() {
     private lateinit var activity: PreferenceActivity

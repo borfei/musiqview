@@ -1,4 +1,4 @@
-package io.github.spir0th.music.utils
+package io.github.feivegian.music.utils
 
 import android.view.View
 import android.view.ViewGroup

@@ -1,4 +1,4 @@
-package io.github.spir0th.music.activities
+package io.github.feivegian.music.activities
 
 import android.app.ActivityManager
 import android.content.ComponentName
@@ -16,10 +16,10 @@ import androidx.media3.common.MediaItem
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
-import io.github.spir0th.music.R
-import io.github.spir0th.music.databinding.ActivityServiceTestBinding
-import io.github.spir0th.music.services.PlaybackService
-import io.github.spir0th.music.utils.adjustPaddingForSystemBarInsets
+import io.github.feivegian.music.R
+import io.github.feivegian.music.databinding.ActivityServiceTestBinding
+import io.github.feivegian.music.services.PlaybackService
+import io.github.feivegian.music.utils.adjustPaddingForSystemBarInsets
 
 class ServiceTestActivity : AppCompatActivity() {
     private lateinit var binding: ActivityServiceTestBinding

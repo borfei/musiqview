@@ -1,4 +1,4 @@
-package io.github.spir0th.music
+package io.github.feivegian.music
 
 import org.junit.Test
 

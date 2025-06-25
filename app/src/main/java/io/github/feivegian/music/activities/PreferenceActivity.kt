@@ -1,6 +1,5 @@
-package io.github.spir0th.music.activities
+package io.github.feivegian.music.activities
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -12,14 +11,13 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.dialog.MaterialDialogs
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.processphoenix.ProcessPhoenix
-import io.github.spir0th.music.R
-import io.github.spir0th.music.databinding.ActivityPreferenceBinding
-import io.github.spir0th.music.fragments.PreferenceFragment
-import io.github.spir0th.music.utils.adjustMarginsForSystemBarInsets
-import io.github.spir0th.music.utils.adjustPaddingForSystemBarInsets
+import io.github.feivegian.music.R
+import io.github.feivegian.music.databinding.ActivityPreferenceBinding
+import io.github.feivegian.music.fragments.PreferenceFragment
+import io.github.feivegian.music.utils.adjustMarginsForSystemBarInsets
+import io.github.feivegian.music.utils.adjustPaddingForSystemBarInsets
 
 class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var binding: ActivityPreferenceBinding

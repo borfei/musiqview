@@ -1,4 +1,4 @@
-package io.github.spir0th.music
+package io.github.feivegian.music
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

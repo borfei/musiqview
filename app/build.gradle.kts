@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.spir0th.music"
+    namespace = "io.github.feivegian.music"
     compileSdk = 35
 
     defaultConfig {

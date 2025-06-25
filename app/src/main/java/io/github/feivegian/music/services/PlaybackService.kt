@@ -1,4 +1,4 @@
-package io.github.spir0th.music.services
+package io.github.feivegian.music.services
 
 import android.content.SharedPreferences
 import androidx.media3.common.AudioAttributes
@@ -8,7 +8,7 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.preference.PreferenceManager
 import com.google.common.util.concurrent.ListenableFuture
-import io.github.spir0th.music.BuildConfig
+import io.github.feivegian.music.BuildConfig
 
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
     private lateinit var preferences: SharedPreferences
