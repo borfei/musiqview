@@ -1,4 +1,4 @@
-package io.github.feivegian.musicview.extensions
+package io.github.borfei.musiqview.extensions
 
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat

@@ -1,4 +1,4 @@
-package io.github.feivegian.musicview
+package io.github.borfei.musiqview
 
 object Constants {
     const val PREFERENCE_INTERFACE_DISPLAY_METADATA = "interface_display_metadata"

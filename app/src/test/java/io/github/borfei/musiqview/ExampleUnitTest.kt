@@ -1,4 +1,4 @@
-package io.github.feivegian.musicview
+package io.github.borfei.musiqview
 
 import org.junit.Test
 

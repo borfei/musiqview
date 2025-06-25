@@ -1,4 +1,4 @@
-package io.github.feivegian.musicview.activities
+package io.github.borfei.musiqview.activities
 
 import android.animation.LayoutTransition
 import android.content.ComponentName
@@ -32,14 +32,14 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withC
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
-import io.github.feivegian.musicview.App
-import io.github.feivegian.musicview.Constants
-import io.github.feivegian.musicview.R
-import io.github.feivegian.musicview.databinding.ActivityPlaybackBinding
-import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
-import io.github.feivegian.musicview.extensions.getName
-import io.github.feivegian.musicview.extensions.setImmersiveMode
-import io.github.feivegian.musicview.services.PlaybackService
+import io.github.borfei.musiqview.App
+import io.github.borfei.musiqview.Constants
+import io.github.borfei.musiqview.R
+import io.github.borfei.musiqview.databinding.ActivityPlaybackBinding
+import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
+import io.github.borfei.musiqview.extensions.getName
+import io.github.borfei.musiqview.extensions.setImmersiveMode
+import io.github.borfei.musiqview.services.PlaybackService
 import java.util.Locale
 
 class PlaybackActivity : AppCompatActivity(), Player.Listener {
@@ -119,7 +119,8 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         //  If "enabled" -> hide system bars
         //  If "landscape" -> only hide system bars if orientation is landscape
         //  Otherwise, don't hide the system bars
-        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(when (preferences.getString(Constants.PREFERENCE_OTHER_IMMERSIVE_MODE, "landscape")) {
+        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(when (preferences.getString(
+            Constants.PREFERENCE_OTHER_IMMERSIVE_MODE, "landscape")) {
             "enabled" -> {
                 true
             }

@@ -120,8 +120,8 @@
             app:title="@string/preference_experiments_preference_editor">
 
             <intent
-                android:targetPackage="io.github.feivegian.musicview"
-                android:targetClass="io.github.feivegian.musicview.activities.PreferenceEditorActivity" />
+                android:targetPackage="io.github.borfei.musiqview"
+                android:targetClass="io.github.borfei.musiqview.activities.PreferenceEditorActivity" />
         </Preference>
     </PreferenceCategory>
 </PreferenceScreen>
