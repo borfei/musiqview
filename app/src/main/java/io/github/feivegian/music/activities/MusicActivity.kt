@@ -50,7 +50,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
 
     private var displayMetadata: Boolean = true
 
-    private val loopHandler: Handler? = Looper.myLooper()?.let { Handler(it) }
+    private var loopHandler: Handler? = null
     private var loopRunnable: Runnable? = null
     private var loopInterval: Int = 0
     private var mediaController: MediaController? = null
@@ -94,7 +94,10 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
         val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
 
-        // Initialize loop runnable
+        // Initialize loop handler & it's runnable
+        Looper.myLooper()?.let {
+            loopHandler = Handler(it)
+        }
         loopRunnable = Runnable {
             updateSeek() // Update seek position every loop
             loopRunnable?.let { loopHandler?.postDelayed(it, loopInterval.toLong()) }
@@ -210,6 +213,8 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
 
     override fun onDestroy() {
         super.onDestroy()
+        loopRunnable = null
+        loopHandler = null
         mediaController?.removeListener(this)
         mediaController?.release()
     }
