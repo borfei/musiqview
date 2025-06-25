@@ -214,6 +214,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         super.onPlayerError(error)
 
         MaterialAlertDialogBuilder(this)
+            .setIcon(R.drawable.dialog_error_48)
             .setTitle(R.string.dialog_playback_error_title)
             .setMessage(error.message)
             .setNegativeButton(R.string.dialog_playback_error_negative) { _, _ ->
