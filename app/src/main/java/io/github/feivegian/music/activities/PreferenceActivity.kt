@@ -35,6 +35,7 @@ class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefe
         binding.preference.adjustMarginsForSystemBarInsets(left=true, right=true, bottom=true)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.setTitle(R.string.preference_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         restartSnackbar = Snackbar.make(binding.root, R.string.snackbar_restart_required, Snackbar.LENGTH_INDEFINITE).also {
@@ -105,7 +106,7 @@ class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefe
             value = sharedPreferences?.getInt(key, -1)!!
         } catch (_: ClassCastException) {}
 
-        Log.i(TAG, "$key: $value")
+        Log.i(TAG, "Preference changed: $key -> $value")
     }
 
     fun setShowRestartRequired(toggle: Boolean) {

@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
@@ -50,25 +49,24 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
     private var loopHandling: Boolean = false
     private var mediaController: MediaController? = null
 
-    private var titleFormat: String = "%title%"
-    private var subtitleFormat: String = "%album_artist%"
+    private var headerFormat: String = "%title%"
+    private var subheaderFormat: String = "%album_artist%"
 
-    private var immersiveMode: ImmersiveMode = ImmersiveMode.LANDSCAPE_ONLY
     private var animateLayoutChanges: Boolean = true
-
+    private var immersiveMode: ImmersiveMode = ImmersiveMode.LANDSCAPE_ONLY
     private var wakeLock: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         // Initialize preferences
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         loopInterval = preferences.getInt("playback_duration_interval", loopInterval)
-        titleFormat = preferences.getString("info_title_format", titleFormat).toString()
-        subtitleFormat = preferences.getString("info_subtitle_format", subtitleFormat).toString()
-        animateLayoutChanges = preferences.getBoolean("layout_animate_changes", animateLayoutChanges)
-        immersiveMode = when (preferences.getString("layout_immersive_mode", "landscape")) {
+        headerFormat = preferences.getString("interface_header_format", headerFormat).toString()
+        subheaderFormat = preferences.getString("interface_subheader_format", subheaderFormat).toString()
+        animateLayoutChanges = preferences.getBoolean("other_animate_layout_changes", animateLayoutChanges)
+        immersiveMode = when (preferences.getString("other_immersive_mode", "landscape")) {
             "enabled" -> {
                 ImmersiveMode.ENABLED
             }
@@ -212,10 +210,10 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updateInfo(metadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
-        // parse title/sub-title formatters
+        // parse header/sub-header formatters
         // TODO: add more formats here
-        var title = titleFormat
-        var subtitle = subtitleFormat
+        var title = headerFormat
+        var subtitle = subheaderFormat
         title = title.replace("%title%", metadata.title.toString(), true)
         title = title.replace("%artist%", metadata.artist.toString(), true)
         title = title.replace("%album_artist%", metadata.albumArtist.toString(), true)
@@ -237,11 +235,11 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             .transition(withCrossFade())
             .into(binding.coverArt)
 
-        binding.infoTitle.text = title
-        binding.infoSubtitle.text = subtitle
+        binding.infoHeader.text = title
+        binding.infoSubheader.text = subtitle
 
         // Information texts may be hidden when their text length is less than zero
-        binding.infoTitle.visibility = when (title.isNotEmpty()) {
+        binding.infoHeader.visibility = when (title.isNotEmpty()) {
             true -> {
                 View.VISIBLE
             }
@@ -249,7 +247,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 View.GONE
             }
         }
-        binding.infoSubtitle.visibility = when (subtitle.isNotEmpty()) {
+        binding.infoSubheader.visibility = when (subtitle.isNotEmpty()) {
             true -> {
                 View.VISIBLE
             }
@@ -317,9 +315,5 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
 
         loopRunnable?.let { loopHandler?.removeCallbacks(it) }
         loopHandling = false
-    }
-
-    companion object {
-        const val TAG = "MusicActivity"
     }
 }

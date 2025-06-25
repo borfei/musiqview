@@ -10,6 +10,7 @@ import io.github.feivegian.music.utils.setNightMode
 
 class App : Application(), Thread.UncaughtExceptionHandler {
     private lateinit var preferences: SharedPreferences
+
     private var theme: String = "auto"
     private var dynamicColors: Boolean = false
 
@@ -17,8 +18,8 @@ class App : Application(), Thread.UncaughtExceptionHandler {
         super.onCreate()
         // Init preferences & toggle required values
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        theme = preferences.getString("theme", "auto").toString()
-        dynamicColors = preferences.getBoolean("theme_dynamic_colors", false)
+        theme = preferences.getString("looks_theme", "auto").toString()
+        dynamicColors = preferences.getBoolean("looks_dynamic_colors", false)
 
         setNightMode(theme)
         dynamicColors.let {

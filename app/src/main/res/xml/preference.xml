@@ -1,24 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
-        app:icon="@drawable/baseline_auto_awesome_24"
-        app:fragment="io.github.feivegian.music.fragments.AppearancePreferenceFragment"
-        app:title="@string/preference_appearance"
-        app:summary="@string/preference_appearance_summary" />
-    <Preference
-        app:icon="@drawable/baseline_audiotrack_24"
-        app:fragment="io.github.feivegian.music.fragments.AudioPreferenceFragment"
-        app:title="@string/preference_audio"
-        app:summary="@string/preference_audio_summary" />
-    <Preference
-        app:icon="@drawable/baseline_info_24"
-        app:fragment="io.github.feivegian.music.fragments.AboutFragment"
-        app:title="@string/preference_about" />
-    <Preference
-        app:key="experiments"
-        app:fragment="io.github.feivegian.music.fragments.ExperimentsFragment"
-        app:isPreferenceVisible="false"
-        app:icon="@drawable/baseline_science_24"
-        app:title="@string/preference_experiments" />
+    <PreferenceCategory
+        app:title="@string/preference_looks">
+
+        <ListPreference
+            app:key="looks_theme"
+            app:icon="@drawable/baseline_brightness_6_24"
+            app:defaultValue="auto"
+            app:entries="@array/preference_themes"
+            app:entryValues="@array/preference_themes_values"
+            app:title="@string/preference_looks_theme"
+            app:useSimpleSummaryProvider="true" />
+        <CheckBoxPreference
+            app:key="looks_dynamic_colors"
+            app:icon="@drawable/baseline_color_lens_24"
+            app:defaultValue="false"
+            app:title="@string/preference_looks_dynamic_colors" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:title="@string/preference_interface">
+
+        <EditTextPreference
+            app:key="interface_header_format"
+            app:defaultValue="@string/preference_interface_header_format_default"
+            app:title="@string/preference_interface_header_format"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="interface_subheader_format"
+            app:defaultValue="@string/preference_interface_subheader_format_default"
+            app:title="@string/preference_interface_subheader_format"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:title="@string/preference_behavior">
+
+        <PreferenceCategory
+            app:title="@string/preference_behavior_playback">
+
+            <CheckBoxPreference
+                app:key="playback_audio_focus"
+                app:icon="@drawable/baseline_speaker_24"
+                app:defaultValue="true"
+                app:title="@string/preference_behavior_playback_audio_focus"
+                app:summary="@string/preference_behavior_playback_audio_focus_summary" />
+            <SeekBarPreference
+                app:key="playback_duration_interval"
+                app:icon="@drawable/baseline_timer_24"
+                app:defaultValue="1000"
+                app:min="0"
+                android:max="10000"
+                app:title="@string/preference_behavior_playback_duration_interval"
+                app:showSeekBarValue="true" />
+        </PreferenceCategory>
+        <PreferenceCategory
+            app:title="@string/preference_behavior_other">
+
+            <CheckBoxPreference
+                app:key="other_animate_layout_changes"
+                app:icon="@drawable/baseline_animation_24"
+                app:defaultValue="true"
+                app:title="@string/preference_behavior_other_animate_layout_changes"
+                app:summary="@string/preference_behavior_other_animate_layout_changes_summary" />
+            <ListPreference
+                app:key="other_immersive_mode"
+                app:defaultValue="landscape"
+                app:entries="@array/preference_immersive_mode"
+                app:entryValues="@array/preference_immersive_mode_values"
+                app:title="@string/preference_behavior_other_immersive_mode"
+                app:useSimpleSummaryProvider="true" />
+            <SwitchPreference
+                app:key="other_wake_lock"
+                app:title="@string/preference_behavior_other_wake_lock"
+                app:summary="@string/preference_behavior_other_wake_lock_summary" />
+        </PreferenceCategory>
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:title="@string/preference_about">
+
+        <Preference
+            app:key="about_name"
+            app:icon="@drawable/baseline_audio_file_24"
+            app:title="@string/preference_about_name"
+            app:summary="@string/preference_about_version" />
+        <Preference
+            app:enabled="false"
+            app:icon="@drawable/baseline_update_24"
+            app:title="@string/preference_about_updates" />
+        <PreferenceCategory
+            app:title="@string/preference_about_project">
+
+            <Preference
+                app:key="project_website"
+                app:icon="@drawable/baseline_home_24"
+                app:title="@string/preference_about_project_website" />
+            <Preference
+                app:key="project_source"
+                app:icon="@drawable/baseline_code_24"
+                app:title="@string/preference_about_project_source"
+                app:summary="@string/preference_about_project_source_summary" />
+            <Preference
+                app:key="project_license"
+                app:icon="@drawable/baseline_copyright_24"
+                app:title="@string/preference_about_project_license"
+                app:summary="@string/preference_about_project_license_summary" />
+        </PreferenceCategory>
+        <PreferenceCategory
+            app:title="@string/preference_about_author">
+
+            <Preference
+                app:icon="@drawable/baseline_person_24"
+                app:title="@string/preference_about_author_name"
+                app:summary="@string/preference_about_author_name_summary" />
+            <Preference
+                app:enabled="false"
+                app:icon="@drawable/baseline_send_24"
+                app:title="@string/preference_about_author_donate"
+                app:summary="@string/preference_about_author_donate_summary" />
+        </PreferenceCategory>
+        <PreferenceCategory
+            app:key="about_experiments"
+            app:title="@string/preference_about_experiments">
+
+            <CheckBoxPreference
+                app:key="experiments_unlock"
+                app:summary="@string/preference_about_experiments_summary" />
+            <Preference
+                app:key="experiments_crash_logs"
+                app:title="@string/preference_about_experiments_crash_logs" />
+            <Preference
+                app:key="experiments_device_info"
+                app:title="@string/preference_about_experiments_device_info">
+
+                <intent
+                    android:targetPackage="io.github.feivegian.music"
+                    android:targetClass="io.github.feivegian.music.activities.DeviceInfoActivity" />
+            </Preference>
+            <Preference
+                app:key="experiments_preference_editor"
+                app:title="@string/preference_about_experiments_preference_editor">
+
+                <intent
+                    android:targetPackage="io.github.feivegian.music"
+                    android:targetClass="io.github.feivegian.music.activities.PreferenceEditorActivity" />
+            </Preference>
+        </PreferenceCategory>
+    </PreferenceCategory>
 </PreferenceScreen>
