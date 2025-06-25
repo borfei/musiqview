@@ -36,7 +36,7 @@
     <string name="preference_about_author">Author</string>
     <string name="preference_about_author_summary" translatable="false">@string/app_author</string>
     <string name="preference_about_source">Source code</string>
-    <string name="preference_about_source_summary" translatable="false">https://github.com/feivegian/musicview</string>
+    <string name="preference_about_source_summary" translatable="false">https://github.com/borfei/musiqview</string>
     <string name="preference_about_license">License</string>
     <string name="preference_about_license_summary" translatable="false">MIT License</string>
     <string name="preference_experiments">Experiments</string>
