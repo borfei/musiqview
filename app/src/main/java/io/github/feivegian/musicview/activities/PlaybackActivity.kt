@@ -59,8 +59,9 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        // Initialize preferences
-        val preferences = App.fromInstance(application).preferences
+        // Get application instance & initialize preferences
+        val application = App.fromInstance(application)
+        val preferences = application.preferences
 
         preferences.getBoolean(Constants.PREFERENCE_INTERFACE_DISPLAY_METADATA, isMetadataDisplayed).let {
             isMetadataDisplayed = it
@@ -161,7 +162,6 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             }
         }
         controllerFuture.addListener({
-            Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Media session connected")
             mediaController = controllerFuture.get()
             mediaController?.addListener(this)
 
@@ -203,7 +203,6 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         // Disconnect from media session
         mediaController?.removeListener(this)
         mediaController?.release()
-        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Media session disconnected")
     }
 
     override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
@@ -218,7 +217,6 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        Log.e(Constants.TAG_ACTIVITY_PLAYBACK, "Playback error occurred: ${error.message}")
 
         MaterialAlertDialogBuilder(this)
             .setIcon(R.drawable.dialog_error_48)
@@ -237,7 +235,6 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         reason: Int
     ) {
         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "onPositionDiscontinuity: from ${oldPosition.positionMs} to ${newPosition.positionMs}")
 
         if (reason == DISCONTINUITY_REASON_SEEK) {
             updateSeek(newPosition.positionMs)
@@ -245,8 +242,6 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updateInfo(mediaMetadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
-        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Info update called")
-
         // Set title/subtitle to the available metadata, if available
         // When metadata is unavailable (or it's preference is false), use file name instead
         val info = parseInfo(mediaMetadata)
@@ -267,9 +262,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updateSeek(value: Long = mediaController?.currentPosition ?: 0) {
-        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Seek update called")
-
-        // convert position into float (pain)
+        // Convert position into float
         var seekValue = (value + 0.0f) / (mediaController?.duration ?: 0)
         // seekValue cannot be greater than 1.0f or lesser than 0.0f
         if (seekValue > 1.0f) {
@@ -278,14 +271,13 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             seekValue = 0.0f
         }
 
-        // update slider value based on float
-        // and also slider text but based on long
+        // Update slider value using the float value
+        // Also update it's text value by using the Long value
         binding.playbackSeek.value = seekValue
         binding.playbackSeekText.text = parseSeekPosition(value)
     }
 
     private fun updateState(isPlaying: Boolean = mediaController?.isPlaying ?: false) {
-        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Playback state update called")
         binding.playbackState.isChecked = isPlaying
 
         durationUpdateHandler?.let {
