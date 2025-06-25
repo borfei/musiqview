@@ -41,6 +41,10 @@ import io.github.borfei.musiqview.services.PlaybackService
 import java.util.Locale
 
 class PlaybackActivity : AppCompatActivity(), Player.Listener {
+    companion object {
+        const val TAG = "PlaybackActivity"
+    }
+
     private lateinit var binding: ActivityPlaybackBinding
 
     private var isMetadataDisplayed: Boolean = true
@@ -57,7 +61,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        // Get application instance & initialize preferences
+
         val application = App.fromInstance(application)
         val preferences = application.preferences
 
@@ -185,7 +189,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
                 // the one defined in AndroidManifest.xml
                 if (intent.action == Intent.ACTION_VIEW) {
                     intent.data?.let {
-                        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Intent URI: $it")
+                        Log.d(TAG, "Intent URI: $it")
                         mediaItem = MediaItem.fromUri(it)
                         updateInfo(mediaItem.mediaMetadata)
                     }
@@ -197,10 +201,10 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
                 mediaController?.setMediaItem(mediaItem)
                 mediaController?.prepare()
                 mediaController?.playWhenReady = true
-                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Preparing media URI")
+                Log.d(TAG, "Preparing media URI")
             } else {
                 update()
-                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Update called; playback already loaded")
+                Log.d(TAG, "Update called; playback already loaded")
             }
         },
             MoreExecutors.directExecutor()
@@ -310,18 +314,18 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         durationUpdateHandler?.let {
             if (isPlaying) {
                 durationUpdateRunnable?.let { runnable -> it.post(runnable) }
-                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Post duration update until paused/stopped")
+                Log.d(TAG, "Post duration update until paused/stopped")
             } else {
                 it.removeCallbacksAndMessages(null)
-                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Stopped pending callbacks & messages of duration update")
+                Log.d(TAG, "Stopped pending callbacks & messages of duration update")
             }
         }
         if (isWakeLock) {
             if (isPlaying) {
-                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Append FLAG_KEEP_SCREEN_ON to window flags")
+                Log.d(TAG, "Append FLAG_KEEP_SCREEN_ON to window flags")
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             } else {
-                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Remove FLAG_KEEP_SCREEN_ON from window flags")
+                Log.d(TAG, "Remove FLAG_KEEP_SCREEN_ON from window flags")
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
         }

@@ -28,6 +28,10 @@ import io.github.borfei.musiqview.databinding.ViewholderRowSettingBinding
 import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
 
 class PreferenceEditorActivity : AppCompatActivity() {
+    companion object {
+        const val TAG = "PreferenceEditorActivity"
+    }
+
     private lateinit var binding: ActivityPreferenceEditorBinding
 
     val preferences: SharedPreferences by lazy {
@@ -206,7 +210,7 @@ class PreferenceEditorActivity : AppCompatActivity() {
         }
 
         data.sortBy { it.first }
-        Log.v(Constants.TAG_ACTIVITY_PREFERENCE_EDITOR, "Loaded ${data.size} keys")
+        Log.v(TAG, "Loaded ${data.size} keys")
         binding.settingsList.layoutManager = LinearLayoutManager(this)
         binding.settingsList.adapter = SettingsListAdapter(data)
         binding.settingsListReloader.isRefreshing = false

@@ -23,6 +23,10 @@ import io.github.borfei.musiqview.extensions.changeNightMode
 import java.io.File
 
 class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+    companion object {
+        const val TAG = "PreferenceFragment"
+    }
+
     private lateinit var activity: PreferenceActivity
     private lateinit var customTabsIntent: CustomTabsIntent
     private lateinit var application: App
@@ -179,6 +183,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
             value = sharedPreferences?.getInt(key, -1)!!
         } catch (_: ClassCastException) {}
 
-        Log.i(Constants.TAG_FRAGMENT_PREFERENCE, "Preference changed: $key -> $value")
+        Log.i(TAG, "Preference changed: $key -> $value")
     }
 }
