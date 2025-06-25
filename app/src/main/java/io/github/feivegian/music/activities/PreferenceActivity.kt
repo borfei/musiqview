@@ -1,15 +1,12 @@
 package io.github.feivegian.music.activities
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import io.github.feivegian.music.R
@@ -18,16 +15,13 @@ import io.github.feivegian.music.fragments.PreferenceFragment
 import io.github.feivegian.music.utils.adjustMarginsForSystemBarInsets
 import io.github.feivegian.music.utils.adjustPaddingForSystemBarInsets
 
-class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
+class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private lateinit var binding: ActivityPreferenceBinding
-    private lateinit var preferences: SharedPreferences
     private lateinit var restartSnackbar: Snackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        preferences.registerOnSharedPreferenceChangeListener(this)
 
         binding = ActivityPreferenceBinding.inflate(layoutInflater)
         binding.toolbar.adjustPaddingForSystemBarInsets(top=true)
@@ -69,11 +63,6 @@ class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefe
             .commit()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        preferences.unregisterOnSharedPreferenceChangeListener(this)
-    }
-
     override fun onPreferenceStartFragment(
         caller: PreferenceFragmentCompat,
         pref: Preference
@@ -89,24 +78,7 @@ class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefe
         return true
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        var value: Any = "UNKNOWN"
 
-        try {
-            value = sharedPreferences?.getString(key, String())!!
-        } catch (_: ClassCastException) {}
-        try {
-            value = sharedPreferences?.getStringSet(key, setOf())!!
-        } catch (_: ClassCastException) {}
-        try {
-            value = sharedPreferences?.getBoolean(key, false)!!
-        } catch (_: ClassCastException) {}
-        try {
-            value = sharedPreferences?.getInt(key, -1)!!
-        } catch (_: ClassCastException) {}
-
-        Log.i(TAG, "Preference changed: $key -> $value")
-    }
 
     fun setShowRestartRequired(toggle: Boolean) {
         if (toggle) {
@@ -118,10 +90,6 @@ class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefe
 
     fun isRestartRequiredShown(): Boolean {
         return restartSnackbar.isShown
-    }
-
-    fun getPreferences(): SharedPreferences {
-        return preferences
     }
 
     companion object {
