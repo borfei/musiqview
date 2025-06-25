@@ -6,7 +6,6 @@ import android.app.UiModeManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.media3.database.DatabaseProvider
 import androidx.media3.database.StandaloneDatabaseProvider
@@ -39,10 +38,9 @@ class App : Application(), Thread.UncaughtExceptionHandler {
             }
         }
 
-        // Initialize database provider for media caching & download service
+        // Initialize database provider for media caching
         databaseProvider = StandaloneDatabaseProvider(this)
-        // Initialize custom uncaught exception handler & greet the logcat
-        Log.i(TAG, "Initialized ${getString(R.string.app_name)} version ${BuildConfig.VERSION_NAME} (code ${BuildConfig.VERSION_CODE})")
+        // Initialize custom uncaught exception handler
         Thread.setDefaultUncaughtExceptionHandler(this)
     }
 
@@ -74,8 +72,6 @@ class App : Application(), Thread.UncaughtExceptionHandler {
     }
 
     companion object {
-        const val TAG = "App"
-
         /**
          * Returns the current [Application] instance and casts as [App].
          *
