@@ -17,7 +17,7 @@ class MarqueeTextView(context: Context, attrs: AttributeSet) : AppCompatTextView
             }
         }
 
-        // Some tweaks in order to have the marquee effect
+        // Use the built-in marquee effect
         ellipsize = TextUtils.TruncateAt.MARQUEE
         isSingleLine = true
     }
