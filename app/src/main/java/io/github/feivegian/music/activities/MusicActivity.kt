@@ -12,7 +12,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.WindowManager
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -88,12 +87,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
 
-        // Register onBackPressedDispatcher for custom activity exit processing
-        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-            }
-        })
         // Toggle immersive mode by depending on the preference check
         // If set to LANDSCAPE_ONLY, immersive mode will be enabled if current orientation is landscape
         WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(when (immersiveMode) {
