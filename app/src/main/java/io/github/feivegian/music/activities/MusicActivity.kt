@@ -31,6 +31,7 @@ import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
 import io.github.feivegian.music.R
 import io.github.feivegian.music.databinding.ActivityMusicBinding
+import io.github.feivegian.music.extensions.isWebUrl
 import io.github.feivegian.music.services.PlaybackService
 import io.github.feivegian.music.utils.adjustPaddingForSystemBarInsets
 import io.github.feivegian.music.utils.setImmersiveMode
@@ -49,6 +50,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
     private var loopInterval: Int = 0
     private var loopHandling: Boolean = false
     private var mediaController: MediaController? = null
+    private var mediaItem: MediaItem = MediaItem.EMPTY
 
     private var headerFormat: String = "%title%"
     private var subheaderFormat: String = "%album_artist%"
@@ -122,19 +124,26 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 stopLoopHandler()
             }
         }
+        binding.playbackDownload.setOnClickListener {
+            // This implementation only sends the intent to a proper browser
+            // The browser can then download the URL of the media
+            //
+            // TODO: Use a download service implementation
+            startActivity(Intent(Intent.ACTION_VIEW, mediaItem.localConfiguration?.uri))
+        }
         binding.playbackSeek.setLabelFormatter { value ->
             val duration = mediaController?.duration ?: 0
             parsePlaybackDurationToString(((value + 0.0) * duration).toLong())
         }
         binding.playbackSeek.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
-                binding.playbackState.visibility = View.INVISIBLE
+                binding.playbackButtons.visibility = View.INVISIBLE
                 binding.playbackSeekPosition.visibility = View.INVISIBLE
                 mediaController?.pause()
             }
 
             override fun onStopTrackingTouch(slider: Slider) {
-                binding.playbackState.visibility = View.VISIBLE
+                binding.playbackButtons.visibility = View.VISIBLE
                 binding.playbackSeekPosition.visibility = View.VISIBLE
                 val duration = mediaController?.duration ?: 0
                 mediaController?.seekTo(((slider.value + 0.0) * duration).toLong())
@@ -154,18 +163,24 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 when (intent.action) {
                     Intent.ACTION_VIEW -> {
                         intent.data?.let {
-                            mediaController?.setMediaItem(MediaItem.fromUri(it))
+                            mediaItem = MediaItem.fromUri(it)
                         }
 
                         intent.data = null
                     }
                     Intent.ACTION_SEND -> {
                         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
-                            mediaController?.setMediaItem(MediaItem.fromUri(it))
+                            mediaItem = MediaItem.fromUri(it)
                         }
 
                         intent.removeExtra(Intent.EXTRA_TEXT)
                     }
+                }
+                if (mediaItem.localConfiguration?.uri.toString().isWebUrl()) {
+                    binding.playbackDownload.visibility = View.VISIBLE
+                }
+                if (mediaController?.currentMediaItem == null) {
+                    mediaController?.setMediaItem(mediaItem)
                 }
 
                 mediaController?.prepare()
