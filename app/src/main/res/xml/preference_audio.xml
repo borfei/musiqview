@@ -21,4 +21,12 @@
             app:title="@string/preference_playback_duration_interval"
             app:showSeekBarValue="true" />
     </PreferenceCategory>
+    <PreferenceCategory
+        app:title="@string/preference_other">
+
+        <SwitchPreference
+            app:key="other_wake_lock"
+            app:title="@string/preference_other_wake_lock"
+            app:summary="@string/preference_other_wake_lock_summary" />
+    </PreferenceCategory>
 </PreferenceScreen>
