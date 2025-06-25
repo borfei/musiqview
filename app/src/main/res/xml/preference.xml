@@ -115,13 +115,5 @@
             app:key="experiments_device_info"
             app:title="@string/preference_experiments_device_info">
         </Preference>
-        <Preference
-            app:key="experiments_preference_editor"
-            app:title="@string/preference_experiments_preference_editor">
-
-            <intent
-                android:targetPackage="io.github.borfei.musiqview"
-                android:targetClass="io.github.borfei.musiqview.activities.PreferenceEditorActivity" />
-        </Preference>
     </PreferenceCategory>
 </PreferenceScreen>
