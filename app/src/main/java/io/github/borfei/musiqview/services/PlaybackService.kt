@@ -1,5 +1,6 @@
 package io.github.borfei.musiqview.services
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -22,7 +23,7 @@ import io.github.borfei.musiqview.BuildConfig
 import io.github.borfei.musiqview.Constants
 import java.io.File
 
-@UnstableApi
+@SuppressLint("UnsafeOptInUsageError")
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
     private var cache: SimpleCache? = null
     private var mediaSession: MediaSession? = null
