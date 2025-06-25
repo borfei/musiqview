@@ -34,9 +34,9 @@ class LauncherActivity : AppCompatActivity() {
             startActivity(Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS))
         }
         binding.launcherFinish.setOnClickListener {
-            if (packageManager.isActivityEnabled(this)) {
-                packageManager.setActivityEnabled(this, false)
-                Log.d(TAG, "This activity can no longer be accessible.")
+            if (packageManager.isActivityEnabled(this, javaClass)) {
+                packageManager.setActivityEnabled(this, javaClass, false)
+                Log.d(TAG, "Launcher activity is now disabled")
             }
 
             finish()

@@ -24,6 +24,8 @@ import com.google.common.util.concurrent.MoreExecutors
 import io.github.borfei.musiqview.databinding.ActivityMusiqBinding
 import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
 import io.github.borfei.musiqview.extensions.getName
+import io.github.borfei.musiqview.extensions.isActivityEnabled
+import io.github.borfei.musiqview.extensions.setActivityEnabled
 import io.github.borfei.musiqview.extensions.setImmersiveMode
 import io.github.borfei.musiqview.extensions.toBitmap
 import io.github.borfei.musiqview.ui.MediaInfoAlertDialog
@@ -51,6 +53,10 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
 
+        if (packageManager.isActivityEnabled(this, LauncherActivity::class.java)) {
+            packageManager.setActivityEnabled(this, LauncherActivity::class.java, false)
+            Log.i(TAG, "Launcher activity enabled, disabling since playback has begun")
+        }
         WindowCompat.getInsetsController(window, window.decorView).apply {
             setImmersiveMode(false)
         }
