@@ -210,11 +210,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         super.onDestroy()
         mediaController?.removeListener(this)
         mediaController?.release()
-
-        // If wake lock is enabled & is acquired, release it
-        if (wakeLock) {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        }
     }
 
     override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
