@@ -2,6 +2,7 @@ package io.github.feivegian.musicview.extensions
 
 import android.app.Activity
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 
@@ -14,14 +15,17 @@ import android.content.pm.PackageManager
  *
  * @param[enabled] Whether the activity should be enabled
  */
-fun PackageManager.setActivityEnabled(activity: Activity, enabled: Boolean) {
+fun <T: Any> PackageManager.setActivityEnabled(context: Context, activity: Class<T>, enabled: Boolean) {
+    if (!activity.isAssignableFrom(Activity::class.java)) {
+        throw IllegalArgumentException("The specified activity class is invalid")
+    }
     val newState = if (enabled) {
         PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
     } else {
         PackageManager.COMPONENT_ENABLED_STATE_DISABLED
     }
     setComponentEnabledSetting(
-        ComponentName(activity, activity.javaClass),
+        ComponentName(context, activity),
         newState,
         PackageManager.DONT_KILL_APP)
 }
@@ -31,10 +35,13 @@ fun PackageManager.setActivityEnabled(activity: Activity, enabled: Boolean) {
  *
  * @return[Boolean]
  */
-fun PackageManager.isActivityEnabled(activity: Activity): Boolean {
-    val componentName = ComponentName(activity, activity.javaClass)
+fun <T: Any> PackageManager.isActivityEnabled(context: Context, activity: Class<T>): Boolean {
+    val componentName = ComponentName(context, activity)
     val state = getComponentEnabledSetting(componentName)
 
+    if (!activity.isAssignableFrom(Activity::class.java)) {
+        throw IllegalArgumentException("The specified activity class is invalid")
+    }
     when (state) {
         PackageManager.COMPONENT_ENABLED_STATE_DEFAULT -> {
             return true
