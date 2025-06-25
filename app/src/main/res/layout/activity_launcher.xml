@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_vertical"
+    android:paddingStart="32dp"
+    android:paddingEnd="32dp"
+    android:orientation="vertical">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="@drawable/ic_launcher_background"
+        android:contentDescription="@string/content_description_launcher_icon"
+        app:srcCompat="@drawable/ic_launcher_foreground"
+        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="@string/app_name"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.Material3.DisplaySmall" />
+
+    <TextView
+        android:id="@+id/launcher_greeting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="@string/launcher_greeting"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/launcher_instructions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/launcher_instructions"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="30dp" />
+
+    <com.google.android.material.button.MaterialButton
+        style="?attr/materialButtonOutlinedStyle"
+        android:id="@+id/launcher_set_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/launcher_set_default" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/launcher_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/launcher_finish" />
+</LinearLayout>
