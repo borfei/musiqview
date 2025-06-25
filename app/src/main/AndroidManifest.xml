@@ -24,9 +24,10 @@
             android:exported="true"
             android:launchMode="singleInstance"
             android:noHistory="true"
+            android:resizeableActivity="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Overlay"
-            tools:ignore="DiscouragedApi,LockedOrientationActivity">
+            tools:ignore="DiscouragedApi,LockedOrientationActivity,NonResizeableActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
