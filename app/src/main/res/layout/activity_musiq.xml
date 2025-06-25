@@ -43,6 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:marqueeRepeatLimit="marquee_forever"
+        android:requiresFadingEdge="horizontal"
         android:text="@string/filename_placeholder"
         android:textAlignment="viewStart"
         android:textAppearance="?attr/textAppearanceLabelMedium" />
