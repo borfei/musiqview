@@ -11,8 +11,8 @@ android {
         applicationId = "io.github.feivegian.musicview"
         minSdk = 24
         targetSdk = 35
-        versionCode = 6
-        versionName = "3.5.0"
+        versionCode = 7
+        versionName = "3.6.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
