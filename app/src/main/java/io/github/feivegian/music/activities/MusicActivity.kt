@@ -219,14 +219,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         super.onIsPlayingChanged(isPlaying)
-        binding.playbackState.isChecked = isPlaying
-
-        if (wakeLock) {
-            when (isPlaying) {
-                true -> { window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
-                false -> { window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
-            }
-        }
+        updateState(isPlaying)
     }
 
     override fun onPlayerError(error: PlaybackException) {
@@ -318,15 +311,21 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         binding.playbackSeekPosition.text = convertMsToDuration(position)
     }
 
-    private fun update() {
-        if (mediaController?.currentMediaItem == null) {
-            return
-        }
+    private fun updateState(isPlaying: Boolean = mediaController?.isPlaying ?: false) {
+        binding.playbackState.isChecked = isPlaying
 
+        if (wakeLock) {
+            when (isPlaying) {
+                true -> { window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
+                false -> { window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
+            }
+        }
+    }
+
+    private fun update() {
         updateInfo()
         updateSeek()
-
-        binding.playbackState.isChecked = mediaController?.isPlaying == true
+        updateState()
     }
 
     private fun convertMsToDuration(milliseconds: Long): String {
