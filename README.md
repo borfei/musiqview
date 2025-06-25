@@ -5,7 +5,7 @@ Quickly preview audio files without leaving, on Android.
 - Absolutely free and open source, no annoying ads, no BS
 - Simple and easy-to-use user interface, with Material 3 
 - Supports a wide range of audio formats, powered by AndroidX Media3
-- Supports devices running in API level 24 (Nougat) to API level 35 (15)
+- Supports devices running in API level 24 (Nougat) to API level 35 (Vanilla Ice Cream)
 
 More features will likely to come soon! If you have a suggestion,
 please [open a new issue](https://github.com/borfei/musiqview/issues/new).
