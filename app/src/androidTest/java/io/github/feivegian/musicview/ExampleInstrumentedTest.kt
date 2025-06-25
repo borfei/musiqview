@@ -1,4 +1,4 @@
-package io.github.feivegian.music
+package io.github.feivegian.musicview
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

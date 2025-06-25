@@ -1,4 +1,4 @@
-package io.github.feivegian.music.activities
+package io.github.feivegian.musicview.activities
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -6,12 +6,12 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import io.github.feivegian.music.App.Companion.asApp
-import io.github.feivegian.music.R
-import io.github.feivegian.music.databinding.ActivityMainBinding
-import io.github.feivegian.music.extensions.adjustPaddingForSystemBarInsets
-import io.github.feivegian.music.extensions.isActivityEnabled
-import io.github.feivegian.music.extensions.setActivityEnabled
+import io.github.feivegian.musicview.App.Companion.asApp
+import io.github.feivegian.musicview.R
+import io.github.feivegian.musicview.databinding.ActivityMainBinding
+import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
+import io.github.feivegian.musicview.extensions.isActivityEnabled
+import io.github.feivegian.musicview.extensions.setActivityEnabled
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

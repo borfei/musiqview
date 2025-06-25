@@ -1,4 +1,4 @@
-package io.github.feivegian.music.activities
+package io.github.feivegian.musicview.activities
 
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -20,12 +20,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.github.feivegian.music.App.Companion.asApp
-import io.github.feivegian.music.R
-import io.github.feivegian.music.databinding.ActivityPreferenceEditorBinding
-import io.github.feivegian.music.databinding.ViewholderRowSettingBinding
-import io.github.feivegian.music.extensions.adjustMarginsForSystemBarInsets
-import io.github.feivegian.music.extensions.adjustPaddingForSystemBarInsets
+import io.github.feivegian.musicview.App.Companion.asApp
+import io.github.feivegian.musicview.R
+import io.github.feivegian.musicview.databinding.ActivityPreferenceEditorBinding
+import io.github.feivegian.musicview.databinding.ViewholderRowSettingBinding
+import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
 
 class PreferenceEditorActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPreferenceEditorBinding

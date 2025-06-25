@@ -1,4 +1,4 @@
-package io.github.feivegian.music.activities
+package io.github.feivegian.musicview.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,10 +9,10 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import io.github.feivegian.music.R
-import io.github.feivegian.music.databinding.ActivityPreferenceBinding
-import io.github.feivegian.music.extensions.adjustPaddingForSystemBarInsets
-import io.github.feivegian.music.fragments.PreferenceFragment
+import io.github.feivegian.musicview.R
+import io.github.feivegian.musicview.databinding.ActivityPreferenceBinding
+import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
+import io.github.feivegian.musicview.fragments.PreferenceFragment
 
 class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private lateinit var binding: ActivityPreferenceBinding

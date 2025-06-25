@@ -124,8 +124,8 @@
             app:title="@string/preference_experiments_preference_editor">
 
             <intent
-                android:targetPackage="io.github.feivegian.music"
-                android:targetClass="io.github.feivegian.music.activities.PreferenceEditorActivity" />
+                android:targetPackage="io.github.feivegian.musicview"
+                android:targetClass="io.github.feivegian.musicview.activities.PreferenceEditorActivity" />
         </Preference>
     </PreferenceCategory>
 </PreferenceScreen>

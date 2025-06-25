@@ -1,4 +1,4 @@
-package io.github.feivegian.music.fragments
+package io.github.feivegian.musicview.fragments
 
 import android.content.SharedPreferences
 import android.net.Uri
@@ -14,12 +14,12 @@ import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.github.feivegian.music.App
-import io.github.feivegian.music.App.Companion.asApp
-import io.github.feivegian.music.App.Companion.changeUiMode
-import io.github.feivegian.music.BuildConfig
-import io.github.feivegian.music.R
-import io.github.feivegian.music.activities.PreferenceActivity
+import io.github.feivegian.musicview.App
+import io.github.feivegian.musicview.App.Companion.asApp
+import io.github.feivegian.musicview.App.Companion.changeUiMode
+import io.github.feivegian.musicview.BuildConfig
+import io.github.feivegian.musicview.R
+import io.github.feivegian.musicview.activities.PreferenceActivity
 import java.io.File
 
 class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
