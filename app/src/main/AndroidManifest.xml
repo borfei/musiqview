@@ -17,8 +17,10 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.MainActivity"
+            android:excludeFromRecents="true"
             android:exported="true"
             android:enabled="true"
+            android:noHistory="true"
             android:theme="@style/AppTheme.Overlay">
 
             <intent-filter>
