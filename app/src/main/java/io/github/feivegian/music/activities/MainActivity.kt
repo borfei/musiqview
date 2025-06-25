@@ -14,8 +14,8 @@ import io.github.feivegian.music.extensions.isActivityEnabled
 import io.github.feivegian.music.extensions.setActivityEnabled
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var preferences: SharedPreferences
     private lateinit var binding: ActivityMainBinding
+    private lateinit var preferences: SharedPreferences
 
     private var disableOnDestroy: Boolean = false
 
