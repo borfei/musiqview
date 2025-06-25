@@ -126,17 +126,15 @@
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_width="8dp"
+            android:layout_height="wrap_content" />
 
         <com.google.android.material.button.MaterialButton
             style="?attr/materialIconButtonFilledTonalStyle"
-            android:id="@+id/playback_options"
+            android:id="@+id/other_menu"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:contentDescription="@string/content_description_playback_options"
-            android:visibility="gone"
+            android:contentDescription="@string/content_description_other_menu"
             app:icon="@drawable/baseline_more_vert_24" />
     </LinearLayout>
 </LinearLayout>
