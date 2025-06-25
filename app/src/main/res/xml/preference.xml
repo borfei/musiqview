@@ -43,8 +43,18 @@
             app:defaultValue="1000"
             app:min="0"
             android:max="10000"
-            app:title="@string/preference_playback_duration_interval"
-            app:showSeekBarValue="true" />
+            app:showSeekBarValue="true"
+            app:summary="@string/preference_playback_duration_interval_summary"
+            app:title="@string/preference_playback_duration_interval" />
+        <SeekBarPreference
+            app:key="playback_max_cache_size"
+            app:icon="@drawable/baseline_cached_24"
+            app:defaultValue="512"
+            app:min="50"
+            android:max="1024"
+            app:showSeekBarValue="true"
+            app:summary="@string/preference_playback_max_cache_size_summary"
+            app:title="@string/preference_playback_max_cache_size" />
     </PreferenceCategory>
     <PreferenceCategory
         app:title="@string/preference_other">

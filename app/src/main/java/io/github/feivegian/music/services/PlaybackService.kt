@@ -20,13 +20,11 @@ import io.github.feivegian.music.BuildConfig
 @UnstableApi
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
     private lateinit var preferences: SharedPreferences
-
     private var audioFocus: Boolean = true
     private var wakeLock: Boolean = false
 
-    // TODO: Implement custom cache size
     private var cache: SimpleCache? = null
-    private val maxCacheBytes: Long = 2147483648 // 2GB
+    private var maxCacheSize: Long = 512 // in megabytes
 
     private var mediaSession: MediaSession? = null
 
@@ -34,10 +32,11 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         super.onCreate()
         preferences = application.asApp().getPreferences()
         audioFocus = preferences.getBoolean("playback_audio_focus", audioFocus)
+        maxCacheSize = preferences.getInt("playback_max_cache_size", maxCacheSize.toInt()).toLong()
         wakeLock = preferences.getBoolean("other_wake_lock", wakeLock)
 
         cache = SimpleCache(cacheDir,
-            LeastRecentlyUsedCacheEvictor(maxCacheBytes),
+            LeastRecentlyUsedCacheEvictor((maxCacheSize * 1024) * 1024), // convert to byte size
             application.asApp().getDatabaseProvider())
         val cacheDataSourceFactory = CacheDataSource.Factory()
             .setCache(cache!!)

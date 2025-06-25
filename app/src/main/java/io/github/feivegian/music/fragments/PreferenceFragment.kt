@@ -41,6 +41,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
         val theme = findPreference<ListPreference>("looks_theme")
         val dynamicColors = findPreference<CheckBoxPreference>("looks_dynamic_colors")
         val durationInterval = findPreference<SeekBarPreference>("playback_duration_interval")
+        val maxCacheSize = findPreference<SeekBarPreference>("playback_max_cache_size")
         val name = findPreference<Preference>("about_name")
         val source = findPreference<Preference>("about_source")
         val experiments = findPreference<PreferenceCategory>("experiments")
@@ -60,9 +61,15 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
             true
         }
         durationInterval?.setOnPreferenceChangeListener { pref, newValue ->
-            // manually set step by dividing & multiplying new value
+            val step = 100
             val preference = pref as SeekBarPreference
-            preference.value = (newValue as Int / 100) * 100
+            preference.value = (newValue as Int / step) * step
+            false
+        }
+        maxCacheSize?.setOnPreferenceChangeListener { pref, newValue ->
+            val step = 4
+            val preference = pref as SeekBarPreference
+            preference.value = (newValue as Int / step) * step
             false
         }
         name?.setOnPreferenceClickListener {
