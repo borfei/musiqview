@@ -86,7 +86,7 @@
     <string name="preference_experiments_preference_editor">Preference Editor</string>
     <string name="preference_discover_experiments">Experiments have been enabled, have fun!</string>
     <!-- Snackbar strings -->
-    <string name="snackbar_restart_required">A setting has changed, which requires a restart.</string>
+    <string name="snackbar_restart_required">There are modified changes that require restart to take effect.</string>
     <string name="snackbar_restart_required_action">Restart</string>
     <!-- Dialog strings -->
     <string name="dialog_restart_title">Restart application</string>
