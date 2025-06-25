@@ -2,7 +2,7 @@
 A music player, made simple yet customizable for Android.
 
 ## Overview
-*TODO: Add pictures of Music here*
+![Preview](docs/images/preview.png "Music")
 
 Music is designed to integrate seamlessly with other apps and system functions through intent filters,
 enabling users to play audio files directly from various external sources.
@@ -30,10 +30,6 @@ $ apksigner sign --ks my-release-key.jks --out app-release.apk app-release-unsig
 > *When building a release build, you must install `zipalign`, `apksigner`, and have your own keystore.*
 
 ## FAQs
-
-### Who is spir0th?
-That's my old username. I went under a different name because it sounded like a fart.
-In the future, traces of the `spir0th` name will be removed in the source code.
 
 ### What motivated you to make this?
 There are plenty of Android music players around the internet that considered good,
