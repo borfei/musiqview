@@ -73,8 +73,10 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
             false
         }
         name?.setOnPreferenceClickListener {
-            // "uec" and "ex" is named here because we want this kind of functionality to be hidden
-            // once the user has unlocked this, experiments will be accessible
+            if (!BuildConfig.DEBUG) {
+                // Non-debug builds are not allowed to have these features
+                return@setOnPreferenceClickListener false
+            }
             if (uec >= 5) {
                 if (experimentsUnlock?.isChecked == false) {
                     experimentsUnlock.isChecked = true
