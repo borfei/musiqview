@@ -56,7 +56,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
             true
         }
         dynamicColors?.setOnPreferenceChangeListener { _, _ ->
-            activity.setShowRestartRequired(true)
+            activity.notifyRestart()
             true
         }
         durationInterval?.setOnPreferenceChangeListener { pref, newValue ->
@@ -79,7 +79,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
             if (uec >= 5) {
                 if (experimentsUnlock?.isChecked == false) {
                     experimentsUnlock.isChecked = true
-                    activity.setShowRestartRequired(true)
+                    activity.notifyRestart()
                 }
 
                 uec = 0 // reset to zero after unlocking experiments
@@ -95,7 +95,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
             true
         }
         experimentsUnlock?.setOnPreferenceChangeListener { _, _ ->
-            activity.setShowRestartRequired(true)
+            activity.notifyRestart()
             true
         }
         crashLogs?.setOnPreferenceClickListener {
