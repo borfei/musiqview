@@ -59,7 +59,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
             Handler(Looper.myLooper() ?: Looper.getMainLooper())
         seekUpdateRunnable = Runnable {
             mediaController?.currentPosition?.let {
-                updatePlaybackSeek(it)
+                updatePlaybackSeekPosition(it)
             }
             seekUpdateRunnable?.let {
                 seekUpdateHandler?.post(it)
@@ -114,7 +114,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
             Player.STATE_READY -> {
                 binding.playbackLoadIndicator.hide()
                 binding.playbackState.isEnabled = true
-                updatePlaybackDuration()
+                updatePlaybackSeekDuration()
             }
 
             Player.STATE_ENDED -> {}
@@ -154,7 +154,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
         // If this event was called due to user seeking, update the UI seek state
         if (reason == Player.DISCONTINUITY_REASON_SEEK) {
-            updatePlaybackSeek(newPosition.positionMs)
+            updatePlaybackSeekPosition(newPosition.positionMs)
         }
     }
 
@@ -180,7 +180,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         }
     }
 
-    private fun updatePlaybackSeek(position: Long) {
+    private fun updatePlaybackSeekPosition(position: Long) {
         binding.playbackSeekSlider.value =
             ((position + 0.0f) / (mediaController?.duration ?: 0)).coerceIn(0.0f, 1.0f)
         position.toDuration(DurationUnit.MILLISECONDS).toComponents { minutes, seconds, _ ->
@@ -188,7 +188,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         }
     }
 
-    private fun updatePlaybackDuration() {
+    private fun updatePlaybackSeekDuration() {
         mediaController?.duration?.let {
             it.toDuration(DurationUnit.MILLISECONDS).toComponents { minutes, seconds, _ ->
                 binding.playbackSeekTextDuration.text = getString(R.string.playback_seek_text_format).format(minutes, seconds)
@@ -211,10 +211,10 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
             if (mediaController?.currentMediaItem != null) {
                 mediaController?.mediaMetadata?.let { updateMediaMetadata(it) }
-                mediaController?.currentPosition?.let { updatePlaybackSeek(it) }
+                mediaController?.currentPosition?.let { updatePlaybackSeekPosition(it) }
                 mediaController?.isPlaying?.let { updatePlaybackState(it) }
                 updateMediaFilename()
-                updatePlaybackDuration()
+                updatePlaybackSeekDuration()
             } else {
                 intent?.data?.let {
                     Log.d(TAG, "Intent URI: $it")
