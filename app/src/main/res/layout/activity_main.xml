@@ -46,6 +46,17 @@
         android:layout_width="match_parent"
         android:layout_height="8dp" />
 
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/welcome_hide_launcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/welcome_hide_launcher" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="8dp" />
+
     <com.google.android.material.button.MaterialButton
         style="?attr/materialButtonOutlinedStyle"
         android:id="@+id/welcome_continue"
