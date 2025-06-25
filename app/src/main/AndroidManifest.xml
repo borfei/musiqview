@@ -25,11 +25,6 @@
             android:parentActivityName=".activities.PreferenceActivity"
             android:theme="@style/AppTheme.Experimental" />
         <activity
-            android:name=".activities.DeviceInfoActivity"
-            android:exported="false"
-            android:parentActivityName=".activities.PreferenceActivity"
-            android:theme="@style/AppTheme.Experimental" />
-        <activity
             android:name=".activities.PreferenceActivity"
             android:exported="true"
             android:theme="@style/AppTheme.Preference">

@@ -132,10 +132,6 @@
             <Preference
                 app:key="experiments_device_info"
                 app:title="@string/preference_about_experiments_device_info">
-
-                <intent
-                    android:targetPackage="io.github.feivegian.music"
-                    android:targetClass="io.github.feivegian.music.activities.DeviceInfoActivity" />
             </Preference>
             <Preference
                 app:key="experiments_preference_editor"
