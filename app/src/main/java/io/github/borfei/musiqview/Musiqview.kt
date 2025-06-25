@@ -2,9 +2,6 @@ package io.github.borfei.musiqview
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.SharedPreferences
-import androidx.media3.database.StandaloneDatabaseProvider
-import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import java.io.File
 import java.text.SimpleDateFormat
@@ -13,24 +10,17 @@ import java.util.Locale
 import kotlin.system.exitProcess
 
 @SuppressLint("UnsafeOptInUsageError")
-class App : Application(), Thread.UncaughtExceptionHandler {
+class Musiqview : Application(), Thread.UncaughtExceptionHandler {
     companion object {
         /**
-         * A simple conversion from [Application] class to [App]
+         * A simple conversion from [Application] class to [Musiqview]
          *
          * @param[application] The instance that will convert to, must not be null.
-         * @return[App]
+         * @return[Musiqview]
          */
-        fun fromInstance(application: Application): App {
-            return application as App
+        fun fromInstance(application: Application): Musiqview {
+            return application as Musiqview
         }
-    }
-
-    val preferences: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(this)
-    }
-    val databaseProvider: StandaloneDatabaseProvider by lazy {
-        StandaloneDatabaseProvider(this)
     }
 
     override fun onCreate() {

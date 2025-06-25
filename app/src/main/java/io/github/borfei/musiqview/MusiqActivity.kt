@@ -1,4 +1,4 @@
-package io.github.borfei.musiqview.activities
+package io.github.borfei.musiqview
 
 import android.animation.LayoutTransition
 import android.content.ComponentName
@@ -32,8 +32,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
-import io.github.borfei.musiqview.R
-import io.github.borfei.musiqview.databinding.ActivityPlaybackBinding
+import io.github.borfei.musiqview.databinding.ActivityMusiqBinding
 import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
 import io.github.borfei.musiqview.extensions.getName
 import io.github.borfei.musiqview.extensions.setImmersiveMode
@@ -42,7 +41,7 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-class PlaybackActivity : AppCompatActivity(), Player.Listener {
+class MusiqActivity : AppCompatActivity(), Player.Listener {
     companion object {
         const val TAG = "PlaybackActivity"
 
@@ -74,7 +73,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         }
     }
 
-    private lateinit var binding: ActivityPlaybackBinding
+    private lateinit var binding: ActivityMusiqBinding
 
     private var isMetadataDisplayed: Boolean = true
     private var isLayoutAnimated: Boolean = true
@@ -104,7 +103,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
 
         super.onCreate(savedInstanceState)
         // Inflate activity layout via ViewBinding and adjust padding for system bar insets
-        binding = ActivityPlaybackBinding.inflate(layoutInflater)
+        binding = ActivityMusiqBinding.inflate(layoutInflater)
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         // Finally for inflater, set the activity's view to it's proper content
         setContentView(binding.root)
