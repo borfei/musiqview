@@ -342,8 +342,4 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
 
         return getString(R.string.playback_seek_format_short, minutes, String.format(locale, "%1$02d", seconds))
     }
-
-    companion object {
-        const val TAG = "MusicActivity"
-    }
 }
