@@ -4,16 +4,16 @@ Quickly preview audio files without leaving, on Android.
 ## Overview
 <img src="docs/images/preview.png" alt="Preview" width="30%">
 
-Musicview is designed to integrate seamlessly with other apps through intent-filters,
-enabling users to preview audio files directly from various external sources.
+This music player doesn't have a music library. It is designed to integrate
+seamlessly with file managers and other apps through Intent Filters, enabling
+users to preview audio files directly, and also eliminating the use of storage permissions.
 
-It aims to provide a simple & user-friendly interface with the design following the
-Material 3 guidelines, and powered by Media3 ExoPlayer to handle audio playback.
+It provides a simple & user-friendly interface with the design following the
+Material 3 guidelines. It also utilizes Media3 ExoPlayer for supporting a wide
+variety of audio formats (such as FLAC, MP3, M4A, etc.)
 
 ## Download
-[![Android CI](https://github.com/feivegian/musicview/actions/workflows/android.yml/badge.svg)](https://github.com/feivegian/musicview/actions/workflows/android.yml)
-
-Get the [latest version](https://github.com/feivegian/musicview/releases/latest) on the Releases page.
+Get the [latest version](https://github.com/borfei/musicview/releases/latest) on the Releases page.
 
 ## Building
 It's the same way as you build a project using Android Studio, no steps needed.
