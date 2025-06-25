@@ -246,15 +246,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             .show()
     }
 
-    override fun onPositionDiscontinuity(
-        oldPosition: Player.PositionInfo,
-        newPosition: Player.PositionInfo,
-        reason: Int
-    ) {
-        super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-        updateSeek(newPosition.positionMs)
-    }
-
     private fun updateInfo(metadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
         // parse header/sub-header formatters
         var parsedHeader = headerFormat // we use the format to use String.replace later
@@ -355,5 +346,9 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         }
 
         return getString(R.string.playback_seek_format_short, minutes, String.format(locale, "%1$02d", seconds))
+    }
+
+    companion object {
+        const val TAG = "MusicActivity"
     }
 }
