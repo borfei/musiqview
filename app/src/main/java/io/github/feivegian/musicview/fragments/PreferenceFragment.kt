@@ -16,6 +16,7 @@ import androidx.preference.SeekBarPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.feivegian.musicview.App
 import io.github.feivegian.musicview.BuildConfig
+import io.github.feivegian.musicview.Constants
 import io.github.feivegian.musicview.R
 import io.github.feivegian.musicview.activities.PreferenceActivity
 import io.github.feivegian.musicview.extensions.changeNightMode
@@ -178,6 +179,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
             value = sharedPreferences?.getInt(key, -1)!!
         } catch (_: ClassCastException) {}
 
-        Log.i(PreferenceActivity.TAG, "Preference changed: $key -> $value")
+        Log.i(Constants.TAG_FRAGMENT_PREFERENCE, "Preference changed: $key -> $value")
     }
 }

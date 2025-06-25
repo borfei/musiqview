@@ -32,6 +32,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
 import io.github.feivegian.musicview.App
+import io.github.feivegian.musicview.Constants
 import io.github.feivegian.musicview.R
 import io.github.feivegian.musicview.databinding.ActivityPlaybackBinding
 import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
@@ -61,16 +62,16 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         // Initialize preferences
         val preferences = App.fromInstance(application).preferences
 
-        preferences.getBoolean(PREFERENCE_INTERFACE_DISPLAY_METADATA, isMetadataDisplayed).let {
+        preferences.getBoolean(Constants.PREFERENCE_INTERFACE_DISPLAY_METADATA, isMetadataDisplayed).let {
             isMetadataDisplayed = it
         }
-        preferences.getInt(PREFERENCE_PLAYBACK_DURATION_INTERVAL, durationUpdateInterval).let {
+        preferences.getInt(Constants.PREFERENCE_PLAYBACK_DURATION_INTERVAL, durationUpdateInterval).let {
             durationUpdateInterval = it
         }
-        preferences.getBoolean(PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES, isLayoutAnimated).let {
+        preferences.getBoolean(Constants.PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES, isLayoutAnimated).let {
             isLayoutAnimated = it
         }
-        preferences.getBoolean(PREFERENCE_OTHER_WAKE_LOCK, isWakeLock).let {
+        preferences.getBoolean(Constants.PREFERENCE_OTHER_WAKE_LOCK, isWakeLock).let {
             isWakeLock = it
         }
 
@@ -111,7 +112,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         //  If "enabled" -> hide system bars
         //  If "landscape" -> only hide system bars if orientation is landscape
         //  Otherwise, don't hide the system bars
-        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(when (preferences.getString(PREFERENCE_OTHER_IMMERSIVE_MODE, "landscape")) {
+        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(when (preferences.getString(Constants.PREFERENCE_OTHER_IMMERSIVE_MODE, "landscape")) {
             "enabled" -> {
                 true
             }
@@ -162,7 +163,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             }
         }
         controllerFuture.addListener({
-            Log.d(TAG, "Media session connected")
+            Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Media session connected")
             mediaController = controllerFuture.get()
             mediaController?.addListener(this)
 
@@ -174,7 +175,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
                 // the one defined in AndroidManifest.xml
                 if (intent.action == Intent.ACTION_VIEW) {
                     intent.data?.let {
-                        Log.d(TAG, "Intent URI: $it")
+                        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Intent URI: $it")
                         mediaItem = MediaItem.fromUri(it)
                         updateInfo(mediaItem.mediaMetadata)
                     }
@@ -185,10 +186,10 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             if (mediaController?.currentMediaItem == null) {
                 mediaController?.setMediaItem(mediaItem)
                 mediaController?.prepare()
-                Log.d(TAG, "Preparing media URI")
+                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Preparing media URI")
             } else {
                 update()
-                Log.d(TAG, "Update called; playback already loaded")
+                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Update called; playback already loaded")
             }
         },
             MoreExecutors.directExecutor()
@@ -203,7 +204,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         // Disconnect from media session
         mediaController?.removeListener(this)
         mediaController?.release()
-        Log.d(TAG, "Media session disconnected")
+        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Media session disconnected")
     }
 
     override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
@@ -218,7 +219,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        Log.e(TAG, "Playback error occurred: ${error.message}")
+        Log.e(Constants.TAG_ACTIVITY_PLAYBACK, "Playback error occurred: ${error.message}")
 
         MaterialAlertDialogBuilder(this)
             .setIcon(R.drawable.dialog_error_48)
@@ -237,7 +238,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         reason: Int
     ) {
         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-        Log.d(TAG, "onPositionDiscontinuity: from ${oldPosition.positionMs} to ${newPosition.positionMs}")
+        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "onPositionDiscontinuity: from ${oldPosition.positionMs} to ${newPosition.positionMs}")
 
         if (reason == DISCONTINUITY_REASON_SEEK) {
             updateSeek(newPosition.positionMs)
@@ -245,7 +246,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updateInfo(mediaMetadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
-        Log.d(TAG, "Info update called")
+        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Info update called")
 
         // Set title/subtitle to the available metadata, if available
         // When metadata is unavailable (or it's preference is false), use file name instead
@@ -267,7 +268,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updateSeek(value: Long = mediaController?.currentPosition ?: 0) {
-        Log.d(TAG, "Seek update called")
+        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Seek update called")
 
         // convert position into float (pain)
         var seekValue = (value + 0.0f) / (mediaController?.duration ?: 0)
@@ -285,25 +286,25 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updateState(isPlaying: Boolean = mediaController?.isPlaying ?: false) {
-        Log.d(TAG, "Playback state update called")
+        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Playback state update called")
         binding.playbackState.isChecked = isPlaying
 
         durationUpdateHandler?.let {
             if (isPlaying) {
                 durationUpdateRunnable?.let { runnable -> it.post(runnable) }
-                Log.d(TAG, "Post duration update until paused/stopped")
+                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Post duration update until paused/stopped")
             } else {
                 it.removeCallbacksAndMessages(null)
-                Log.d(TAG, "Stopped pending callbacks & messages of duration update")
+                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Stopped pending callbacks & messages of duration update")
             }
         }
         if (isWakeLock) {
             if (isPlaying) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                Log.d(TAG, "Added FLAG_KEEP_SCREEN_ON to window flags")
+                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Added FLAG_KEEP_SCREEN_ON to window flags")
             } else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                Log.d(TAG, "Removed FLAG_KEEP_SCREEN_ON from window flags")
+                Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "Removed FLAG_KEEP_SCREEN_ON from window flags")
             }
         }
     }
@@ -329,13 +330,13 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             }
         }
 
-        Log.d(TAG, "parseInfo returned: (first: $title, second: $subtitle)")
+        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "parseInfo returned: (first: $title, second: $subtitle)")
         return Pair(title, subtitle)
     }
 
     private fun parseArtwork(data: ByteArray): Bitmap {
         val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
-        Log.d(TAG, "parseArtwork returned: (byte size: ${data.size})")
+        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "parseArtwork returned: (byte size: ${data.size})")
         return bitmap ?: Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
     }
 
@@ -345,21 +346,12 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         val valueMinutes = valueMicroseconds / 60
         val valueSeconds = valueMicroseconds % 60
 
-        Log.d(TAG, "parseSeekPosition returned: (value: $position)")
+        Log.d(Constants.TAG_ACTIVITY_PLAYBACK, "parseSeekPosition returned: (value: $position)")
         return if (valueMicroseconds >= 360) {
             val valueHours = valueMicroseconds / 360
             getString(R.string.playback_seek_format_long, valueHours, valueMinutes, String.format(locale, "%1$02d", valueSeconds))
         } else {
             getString(R.string.playback_seek_format_short, valueMinutes, String.format(locale, "%1$02d", valueSeconds))
         }
-    }
-
-    companion object {
-        const val TAG = "PlaybackActivity"
-        const val PREFERENCE_INTERFACE_DISPLAY_METADATA = "interface_display_metadata"
-        const val PREFERENCE_PLAYBACK_DURATION_INTERVAL = "playback_duration_interval"
-        const val PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES = "other_animate_layout_changes"
-        const val PREFERENCE_OTHER_WAKE_LOCK = "other_wake_lock"
-        const val PREFERENCE_OTHER_IMMERSIVE_MODE = "other_immersive_mode"
     }
 }

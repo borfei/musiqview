@@ -21,6 +21,7 @@ import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.feivegian.musicview.App
+import io.github.feivegian.musicview.Constants
 import io.github.feivegian.musicview.R
 import io.github.feivegian.musicview.databinding.ActivityPreferenceEditorBinding
 import io.github.feivegian.musicview.databinding.ViewholderRowSettingBinding
@@ -205,7 +206,7 @@ class PreferenceEditorActivity : AppCompatActivity() {
         }
 
         data.sortBy { it.first }
-        Log.v(TAG, "Loaded ${data.size} keys")
+        Log.v(Constants.TAG_ACTIVITY_PREFERENCE_EDITOR, "Loaded ${data.size} keys")
         binding.settingsList.layoutManager = LinearLayoutManager(this)
         binding.settingsList.adapter = SettingsListAdapter(data)
         binding.settingsListReloader.isRefreshing = false
@@ -252,9 +253,5 @@ class PreferenceEditorActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int = data.size
-    }
-
-    companion object {
-        const val TAG = "PreferenceEditorActivity"
     }
 }

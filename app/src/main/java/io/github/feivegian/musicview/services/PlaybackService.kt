@@ -19,6 +19,7 @@ import androidx.media3.session.MediaSessionService
 import com.google.common.util.concurrent.ListenableFuture
 import io.github.feivegian.musicview.App
 import io.github.feivegian.musicview.BuildConfig
+import io.github.feivegian.musicview.Constants
 import java.io.File
 
 @UnstableApi
@@ -32,13 +33,13 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         val preferences = app.preferences
 
         val audioFocus =
-            preferences.getBoolean(PREFERENCE_PLAYBACK_AUDIO_FOCUS, true)
+            preferences.getBoolean(Constants.PREFERENCE_PLAYBACK_AUDIO_FOCUS, true)
         val constantBitrateSeeking =
-            preferences.getBoolean(PREFERENCE_PLAYBACK_CONSTANT_BITRATE_SEEKING, false)
+            preferences.getBoolean(Constants.PREFERENCE_PLAYBACK_CONSTANT_BITRATE_SEEKING, false)
         val maxCacheSize =
-            preferences.getInt(PREFERENCE_PLAYBACK_MAX_CACHE_SIZE, 32).toLong()
+            preferences.getInt(Constants.PREFERENCE_PLAYBACK_MAX_CACHE_SIZE, 32).toLong()
         val wakeLock =
-            preferences.getBoolean(PREFERENCE_OTHER_WAKE_LOCK, false)
+            preferences.getBoolean(Constants.PREFERENCE_OTHER_WAKE_LOCK, false)
 
         cache = SimpleCache(
             File(cacheDir, "media"),
@@ -49,7 +50,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
             .setUpstreamDataSourceFactory(DefaultDataSource.Factory(this))
         val loadErrorHandlingPolicy = object: DefaultLoadErrorHandlingPolicy() {
             override fun getRetryDelayMsFor(loadErrorInfo: LoadErrorHandlingPolicy.LoadErrorInfo): Long {
-                Log.e(TAG, "Load Error", loadErrorInfo.exception)
+                Log.e(Constants.TAG_SERVICE_PLAYBACK, "Load Error", loadErrorInfo.exception)
                 return super.getRetryDelayMsFor(loadErrorInfo)
             }
         }
@@ -121,12 +122,4 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = mediaSession
-
-    companion object {
-        const val TAG = "PlaybackService"
-        const val PREFERENCE_PLAYBACK_AUDIO_FOCUS = "playback_audio_focus"
-        const val PREFERENCE_PLAYBACK_CONSTANT_BITRATE_SEEKING = "playback_constant_bitrate_seeking"
-        const val PREFERENCE_PLAYBACK_MAX_CACHE_SIZE = "playback_max_cache_size"
-        const val PREFERENCE_OTHER_WAKE_LOCK = "other_wake_lock"
-    }
 }
