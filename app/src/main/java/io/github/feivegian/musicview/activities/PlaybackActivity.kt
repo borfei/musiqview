@@ -139,7 +139,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
                 mediaController?.pause()
             }
         }
-        binding.playbackOpenWith?.setOnClickListener {
+        binding.playbackOpenWith.setOnClickListener {
             val openWithIntent = Intent(Intent.ACTION_VIEW)
             openWithIntent.setDataAndType(mediaItem.localConfiguration?.uri, "audio/*")
             startActivity(openWithIntent)
