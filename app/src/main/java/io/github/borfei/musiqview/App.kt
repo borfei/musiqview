@@ -3,7 +3,6 @@ package io.github.borfei.musiqview
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
@@ -14,7 +13,19 @@ import java.util.Locale
 import kotlin.system.exitProcess
 
 @SuppressLint("UnsafeOptInUsageError")
-class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, Thread.UncaughtExceptionHandler {
+class App : Application(), Thread.UncaughtExceptionHandler {
+    companion object {
+        /**
+         * A simple conversion from [Application] class to [App]
+         *
+         * @param[application] The instance that will convert to, must not be null.
+         * @return[App]
+         */
+        fun fromInstance(application: Application): App {
+            return application as App
+        }
+    }
+
     val preferences: SharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(this)
     }
@@ -24,18 +35,8 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, T
 
     override fun onCreate() {
         super.onCreate()
-        // Initialize dynamic colors by default
         DynamicColors.applyToActivitiesIfAvailable(this)
-        // Initialize custom uncaught exception handler
         Thread.setDefaultUncaughtExceptionHandler(this)
-        Log.i(TAG, "Uncaught exceptions will now be handled by this instance")
-        // Register custom shared preference change listener
-        preferences.registerOnSharedPreferenceChangeListener(this)
-        Log.i(TAG, "Registered a custom OnSharedPreferenceChangeListener")
-    }
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        Log.d(TAG, "Preference changed: $key")
     }
 
     override fun uncaughtException(t: Thread, e: Throwable) {
@@ -54,20 +55,6 @@ class App : Application(), SharedPreferences.OnSharedPreferenceChangeListener, T
         }
         file.printWriter().use { out ->
             out.println(e.stackTraceToString())
-        }
-    }
-
-    companion object {
-        const val TAG = "App"
-
-        /**
-         * A simple conversion from [Application] class to [App]
-         *
-         * @param[application] The instance that will convert to, must not be null.
-         * @return[App]
-         */
-        fun fromInstance(application: Application): App {
-            return application as App
         }
     }
 }
