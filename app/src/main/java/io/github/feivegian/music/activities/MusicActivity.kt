@@ -20,6 +20,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.Player.DISCONTINUITY_REASON_SEEK
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.bumptech.glide.Glide
@@ -126,28 +127,27 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             }
         }
         binding.playbackSeek.setLabelFormatter { value ->
-            if (mediaController?.currentMediaItem == null) {
-                return@setLabelFormatter convertMsToDuration(0)
-            }
-
             val duration = mediaController?.duration ?: 0
-            convertMsToDuration(((value + 0.0) * duration).toLong())
+            val valueLong = ((value + 0.0) * duration).toLong()
+            parseSeekPosition(valueLong)
         }
         binding.playbackSeek.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
-                binding.playbackState.visibility = View.INVISIBLE
-                binding.playbackSeekPosition.visibility = View.INVISIBLE
-                mediaController?.pause()
+                binding.playbackSeekText.visibility = View.INVISIBLE
             }
 
             override fun onStopTrackingTouch(slider: Slider) {
-                binding.playbackState.visibility = View.VISIBLE
-                binding.playbackSeekPosition.visibility = View.VISIBLE
-                val duration = mediaController?.duration ?: 0
-                mediaController?.seekTo(((slider.value + 0.0) * duration).toLong())
-                mediaController?.play()
+                binding.playbackSeekText.visibility = View.VISIBLE
             }
         })
+
+        binding.playbackSeek.addOnChangeListener { _, value, fromUser ->
+            if (!fromUser) {
+                return@addOnChangeListener
+            }
+
+            mediaController?.seekTo(((value + 0.0) * (mediaController?.duration ?: 0)).toLong())
+        }
         controllerFuture.addListener({
             mediaController = controllerFuture.get()
             mediaController?.addListener(this)
@@ -170,7 +170,8 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                         }
                     }
 
-                    // prepare for playback
+                    // Set as current media item & prepare playback
+                    mediaController?.setMediaItem(mediaItem)
                     mediaController?.prepare()
                 }
             }
@@ -215,6 +216,18 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 finish()
             }
             .show()
+    }
+
+    override fun onPositionDiscontinuity(
+        oldPosition: Player.PositionInfo,
+        newPosition: Player.PositionInfo,
+        reason: Int
+    ) {
+        super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+
+        if (reason == DISCONTINUITY_REASON_SEEK) {
+            updateSeek(newPosition.positionMs)
+        }
     }
 
     private fun updateInfo(metadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
@@ -280,18 +293,20 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             .into(binding.coverArt)
     }
 
-    private fun updateSeek(position: Long = mediaController?.currentPosition ?: 0) {
-        val duration = mediaController?.duration ?: 0
-        var positionFloat = (position + 0.0f) / duration // convert position into float (pain)
-
-        if (positionFloat > 1.0f) {
-            positionFloat = 1.0f
-        } else if (positionFloat < 0.0f) {
-            positionFloat = 0.0f
+    private fun updateSeek(value: Long = mediaController?.currentPosition ?: 0) {
+        // convert position into float (pain)
+        var seekValue = (value + 0.0f) / (mediaController?.duration ?: 0)
+        // seekValue cannot be greater than 1.0f or lesser than 0.0f
+        if (seekValue > 1.0f) {
+            seekValue = 1.0f
+        } else if (seekValue < 0.0f) {
+            seekValue = 0.0f
         }
 
-        binding.playbackSeek.value = positionFloat
-        binding.playbackSeekPosition.text = convertMsToDuration(position)
+        // update slider value based on float
+        // and also slider text but based on long
+        binding.playbackSeek.value = seekValue
+        binding.playbackSeekText.text = parseSeekPosition(value)
     }
 
     private fun updateState(isPlaying: Boolean = mediaController?.isPlaying ?: false) {
@@ -311,17 +326,17 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         updateState()
     }
 
-    private fun convertMsToDuration(milliseconds: Long): String {
+    private fun parseSeekPosition(position: Long): String {
         val locale = Locale.getDefault()
-        val microseconds = milliseconds / 1000
-        val minutes = microseconds / 60
-        val seconds = microseconds % 60
+        val valueMicroseconds = position / 1000
+        val valueMinutes = valueMicroseconds / 60
+        val valueSeconds = valueMicroseconds % 60
 
-        if (microseconds >= 360) {
-            val hours = microseconds / 360
-            return getString(R.string.playback_seek_format_long, hours, minutes, String.format(locale, "%1$02d", seconds))
+        return if (valueMicroseconds >= 360) {
+            val valueHours = valueMicroseconds / 360
+            getString(R.string.playback_seek_format_long, valueHours, valueMinutes, String.format(locale, "%1$02d", valueSeconds))
+        } else {
+            getString(R.string.playback_seek_format_short, valueMinutes, String.format(locale, "%1$02d", valueSeconds))
         }
-
-        return getString(R.string.playback_seek_format_short, minutes, String.format(locale, "%1$02d", seconds))
     }
 }
