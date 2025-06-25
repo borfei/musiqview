@@ -8,8 +8,6 @@
     <string name="content_description_other_menu">Show other options</string>
     <string name="dialog_media_info_title">Media information</string>
     <string name="dialog_media_info_negative">Close</string>
-    <string name="dialog_playback_error_title">Playback error</string>
-    <string name="dialog_playback_error_negative">Close</string>
     <string name="filename_placeholder">[unknown file]</string>
     <string name="launcher_greeting">Welcome to %1$s!</string>
     <string name="launcher_instructions">To get started, simply use your file manager and open your audio files using %1$s.\n\nIf you want to let %2$s handle audio files automatically, set it as the default music app.</string>
