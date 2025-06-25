@@ -20,9 +20,8 @@ import io.github.feivegian.music.utils.adjustPaddingForSystemBarInsets
 
 class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var binding: ActivityPreferenceBinding
+    private lateinit var preferences: SharedPreferences
     private lateinit var restartSnackbar: Snackbar
-
-    lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,6 +118,10 @@ class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefe
 
     fun isRestartRequiredShown(): Boolean {
         return restartSnackbar.isShown
+    }
+
+    fun getPreferences(): SharedPreferences {
+        return preferences
     }
 
     companion object {
