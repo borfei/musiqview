@@ -239,6 +239,7 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             .setNegativeButton(R.string.dialog_playback_error_negative) { _, _ ->
                 finish()
             }
+            .setCancelable(false)
             .show()
     }
 
