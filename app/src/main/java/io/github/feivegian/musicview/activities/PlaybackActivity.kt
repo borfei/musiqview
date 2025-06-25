@@ -337,7 +337,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
 
     private fun parseArtwork(data: ByteArray): Bitmap {
         val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
-        Log.d(TAG, "parseArtwork returned: (bytes: ${bitmap.byteCount})")
+        Log.d(TAG, "parseArtwork returned: (byte size: ${data.size})")
         return bitmap ?: Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
     }
 
