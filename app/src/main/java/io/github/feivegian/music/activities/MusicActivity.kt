@@ -152,11 +152,9 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             }
         })
         binding.playbackSeek.addOnChangeListener { _, value, fromUser ->
-            if (!fromUser) {
-                return@addOnChangeListener
+            if (fromUser) {
+                mediaController?.seekTo(((value + 0.0) * (mediaController?.duration ?: 0)).toLong())
             }
-
-            mediaController?.seekTo(((value + 0.0) * (mediaController?.duration ?: 0)).toLong())
         }
         controllerFuture.addListener({
             mediaController = controllerFuture.get()
