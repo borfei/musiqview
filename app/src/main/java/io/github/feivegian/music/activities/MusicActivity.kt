@@ -12,10 +12,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.core.view.children
 import androidx.core.widget.doOnTextChanged
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -111,18 +113,27 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 false
             }
         })
+        // Animate every layout change by depending on the preference check
+        binding.root.layoutTransition = if (animateLayoutChanges) {
+            LayoutTransition()
+        } else {
+            null
+        }
+        binding.root.children.forEach { view ->
+            if (view is ViewGroup) {
+                view.layoutTransition = if (animateLayoutChanges) {
+                    LayoutTransition()
+                } else {
+                    null
+                }
+            }
+        }
         // When text changes for title and sub-title, toggle visibility based on text count
         binding.title.doOnTextChanged { _, _, _, count ->
             binding.title.visibility = if (count > 0) View.VISIBLE else View.GONE
         }
         binding.subtitle.doOnTextChanged { _, _, _, count ->
             binding.subtitle.visibility = if (count > 0) View.VISIBLE else View.GONE
-        }
-        // Animate layout changes by depending on the preference check
-        if (animateLayoutChanges) {
-            binding.playbackControls.layoutTransition = LayoutTransition()
-        } else {
-            binding.playbackControls.layoutTransition = null
         }
         // Register playback controls listeners
         binding.playbackState.addOnCheckedChangeListener { _, isChecked ->
