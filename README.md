@@ -1,46 +1,39 @@
-# Musicview
+# Musiqview
 Quickly preview audio files without leaving, on Android.
 
+[Download Musiqview](https://github.com/borfei/musicview/releases/latest)
+
+## Table of Contents
+- [Overview](#overview)
+- [Building](#building)
+- [License](#license)
+
 ## Overview
-<img src="docs/images/preview.png" alt="Preview" width="30%">
+**Musiqview** lets you preview local audio files from your Android device without annoying stuff.
+It is completely free, no ads, no BS, 100% open-source!
 
-This music player doesn't have a music library. It is designed to integrate
-seamlessly with file managers and other apps through Intent Filters, enabling
-users to preview audio files directly, and also eliminating the use of storage permissions.
-
-It provides a simple & user-friendly interface with the design following the
-Material 3 guidelines. It also utilizes Media3 ExoPlayer for supporting a wide
-variety of audio formats (such as FLAC, MP3, M4A, etc.)
-
-## Download
-Get the [latest version](https://github.com/borfei/musicview/releases/latest) on the Releases page.
+It follows the [Material You](https://m3.material.io/) guidelines, making the user interface clean
+and simple. It also utilizes [Media3](https://developer.android.com/media/media3) for media playback.
 
 ## Building
 It's the same way as you build a project using Android Studio, no steps needed.
 
-Although if you prefer the command-line for building, you can use Gradle tasks instead:
-```shell
-# DEBUG
-$ ./gradlew assembleDebug
-$ ./gradlew installDebug # install to connected device
-# RELEASE
-$ ./gradlew assembleRelease
-$ zipalign -v -p 4 app-release-unsigned.apk app-release-unsigned-aligned.apk
-$ apksigner sign --ks my-release-key.jks --out app-release.apk app-release-unsigned-aligned.apk
-```
+Although if you prefer the hacker way, you can use Gradle tasks instead:
+- Debug:
+    - ```shell
+        $ ./gradlew assembleDebug
+        $ ./gradlew installDebug # install to connected device
+        ```
+- Release:
+- ```shell
+    $ ./gradlew assembleRelease
+    $ zipalign -v -p 4 app-release-unsigned.apk app-release-unsigned-aligned.apk
+    $ apksigner sign --ks my-release-key.jks --out app-release.apk app-release-unsigned-aligned.apk
+    ```
 
 > [!IMPORTANT]
-> *When building a release build, you must provide your own keystore.*
-
-## FAQ
-- Musicview no longer accepts network playback, what happened?
-> It has been removed starting with version **3.4.0**, due to overcomplicating reasons
-> and security issues/concerns.
-- Where is the old Music project? Why was this renamed to Musicview?
-> Naming this project "Music" deemed confusing as it conflicts with devices
-> that come with their stock music players, so "Musicview" is the new name for it.
-- What are the supported audio formats?
-> Any kind of format that is currently supported by Media3 ExoPlayer.
+> When building a release build using **the hacker way**, you must provide your own keystore.
 
 ## License
-This project is licensed under the [MIT License](LICENSE).
+Musiqview is licensed under the **MIT License**.
+See the [LICENSE](LICENSE) file for more information.

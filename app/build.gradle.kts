@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "io.github.feivegian.musicview"
+    namespace = "io.github.borfei.musiqview"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "io.github.feivegian.musicview"
+        applicationId = "io.github.borfei.musiqview"
         minSdk = 24
         targetSdk = 35
         versionCode = 9
