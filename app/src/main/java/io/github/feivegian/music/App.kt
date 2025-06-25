@@ -1,5 +1,6 @@
 package io.github.feivegian.music
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.app.UiModeManager
 import android.content.Context
@@ -7,6 +8,8 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.media3.database.DatabaseProvider
+import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import java.io.File
@@ -15,8 +18,10 @@ import java.util.Date
 import java.util.Locale
 import kotlin.system.exitProcess
 
+@SuppressLint("UnsafeOptInUsageError")
 class App : Application(), Thread.UncaughtExceptionHandler {
     private lateinit var preferences: SharedPreferences
+    private lateinit var databaseProvider: StandaloneDatabaseProvider
 
     private var theme: String = "auto"
     private var dynamicColors: Boolean = false
@@ -34,6 +39,8 @@ class App : Application(), Thread.UncaughtExceptionHandler {
             }
         }
 
+        // Initialize database provider for media caching & download service
+        databaseProvider = StandaloneDatabaseProvider(this)
         // Initialize custom uncaught exception handler & greet the logcat
         Log.i(TAG, "Initialized ${getString(R.string.app_name)} version ${BuildConfig.VERSION_NAME} (code ${BuildConfig.VERSION_CODE})")
         Thread.setDefaultUncaughtExceptionHandler(this)
@@ -42,6 +49,10 @@ class App : Application(), Thread.UncaughtExceptionHandler {
     override fun uncaughtException(t: Thread, e: Throwable) {
         generateTraceLog(e)
         exitProcess(-1)
+    }
+
+    fun getDatabaseProvider(): DatabaseProvider {
+        return databaseProvider
     }
 
     private fun generateTraceLog(e: Throwable) {

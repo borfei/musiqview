@@ -16,6 +16,7 @@ import androidx.media3.session.MediaSessionService
 import androidx.preference.PreferenceManager
 import com.google.common.util.concurrent.ListenableFuture
 import io.github.feivegian.music.App
+import io.github.feivegian.music.App.Companion.asApp
 import io.github.feivegian.music.BuildConfig
 
 @UnstableApi
@@ -25,7 +26,6 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     private var wakeLock: Boolean = false
 
     // TODO: Implement custom cache size
-    private lateinit var cacheDatabaseProvider: StandaloneDatabaseProvider
     private var cache: SimpleCache? = null
     private val maxCacheBytes: Long = 2147483648 // 2GB
 
@@ -37,8 +37,9 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         audioFocus = preferences.getBoolean("playback_audio_focus", true)
         wakeLock = preferences.getBoolean("other_wake_lock", false)
 
-        cacheDatabaseProvider = StandaloneDatabaseProvider(this)
-        cache = SimpleCache(cacheDir, LeastRecentlyUsedCacheEvictor(maxCacheBytes), cacheDatabaseProvider)
+        cache = SimpleCache(cacheDir,
+            LeastRecentlyUsedCacheEvictor(maxCacheBytes),
+            application.asApp().getDatabaseProvider())
         val cacheDataSourceFactory = CacheDataSource.Factory()
             .setCache(cache!!)
             .setUpstreamDataSourceFactory(DefaultDataSource.Factory(this))
