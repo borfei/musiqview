@@ -163,7 +163,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
     override fun onIsLoadingChanged(isLoading: Boolean) {
         super.onIsLoadingChanged(isLoading)
 
-        if (isLoading) {
+        if (isLoading && mediaController?.isPlaying == false) {
             binding.playbackLoadIndicator.visibility = View.VISIBLE
         } else {
             binding.playbackLoadIndicator.visibility = View.GONE
