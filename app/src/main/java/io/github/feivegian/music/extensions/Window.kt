@@ -1,4 +1,4 @@
-package io.github.feivegian.music.utils
+package io.github.feivegian.music.extensions
 
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat

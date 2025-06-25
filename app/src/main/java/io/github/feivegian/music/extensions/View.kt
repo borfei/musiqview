@@ -1,4 +1,4 @@
-package io.github.feivegian.music.utils
+package io.github.feivegian.music.extensions
 
 import android.view.View
 import android.view.ViewGroup
