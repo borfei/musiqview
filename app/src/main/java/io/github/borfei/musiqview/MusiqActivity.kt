@@ -114,6 +114,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
             Player.STATE_READY -> {
                 binding.playbackLoadIndicator.hide()
                 binding.playbackState.isEnabled = true
+                mediaController?.availableCommands?.let { updatePlaybackCommands(it) }
                 updatePlaybackSeekDuration()
             }
 
@@ -194,6 +195,12 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
                 binding.playbackSeekTextDuration.text = getString(R.string.playback_seek_text_format).format(minutes, seconds)
             }
         }
+    }
+
+    private fun updatePlaybackCommands(commands: Player.Commands) {
+        binding.playbackSeekSlider.isEnabled = Player.COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM in commands
+        binding.playbackState.isEnabled = Player.COMMAND_PLAY_PAUSE in commands
+        binding.playbackRepeat.isEnabled = Player.COMMAND_SET_REPEAT_MODE in commands
     }
 
     private fun updatePlaybackState(isPlaying: Boolean) {
