@@ -1,6 +1,7 @@
 package io.github.feivegian.music.activities
 
 import android.animation.LayoutTransition
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
 import android.content.SharedPreferences
@@ -35,6 +36,7 @@ import io.github.feivegian.music.extensions.setImmersiveMode
 import io.github.feivegian.music.services.PlaybackService
 import java.util.Locale
 
+@SuppressLint("UnsafeOptInUsageError")
 class MusicActivity : AppCompatActivity(), Player.Listener {
     enum class ImmersiveMode {
         DISABLED, ENABLED, LANDSCAPE_ONLY
