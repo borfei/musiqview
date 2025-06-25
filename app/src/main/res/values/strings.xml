@@ -6,6 +6,12 @@
     <string name="content_description_playback_state">Play or pause current media</string>
     <string name="content_description_playback_seek">Seek media position</string>
     <string name="content_description_preference_editor_add">Add a new preference item</string>
+    <!-- Welcome strings -->
+    <string name="welcome_header">Welcome to %1$s!</string>
+    <string name="welcome_permission">This application does not require permissions to scanning media content.</string>
+    <string name="welcome_instruction">Instead of using a music library, use your favorite file manager, then open an audio file using this application and enjoy listening!</string>
+    <string name="welcome_tip">Pro tip: Set this as the default music app for one-click experience.</string>
+    <string name="welcome_continue">Got it!</string>
     <!-- Playback strings -->
     <string name="playback_seek_default">0:00</string>
     <string name="playback_seek_format_short">%1$d:%2$s</string>
