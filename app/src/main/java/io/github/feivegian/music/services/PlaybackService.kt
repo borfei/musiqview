@@ -20,6 +20,7 @@ import io.github.feivegian.music.BuildConfig
 @UnstableApi
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
     private lateinit var preferences: SharedPreferences
+
     private var audioFocus: Boolean = true
     private var wakeLock: Boolean = false
 
@@ -32,8 +33,8 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     override fun onCreate() {
         super.onCreate()
         preferences = application.asApp().getPreferences()
-        audioFocus = preferences.getBoolean("playback_audio_focus", true)
-        wakeLock = preferences.getBoolean("other_wake_lock", false)
+        audioFocus = preferences.getBoolean("playback_audio_focus", audioFocus)
+        wakeLock = preferences.getBoolean("other_wake_lock", wakeLock)
 
         cache = SimpleCache(cacheDir,
             LeastRecentlyUsedCacheEvictor(maxCacheBytes),
