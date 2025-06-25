@@ -12,7 +12,6 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
 import androidx.preference.SeekBarPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.feivegian.music.App
@@ -36,7 +35,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
         activity = requireActivity() as PreferenceActivity
         customTabsIntent = CustomTabsIntent.Builder().build()
         application = activity.application.asApp()
-        preferences = PreferenceManager.getDefaultSharedPreferences(application)
+        preferences = application.getPreferences()
         preferences.registerOnSharedPreferenceChangeListener(this)
 
         val theme = findPreference<ListPreference>("looks_theme")

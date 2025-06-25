@@ -12,7 +12,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import androidx.preference.PreferenceManager
 import com.google.common.util.concurrent.ListenableFuture
 import io.github.feivegian.music.App.Companion.asApp
 import io.github.feivegian.music.BuildConfig
@@ -31,7 +30,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
 
     override fun onCreate() {
         super.onCreate()
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        preferences = application.asApp().getPreferences()
         audioFocus = preferences.getBoolean("playback_audio_focus", true)
         wakeLock = preferences.getBoolean("other_wake_lock", false)
 

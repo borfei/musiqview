@@ -51,6 +51,10 @@ class App : Application(), Thread.UncaughtExceptionHandler {
         exitProcess(-1)
     }
 
+    fun getPreferences(): SharedPreferences {
+        return preferences
+    }
+
     fun getDatabaseProvider(): DatabaseProvider {
         return databaseProvider
     }

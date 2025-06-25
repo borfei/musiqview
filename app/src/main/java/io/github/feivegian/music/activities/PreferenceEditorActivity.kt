@@ -18,9 +18,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.github.feivegian.music.App.Companion.asApp
 import io.github.feivegian.music.R
 import io.github.feivegian.music.databinding.ActivityPreferenceEditorBinding
 import io.github.feivegian.music.databinding.ViewholderRowSettingBinding
@@ -32,20 +32,21 @@ class PreferenceEditorActivity : AppCompatActivity() {
     private lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        enableEdgeToEdge()
+
         binding = ActivityPreferenceEditorBinding.inflate(layoutInflater)
         binding.toolbar.adjustPaddingForSystemBarInsets(top=true)
         binding.settingsListReloader.adjustPaddingForSystemBarInsets(left=true, right=true, bottom=true)
         binding.settingsCreateItem.adjustMarginsForSystemBarInsets(left=true, right=true, bottom=true)
         binding.settingsCreateItem.adjustPaddingForSystemBarInsets(left=true, right=true, bottom=true)
-
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.preference_editor_title)
+
+        preferences = application.asApp().getPreferences()
 
         onBackPressedDispatcher.addCallback(object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
