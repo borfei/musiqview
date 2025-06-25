@@ -3,6 +3,7 @@ package io.github.feivegian.music.services
 import android.content.SharedPreferences
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
+import androidx.media3.common.TrackSelectionParameters.AudioOffloadPreferences
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.cache.CacheDataSource
@@ -41,10 +42,18 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
             .setCache(cache!!)
             .setUpstreamDataSourceFactory(DefaultDataSource.Factory(this))
 
+        val mediaSourceFactory = DefaultMediaSourceFactory(this)
+            .setDataSourceFactory(cacheDataSourceFactory)
         val player = ExoPlayer.Builder(this)
             .setAudioAttributes(AudioAttributes.DEFAULT, audioFocus)
-            .setWakeMode(if (wakeLock) C.WAKE_MODE_NETWORK else C.WAKE_MODE_NONE) // use network
-            .setMediaSourceFactory(DefaultMediaSourceFactory(this).setDataSourceFactory(cacheDataSourceFactory))
+            .setWakeMode(if (wakeLock) C.WAKE_MODE_LOCAL else C.WAKE_MODE_NONE)
+            .setMediaSourceFactory(mediaSourceFactory)
+            .build()
+        val audioOffloadPreferences = AudioOffloadPreferences.Builder()
+            .setAudioOffloadMode(AudioOffloadPreferences.AUDIO_OFFLOAD_MODE_ENABLED)
+            .build()
+        player.trackSelectionParameters = player.trackSelectionParameters.buildUpon()
+            .setAudioOffloadPreferences(audioOffloadPreferences)
             .build()
         mediaSession = MediaSession.Builder(this, player)
             .setCallback(this)
