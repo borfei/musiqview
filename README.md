@@ -26,6 +26,7 @@ $ zipalign -v -p 4 app-release-unsigned.apk app-release-unsigned-aligned.apk
 $ apksigner sign --ks my-release-key.jks --out app-release.apk app-release-unsigned-aligned.apk
 ```
 
+> [!IMPORTANT]
 > *When building a release build, you must install `zipalign`, `apksigner`, and have your own keystore.*
 
 ## FAQs
