@@ -30,7 +30,7 @@ $ apksigner sign --ks my-release-key.jks --out app-release.apk app-release-unsig
 ```
 
 > [!IMPORTANT]
-> *When building a release build, you must install [Android SDK Build Tools](https://developer.android.com/tools), and have your own keystore.*
+> *When building a release build, you must provide your own keystore.*
 
 ## FAQ
 - Musicview no longer accepts network playback, what happened?
@@ -39,6 +39,8 @@ $ apksigner sign --ks my-release-key.jks --out app-release.apk app-release-unsig
 - Where is the old Music project? Why was this renamed to Musicview?
 > Naming this project "Music" deemed confusing as it conflicts with devices
 > that come with their stock music players, so "Musicview" is the new name for it.
+- What are the supported audio formats?
+> Any kind of format that is currently supported by Media3 ExoPlayer.
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
