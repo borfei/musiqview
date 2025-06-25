@@ -2,7 +2,7 @@
 A music player, made simple yet customizable for Android.
 
 ## Overview
-![Preview](docs/images/preview.png "Music")
+<img src="docs/images/preview.png" alt="Preview" width="150" height="300">
 
 Music is designed to integrate seamlessly with other apps and system functions through intent filters,
 enabling users to play audio files directly from various external sources.
