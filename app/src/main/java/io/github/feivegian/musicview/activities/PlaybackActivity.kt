@@ -48,9 +48,9 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     private var isLayoutAnimated: Boolean = true
     private var isWakeLock: Boolean = false
 
-    private var loopHandler: Handler? = null
-    private var loopRunnable: Runnable? = null
-    private var loopInterval: Int = 1000
+    private var durationUpdateHandler: Handler? = null
+    private var durationUpdateRunnable: Runnable? = null
+    private var durationUpdateInterval: Int = 1000
 
     private var mediaController: MediaController? = null
     private var mediaItem: MediaItem = MediaItem.EMPTY
@@ -58,15 +58,14 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
         // Initialize preferences
         val preferences = App.fromInstance(application).preferences
 
         preferences.getBoolean(PREFERENCE_INTERFACE_DISPLAY_METADATA, isMetadataDisplayed).let {
             isMetadataDisplayed = it
         }
-        preferences.getInt(PREFERENCE_PLAYBACK_DURATION_INTERVAL, loopInterval).let {
-            loopInterval = it
+        preferences.getInt(PREFERENCE_PLAYBACK_DURATION_INTERVAL, durationUpdateInterval).let {
+            durationUpdateInterval = it
         }
         preferences.getBoolean(PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES, isLayoutAnimated).let {
             isLayoutAnimated = it
@@ -79,18 +78,17 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         binding = ActivityPlaybackBinding.inflate(layoutInflater)
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
-
         // Connect activity to media session
         val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
         val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+        // Initialize duration updater
+        durationUpdateHandler = Handler(Looper.myLooper() ?: Looper.getMainLooper())
+        durationUpdateRunnable = Runnable {
+            updateSeek()
 
-        // Initialize loop handler & it's runnable
-        Looper.myLooper()?.let {
-            loopHandler = Handler(it)
-        }
-        loopRunnable = Runnable {
-            updateSeek() // Update seek position every loop
-            loopRunnable?.let { loopHandler?.postDelayed(it, loopInterval.toLong()) }
+            durationUpdateRunnable?.let {
+                durationUpdateHandler?.postDelayed(it, durationUpdateInterval.toLong())
+            }
         }
 
         // Make all ViewGroups animate when their child orders are changed
@@ -176,6 +174,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
                 // the one defined in AndroidManifest.xml
                 if (intent.action == Intent.ACTION_VIEW) {
                     intent.data?.let {
+                        Log.d(TAG, "Intent URI: $it")
                         mediaItem = MediaItem.fromUri(it)
                         updateInfo(mediaItem.mediaMetadata)
                     }
@@ -186,30 +185,39 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             if (mediaController?.currentMediaItem == null) {
                 mediaController?.setMediaItem(mediaItem)
                 mediaController?.prepare()
+                Log.d(TAG, "Preparing media URI")
             } else {
                 update()
+                Log.d(TAG, "Update called; playback already loaded")
             }
         },
             MoreExecutors.directExecutor()
         )
     }
 
-    override fun onStart() {
-        super.onStart()
-        loopRunnable?.let { loopHandler?.post(it) }
+    override fun onResume() {
+        super.onResume()
+        // Start the duration updater when activity is in front
+        durationUpdateRunnable?.let { durationUpdateHandler?.post(it) }
+        Log.d(TAG, "Duration update handler started")
     }
 
-    override fun onStop() {
-        super.onStop()
-        loopRunnable?.let { loopHandler?.removeCallbacks(it) }
+    override fun onPause() {
+        super.onPause()
+        // Stop the duration updater when activity is no longer foreground
+        durationUpdateHandler?.removeCallbacksAndMessages(null)
+        Log.d(TAG, "Duration update handler stopped")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        loopRunnable = null
-        loopHandler = null
+        // Release duration updater
+        durationUpdateRunnable = null
+        durationUpdateHandler = null
+        // Disconnect from media session
         mediaController?.removeListener(this)
         mediaController?.release()
+        Log.d(TAG, "Media session disconnected")
     }
 
     override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
