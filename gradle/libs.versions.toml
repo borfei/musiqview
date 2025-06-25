@@ -1,0 +1,35 @@
+[versions]
+appcompat = "1.7.0"
+browser = "1.8.0"
+core-ktx = "1.15.0"
+espresso-core = "3.6.1"
+fragment-ktx = "1.8.5"
+glide = "4.16.0"
+junit = "4.13.2"
+junit-version = "1.2.1"
+material = "1.12.0"
+media3-common = "1.5.1"
+media3-exoplayer = "1.5.1"
+media3-session = "1.5.1"
+plugin-android = "8.8.0"
+plugin-ktx = "1.9.22"
+preference-ktx = "1.2.1"
+
+[libraries]
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment-ktx" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
+androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junit-version" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preference-ktx" }
+androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3-session" }
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3-exoplayer" }
+androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3-common" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+junit = { module = "junit:junit", version.ref = "junit" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+
+[plugins]
+android = { id = "com.android.application", version.ref = "plugin-android" }
+android-ktx = { id = "org.jetbrains.kotlin.android", version.ref = "plugin-ktx" }
