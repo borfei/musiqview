@@ -6,11 +6,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.google.android.material.snackbar.Snackbar
 import io.github.borfei.musiqview.R
 import io.github.borfei.musiqview.databinding.ActivityPreferenceBinding
 import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
-import io.github.borfei.musiqview.extensions.restart
 import io.github.borfei.musiqview.fragments.PreferenceFragment
 
 class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
@@ -63,13 +61,5 @@ class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefe
             .commit()
 
         return true
-    }
-
-    fun notifyRestart() {
-        Snackbar.make(binding.root, R.string.snackbar_restart_required, Snackbar.LENGTH_LONG)
-            .setAction(R.string.snackbar_restart_required_action) { _ ->
-                application.restart(componentName)
-            }
-            .show()
     }
 }

@@ -16,7 +16,6 @@ import androidx.preference.SeekBarPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.borfei.musiqview.App
 import io.github.borfei.musiqview.BuildConfig
-import io.github.borfei.musiqview.Constants
 import io.github.borfei.musiqview.R
 import io.github.borfei.musiqview.activities.PreferenceActivity
 import io.github.borfei.musiqview.extensions.changeNightMode
@@ -43,7 +42,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
         preferences.registerOnSharedPreferenceChangeListener(this)
 
         val theme = findPreference<ListPreference>("looks_theme")
-        val dynamicColors = findPreference<CheckBoxPreference>("looks_dynamic_colors")
         val durationInterval = findPreference<SeekBarPreference>("playback_duration_interval")
         val maxCacheSize = findPreference<SeekBarPreference>("playback_max_cache_size")
         val name = findPreference<Preference>("about_name")
@@ -58,10 +56,6 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
 
         theme?.setOnPreferenceChangeListener { _, newValue ->
             application.changeNightMode(newValue as String)
-            true
-        }
-        dynamicColors?.setOnPreferenceChangeListener { _, _ ->
-            activity.notifyRestart()
             true
         }
         durationInterval?.setOnPreferenceChangeListener { pref, newValue ->
@@ -84,7 +78,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
             if (uec >= 5) {
                 if (experimentsUnlock?.isChecked == false) {
                     experimentsUnlock.isChecked = true
-                    activity.notifyRestart()
+                    activity.recreate()
                 }
 
                 uec = 0 // reset to zero after unlocking experiments
@@ -100,7 +94,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
             true
         }
         experimentsUnlock?.setOnPreferenceChangeListener { _, _ ->
-            activity.notifyRestart()
+            activity.recreate()
             true
         }
         crashLogs?.setOnPreferenceClickListener {
