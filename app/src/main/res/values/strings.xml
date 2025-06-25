@@ -7,6 +7,7 @@
     <string name="content_description_playback_seek">Seek media position</string>
     <!-- Playback strings -->
     <string name="playback_seek_text">00:00</string>
+    <string name="playback_seek_text_format">%02d:%02d</string>
     <!-- Dialog strings -->
     <string name="dialog_playback_error_title">Playback error</string>
     <string name="dialog_playback_error_negative">Close</string>
