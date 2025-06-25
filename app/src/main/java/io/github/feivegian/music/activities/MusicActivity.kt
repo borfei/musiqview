@@ -144,6 +144,11 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
 
             override fun onStopTrackingTouch(slider: Slider) {
                 binding.playbackSeekText.visibility = View.VISIBLE
+
+                // This is the only way to get the playback resume
+                if (mediaController?.isPlaying == false) {
+                    mediaController?.play()
+                }
             }
         })
         binding.playbackSeek.addOnChangeListener { _, value, fromUser ->
