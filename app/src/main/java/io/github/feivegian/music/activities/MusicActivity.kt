@@ -59,8 +59,8 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
     private var immersiveMode: ImmersiveMode = ImmersiveMode.LANDSCAPE_ONLY
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
 
         // Initialize preferences
         preferences = application.asApp().getPreferences()
