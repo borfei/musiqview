@@ -195,20 +195,6 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Start the duration updater when activity is in front
-        durationUpdateRunnable?.let { durationUpdateHandler?.post(it) }
-        Log.d(TAG, "Duration update handler started")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // Stop the duration updater when activity is no longer foreground
-        durationUpdateHandler?.removeCallbacksAndMessages(null)
-        Log.d(TAG, "Duration update handler stopped")
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         // Release duration updater
@@ -302,10 +288,22 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
         Log.d(TAG, "Playback state update called")
         binding.playbackState.isChecked = isPlaying
 
+        durationUpdateHandler?.let {
+            if (isPlaying) {
+                durationUpdateRunnable?.let { runnable -> it.post(runnable) }
+                Log.d(TAG, "Post duration update until paused/stopped")
+            } else {
+                it.removeCallbacksAndMessages(null)
+                Log.d(TAG, "Stopped pending callbacks & messages of duration update")
+            }
+        }
         if (isWakeLock) {
-            when (isPlaying) {
-                true -> { window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
-                false -> { window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) }
+            if (isPlaying) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                Log.d(TAG, "Added FLAG_KEEP_SCREEN_ON to window flags")
+            } else {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                Log.d(TAG, "Removed FLAG_KEEP_SCREEN_ON from window flags")
             }
         }
     }
