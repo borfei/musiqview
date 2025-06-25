@@ -24,6 +24,7 @@
             android:scaleType="centerCrop" />
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
+            style="@style/Widget.Material3.CircularProgressIndicator"
             android:id="@+id/playback_load_indicator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
