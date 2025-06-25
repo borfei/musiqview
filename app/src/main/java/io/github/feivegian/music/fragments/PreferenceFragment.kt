@@ -93,39 +93,34 @@ class PreferenceFragment : PreferenceFragmentCompat() {
             activity.recreate() // restart activity to hide experiments
             true
         }
-        // TODO: Use an efficient way of building AlertDialogs
         crashLogs?.setOnPreferenceClickListener {
             val logs = File(requireContext().dataDir, "crash")
-
-            if (logs.list() == null || logs.list()?.size!! < 1) {
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(R.string.dialog_crash_logs_title)
-                    .setMessage(R.string.preference_about_experiments_crash_logs_empty)
-                    .setNegativeButton(R.string.dialog_crash_logs_negative) { _, _ -> }
-                    .show()
-
-                return@setOnPreferenceClickListener false
-            }
-            MaterialAlertDialogBuilder(requireContext())
+            val dialog = MaterialAlertDialogBuilder(activity)
                 .setTitle(R.string.dialog_crash_logs_title)
-                .setItems(logs.list()) { _, item ->
-                    val filename = logs.list()?.get(item) ?: String()
-                    val file = File(logs, filename)
-
-                    MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(filename)
-                        .setMessage(file.readText())
-                        .setNegativeButton(R.string.dialog_crash_logs_negative) { _, _ -> }
-                        .show()
-                }
                 .setNegativeButton(R.string.dialog_crash_logs_negative) { _, _ -> }
-                .setNeutralButton(R.string.dialog_crash_logs_neutral) { _, _ ->
-                    val count = logs.list()?.size
-                    logs.deleteRecursively()
-                    Toast.makeText(requireContext(), getString(R.string.dialog_crash_logs_clear, count), Toast.LENGTH_LONG).show()
-                }
-                .show()
 
+            if (logs.list().isNullOrEmpty()) {
+                dialog.setMessage(R.string.preference_about_experiments_crash_logs_empty)
+            } else {
+                dialog
+                    .setItems(logs.list()) { _, item ->
+                        val filename = logs.list()?.get(item) ?: String()
+                        val file = File(logs, filename)
+
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(filename)
+                            .setMessage(file.readText())
+                            .setNegativeButton(R.string.dialog_crash_logs_negative) { _, _ -> }
+                            .show()
+                    }
+                    .setNeutralButton(R.string.dialog_crash_logs_neutral) { _, _ ->
+                        val count = logs.list()?.size
+                        logs.deleteRecursively()
+                        Toast.makeText(requireContext(), getString(R.string.dialog_crash_logs_clear, count), Toast.LENGTH_LONG).show()
+                    }
+            }
+
+            dialog.show()
             true
         }
     }
