@@ -1,19 +1,19 @@
-# Music
-A music player, made simple yet customizable for Android.
+# Musicview
+Quickly preview audio files without leaving, on Android.
 
 ## Overview
 <img src="docs/images/preview.png" alt="Preview" width="30%">
 
-Music is designed to integrate seamlessly with other apps through intent filters,
-enabling users to play audio files directly from various external sources, without leaving.
+Musicview is designed to integrate seamlessly with other apps through intent-filters,
+enabling users to preview audio files directly from various external sources.
 
 It aims to provide a simple & user-friendly interface with the design following the
-Material 3 guidelines, and media playback powered by ExoPlayer through Media3 API.
+Material 3 guidelines, and powered by Media3 ExoPlayer to handle audio playback.
 
 ## Download
-[![Android CI](https://github.com/feivegian/music/actions/workflows/android.yml/badge.svg)](https://github.com/feivegian/music/actions/workflows/android.yml)
+[![Android CI](https://github.com/feivegian/musicview/actions/workflows/android.yml/badge.svg)](https://github.com/feivegian/musicview/actions/workflows/android.yml)
 
-Get the [latest version](https://github.com/feivegian/music/releases/latest) on the Releases page.
+Get the [latest version](https://github.com/feivegian/musicview/releases/latest) on the Releases page.
 
 ## Building
 It's the same way as you build a project using Android Studio, no steps needed.
@@ -30,7 +30,15 @@ $ apksigner sign --ks my-release-key.jks --out app-release.apk app-release-unsig
 ```
 
 > [!IMPORTANT]
-> *When building a release build, you must install `zipalign`, `apksigner`, and have your own keystore.*
+> *When building a release build, you must install [Android SDK Build Tools](https://developer.android.com/tools), and have your own keystore.*
+
+## FAQ
+- Musicview no longer accepts network playback, what happened?
+> It has been removed starting with version **3.4.0**, due to overcomplicating reasons
+> and security issues/concerns.
+- Where is the old Music project? Why was this renamed to Musicview?
+> Naming this project "Music" deemed confusing as it conflicts with devices
+> that come with their stock music players, so "Musicview" is the new name for it.
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
