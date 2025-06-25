@@ -15,19 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".activities.MainActivity"
-            android:excludeFromRecents="true"
-            android:exported="true"
-            android:enabled="true"
-            android:noHistory="true"
-            android:theme="@style/AppTheme.Overlay">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".activities.PlaybackActivity"
             android:configChanges="orientation"
