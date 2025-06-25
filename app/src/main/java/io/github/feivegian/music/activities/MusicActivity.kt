@@ -262,10 +262,16 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         binding.subtitle.text = info.second
 
         // Load artwork from metadata, if available
-        Glide.with(this)
-            .load(parseArtwork(metadata.artworkData ?: byteArrayOf(1)))
-            .transition(withCrossFade())
-            .into(binding.artwork)
+        val artworkData = parseArtwork(metadata.artworkData ?: byteArrayOf(1))
+
+        if (animateLayoutChanges) {
+            Glide.with(this)
+                .load(artworkData)
+                .transition(withCrossFade())
+                .into(binding.artwork)
+        } else {
+            binding.artwork.setImageBitmap(artworkData)
+        }
     }
 
     private fun updateSeek(value: Long = mediaController?.currentPosition ?: 0) {
