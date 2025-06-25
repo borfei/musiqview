@@ -6,10 +6,6 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.TrackSelectionParameters.AudioOffloadPreferences
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
-import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
@@ -21,7 +17,6 @@ import com.google.common.util.concurrent.ListenableFuture
 import io.github.borfei.musiqview.App
 import io.github.borfei.musiqview.BuildConfig
 import io.github.borfei.musiqview.Constants
-import java.io.File
 
 @SuppressLint("UnsafeOptInUsageError")
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
@@ -29,7 +24,6 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         const val TAG = "PlaybackService"
     }
 
-    private var cache: SimpleCache? = null
     private var mediaSession: MediaSession? = null
 
     override fun onCreate() {
@@ -41,18 +35,9 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
             preferences.getBoolean(Constants.PREFERENCE_PLAYBACK_AUDIO_FOCUS, true)
         val constantBitrateSeeking =
             preferences.getBoolean(Constants.PREFERENCE_PLAYBACK_CONSTANT_BITRATE_SEEKING, false)
-        val maxCacheSize =
-            preferences.getInt(Constants.PREFERENCE_PLAYBACK_MAX_CACHE_SIZE, 32).toLong()
         val wakeLock =
             preferences.getBoolean(Constants.PREFERENCE_OTHER_WAKE_LOCK, false)
 
-        cache = SimpleCache(
-            File(cacheDir, "media"),
-            LeastRecentlyUsedCacheEvictor((maxCacheSize * 1024) * 1024), // convert to byte size
-            app.databaseProvider)
-        val cacheDataSourceFactory = CacheDataSource.Factory()
-            .setCache(cache!!)
-            .setUpstreamDataSourceFactory(DefaultDataSource.Factory(this))
         val loadErrorHandlingPolicy = object: DefaultLoadErrorHandlingPolicy() {
             override fun getRetryDelayMsFor(loadErrorInfo: LoadErrorHandlingPolicy.LoadErrorInfo): Long {
                 Log.e(TAG, "Load Error", loadErrorInfo.exception)
@@ -63,7 +48,6 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
             .setConstantBitrateSeekingEnabled(constantBitrateSeeking)
         val mediaSourceFactory = DefaultMediaSourceFactory(this, extractorsFactory)
             .setLoadErrorHandlingPolicy(loadErrorHandlingPolicy)
-            .setDataSourceFactory(cacheDataSourceFactory)
         val player = ExoPlayer.Builder(this)
             .setAudioAttributes(AudioAttributes.DEFAULT, audioFocus)
             .setWakeMode(if (wakeLock) C.WAKE_MODE_LOCAL else C.WAKE_MODE_NONE)
@@ -83,10 +67,8 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     override fun onDestroy() {
         mediaSession?.run {
             player.release()
-            cache?.release()
             release()
 
-            cache = null
             mediaSession = null
         }
 
