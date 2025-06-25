@@ -34,30 +34,6 @@
     <string name="device_info_dump_file_fail_io">Cannot perform IO operations right now, try again later.</string>
     <string name="device_info_refresh">Refresh</string>
     <string name="device_info_refresh_success">Refresh success</string>
-    <!-- Service test strings -->
-    <string name="service_test_title">Service Test</string>
-    <string name="service_test_running">Is service running: %1$b</string>
-    <string name="service_test_connected">Is connected to session: %1$b</string>
-    <string name="service_test_previous">Has previous item: %1$b</string>
-    <string name="service_test_next">Has next item: %1$b</string>
-    <string name="service_test_playback_state">Playback state: %1$d</string>
-    <string name="service_test_media_count">Total media count: %1$d</string>
-    <string name="service_test_media_index"> Media index: %1$d</string>
-    <string name="service_test_duration">Duration: %1$d</string>
-    <string name="service_test_duration_position">Duration position: %1$d</string>
-    <string name="service_test_device_volume_max">Device max volume: %1$d</string>
-    <string name="service_test_device_volume_min">Device min volume: %1$d</string>
-    <string name="service_test_device_volume_current">Device current volume: %1$d</string>
-    <string name="service_test_clear_media_item">Clear media item</string>
-    <string name="service_test_clear_media_item_success">Removed item from session</string>
-    <string name="service_test_clear_media_item_fail">Couldn\'t remove item, maybe session has already disconnected?</string>
-    <string name="service_test_set_media_item">Set media item</string>
-    <string name="service_test_set_media_item_success">New media item set to session</string>
-    <string name="service_test_set_media_item_fail">Couldn\'t transact media item, maybe session has already disconnected?</string>
-    <string name="service_test_connect_session">Connect session</string>
-    <string name="service_test_connect_session_success">Connection to session successful</string>
-    <string name="service_test_disconnect_session">Disconnect session</string>
-    <string name="service_test_disconnect_session_success">Disconnected from session</string>
     <!-- Preference editor settings -->
     <string name="preference_editor_title">Preference editor</string>
     <string name="preference_editor_edit_item_title">Edit preference item</string>
@@ -106,7 +82,6 @@
     <string name="preference_experiments">Experiments</string>
     <string name="preference_experiments_crash_logs">Crash Logs</string>
     <string name="preference_experiments_crash_logs_empty">No crash logs found.</string>
-    <string name="preference_experiments_service_test">Service Test</string>
     <string name="preference_experiments_device_info">Device Information</string>
     <string name="preference_experiments_preference_editor">Preference Editor</string>
     <string name="preference_discover_experiments">Experiments have been enabled, have fun!</string>
@@ -118,13 +93,6 @@
     <string name="dialog_restart_message">Are you sure you want to restart? Unsaved changes will be lost.</string>
     <string name="dialog_restart_positive">Yes</string>
     <string name="dialog_restart_negative">No</string>
-    <string name="dialog_clear_media_items_title">Clear media items?</string>
-    <string name="dialog_clear_media_items_message">Items that are added onto the current queue will be lost!</string>
-    <string name="dialog_clear_media_items_positive">Confirm</string>
-    <string name="dialog_clear_media_items_negative">Cancel</string>
-    <string name="dialog_create_media_item_title">New media item</string>
-    <string name="dialog_create_media_item_positive">Create</string>
-    <string name="dialog_create_media_item_negative">Cancel</string>
     <string name="dialog_preference_edit_positive">OK</string>
     <string name="dialog_preference_edit_negative">Cancel</string>
     <string name="dialog_preference_edit_alert_title">Warning</string>
