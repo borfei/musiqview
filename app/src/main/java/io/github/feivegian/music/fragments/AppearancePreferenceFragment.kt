@@ -26,7 +26,7 @@ class AppearancePreferenceFragment : PreferenceFragmentCompat() {
             true
         }
         dynamicColors?.setOnPreferenceChangeListener { _, _ ->
-            activity.showRestartRequired()
+            activity.setShowRestartRequired(true)
             true
         }
     }

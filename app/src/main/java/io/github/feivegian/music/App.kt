@@ -7,15 +7,27 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import io.github.feivegian.music.utils.generateTraceLog
 import io.github.feivegian.music.utils.setNightMode
-import io.github.feivegian.music.R
 
 class App : Application(), Thread.UncaughtExceptionHandler {
     private lateinit var preferences: SharedPreferences
+    private var theme: String = "auto"
+    private var dynamicColors: Boolean = false
+
     override fun onCreate() {
         super.onCreate()
+        // Init preferences & toggle required values
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        preferences.getString("theme", "auto")?.let { setNightMode(it) }
-        preferences.getBoolean("theme_dynamic_colors", false).let { if (it) { DynamicColors.applyToActivitiesIfAvailable(this) } }
+        theme = preferences.getString("theme", "auto").toString()
+        dynamicColors = preferences.getBoolean("theme_dynamic_colors", false)
+
+        setNightMode(theme)
+        dynamicColors.let {
+            if (it && DynamicColors.isDynamicColorAvailable()) {
+                DynamicColors.applyToActivitiesIfAvailable(this)
+            }
+        }
+
+        // Initialize custom uncaught exception handler & greet the logcat
         Log.i(TAG, "Initialized ${getString(R.string.app_name)} version ${BuildConfig.VERSION_NAME} (code ${BuildConfig.VERSION_CODE})")
         Thread.setDefaultUncaughtExceptionHandler(this)
     }

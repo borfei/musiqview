@@ -12,7 +12,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.processphoenix.ProcessPhoenix
 import io.github.feivegian.music.R
 import io.github.feivegian.music.databinding.ActivityPreferenceBinding
 import io.github.feivegian.music.fragments.PreferenceFragment
@@ -21,22 +20,37 @@ import io.github.feivegian.music.utils.adjustPaddingForSystemBarInsets
 
 class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var binding: ActivityPreferenceBinding
-    private lateinit var preferences: SharedPreferences
+    private lateinit var restartSnackbar: Snackbar
+
+    lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         preferences.registerOnSharedPreferenceChangeListener(this)
+
         binding = ActivityPreferenceBinding.inflate(layoutInflater)
         binding.toolbar.adjustPaddingForSystemBarInsets(top=true)
         binding.preference.adjustMarginsForSystemBarInsets(left=true, right=true, bottom=true)
-
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        restartSnackbar = Snackbar.make(binding.root, R.string.snackbar_restart_required, Snackbar.LENGTH_INDEFINITE).also {
+            it.setAction(R.string.snackbar_restart_required_action) { _ ->
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.dialog_restart_title)
+                    .setMessage(R.string.dialog_restart_message)
+                    .setPositiveButton(R.string.dialog_restart_positive) { _, _ ->
+                        startActivity(Intent.makeRestartActivityTask(componentName))
+                        Runtime.getRuntime().exit(0)
+                    }
+                    .setNegativeButton(R.string.dialog_restart_negative) { _, _ -> setShowRestartRequired(!isRestartRequiredShown()) }
+                    .create()
+                    .show()
+            }
+        }
         onBackPressedDispatcher.addCallback(object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finish()
@@ -94,29 +108,16 @@ class PreferenceActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefe
         Log.i(TAG, "$key: $value")
     }
 
-    fun toggleExperiments(enable: Boolean) {
-        preferences.edit().putBoolean("experiments", enable).apply()
-    }
-
-    fun areExperimentsEnabled(): Boolean {
-        return preferences.getBoolean("experiments", false)
-    }
-
-    fun showRestartRequired() {
-        val restart = Snackbar.make(binding.root, R.string.snackbar_restart_required, Snackbar.LENGTH_INDEFINITE)
-        restart.setAction(R.string.snackbar_restart_required_action) { _ ->
-            MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.dialog_restart_title)
-                .setMessage(R.string.dialog_restart_message)
-                .setPositiveButton(R.string.dialog_restart_positive) { _, _ ->
-                    val intent = Intent(this, this::class.java)
-                    ProcessPhoenix.triggerRebirth(this, intent)
-                }
-                .setNegativeButton(R.string.dialog_restart_negative) { _, _ -> }
-                .create()
-                .show()
+    fun setShowRestartRequired(toggle: Boolean) {
+        if (toggle) {
+            restartSnackbar.show()
+        } else {
+            restartSnackbar.dismiss()
         }
-        restart.show()
+    }
+
+    fun isRestartRequiredShown(): Boolean {
+        return restartSnackbar.isShown
     }
 
     companion object {

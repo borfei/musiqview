@@ -86,7 +86,6 @@
     <string name="preference_experiments_crash_logs_empty">No crash logs found.</string>
     <string name="preference_experiments_device_info">Device Information</string>
     <string name="preference_experiments_preference_editor">Preference Editor</string>
-    <string name="preference_discover_experiments">Experiments have been enabled, have fun!</string>
     <!-- Snackbar strings -->
     <string name="snackbar_restart_required">There are modified changes that require restart to take effect.</string>
     <string name="snackbar_restart_required_action">Restart</string>
