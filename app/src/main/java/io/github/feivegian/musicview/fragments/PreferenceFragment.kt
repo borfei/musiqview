@@ -15,11 +15,10 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.feivegian.musicview.App
-import io.github.feivegian.musicview.App.Companion.asApp
-import io.github.feivegian.musicview.App.Companion.changeUiMode
 import io.github.feivegian.musicview.BuildConfig
 import io.github.feivegian.musicview.R
 import io.github.feivegian.musicview.activities.PreferenceActivity
+import io.github.feivegian.musicview.extensions.changeNightMode
 import java.io.File
 
 class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -34,8 +33,8 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
         setPreferencesFromResource(R.xml.preference, rootKey)
         activity = requireActivity() as PreferenceActivity
         customTabsIntent = CustomTabsIntent.Builder().build()
-        application = activity.application.asApp()
-        preferences = application.getPreferences()
+        application = App.fromInstance(activity.application)
+        preferences = application.preferences
         preferences.registerOnSharedPreferenceChangeListener(this)
 
         val theme = findPreference<ListPreference>("looks_theme")
@@ -53,7 +52,7 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
         experiments?.isVisible = experimentsUnlock?.isChecked == true
 
         theme?.setOnPreferenceChangeListener { _, newValue ->
-            application.changeUiMode(newValue as String)
+            application.changeNightMode(newValue as String)
             true
         }
         dynamicColors?.setOnPreferenceChangeListener { _, _ ->

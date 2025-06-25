@@ -1,12 +1,12 @@
 package io.github.feivegian.musicview.activities
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import io.github.feivegian.musicview.App.Companion.asApp
+import io.github.feivegian.musicview.App
 import io.github.feivegian.musicview.R
 import io.github.feivegian.musicview.databinding.ActivityMainBinding
 import io.github.feivegian.musicview.extensions.adjustPaddingForSystemBarInsets
@@ -15,21 +15,20 @@ import io.github.feivegian.musicview.extensions.setActivityEnabled
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var preferences: SharedPreferences
 
-    private var disableOnDestroy: Boolean = false
+    private var hideOnDestroy: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        val preferences = App.fromInstance(application).preferences
 
-        // Get the preference instance from App
-        preferences = application.asApp().getPreferences()
-
-        // If "welcome_hide_launcher" is true, launch PreferenceActivity instead
-        if (!preferences.getBoolean("welcome_hide_launcher", true)) {
-            startActivity(Intent(this, PreferenceActivity::class.java))
-            finish()
+        // If PREFERENCE_WELCOME_HIDE_LAUNCHER is true, launch PreferenceActivity instead
+        preferences.getBoolean(PREFERENCE_WELCOME_HIDE_LAUNCHER, true).let {
+            if (!it) {
+                Log.i(TAG, "Launcher not hidden, starting PreferenceActivity")
+                startActivity(Intent(this, PreferenceActivity::class.java))
+            }
         }
 
         // Inflate activity view using ViewBinding
@@ -37,16 +36,17 @@ class MainActivity : AppCompatActivity() {
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
 
-        // Re-set header text & hide launcher checkbox with the app name
+        // Parse header text & hide launcher checkbox with the app name
         binding.welcomeHeader.text = getString(R.string.welcome_header, getString(R.string.app_name))
         binding.welcomeHideLauncher.text = getString(R.string.welcome_hide_launcher, getString(R.string.app_name))
+
         // Register continue click listener
         binding.welcomeContinue.setOnClickListener {
-            if (binding.welcomeHideLauncher.isChecked) {
-                disableOnDestroy = true
+            if (!binding.welcomeHideLauncher.isChecked) {
+                hideOnDestroy = false
             }
             preferences.edit {
-                putBoolean("welcome_hide_launcher", binding.welcomeHideLauncher.isChecked)
+                putBoolean(PREFERENCE_WELCOME_HIDE_LAUNCHER, binding.welcomeHideLauncher.isChecked)
                 apply()
             }
 
@@ -57,10 +57,15 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        // If this activity is enabled, and disableOnDestroy is true, disable it.
+        // If this activity is enabled, and hideOnDestroy is true, disable it.
         // This is to hide the application from home screen launchers
-        if (packageManager.isActivityEnabled(this) && disableOnDestroy) {
+        if (packageManager.isActivityEnabled(this) && hideOnDestroy) {
             packageManager.setActivityEnabled(this, false)
         }
+    }
+
+    companion object {
+        const val TAG = "MainActivity"
+        const val PREFERENCE_WELCOME_HIDE_LAUNCHER = "welcome_hide_launcher"
     }
 }
