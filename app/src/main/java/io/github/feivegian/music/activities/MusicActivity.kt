@@ -48,7 +48,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
     private val loopHandler: Handler? = Looper.myLooper()?.let { Handler(it) }
     private var loopRunnable: Runnable? = null
     private var loopInterval: Int = 0
-    private var loopHandling: Boolean = false
     private var mediaController: MediaController? = null
     private var mediaItem: MediaItem = MediaItem.EMPTY
 
@@ -94,6 +93,12 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
         val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
 
+        // Initialize loop runnable
+        loopRunnable = Runnable {
+            updateSeek() // Update seek position every loop
+            loopRunnable?.let { loopHandler?.postDelayed(it, loopInterval.toLong()) }
+        }
+
         // Toggle immersive mode by depending on the preference check
         // If set to LANDSCAPE_ONLY, immersive mode will be enabled if current orientation is landscape
         WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(when (immersiveMode) {
@@ -117,10 +122,8 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         binding.playbackState.addOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 mediaController?.play()
-                startLoopHandler()
             } else {
                 mediaController?.pause()
-                stopLoopHandler()
             }
         }
         binding.playbackDownload.setOnClickListener {
@@ -191,6 +194,16 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         },
             MoreExecutors.directExecutor()
         )
+    }
+
+    override fun onStart() {
+        super.onStart()
+        loopRunnable?.let { loopHandler?.post(it) }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        loopRunnable?.let { loopHandler?.removeCallbacks(it) }
     }
 
     override fun onDestroy() {
@@ -328,28 +341,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         updateSeek()
 
         binding.playbackState.isChecked = mediaController?.isPlaying == true
-    }
-
-    private fun startLoopHandler() {
-        if (loopHandling) {
-            return
-        }
-        loopRunnable = Runnable {
-            updateSeek()
-            loopRunnable?.let { loopHandler?.postDelayed(it, loopInterval.toLong()) }
-        }
-
-        loopRunnable?.let { loopHandler?.post(it) }
-        loopHandling = true
-    }
-
-    private fun stopLoopHandler() {
-        if (!loopHandling) {
-            return
-        }
-
-        loopRunnable?.let { loopHandler?.removeCallbacks(it) }
-        loopHandling = false
     }
 
     private fun convertMsToDuration(milliseconds: Long): String {
