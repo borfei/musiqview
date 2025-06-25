@@ -37,6 +37,10 @@
             app:defaultValue="true"
             app:title="@string/preference_playback_audio_focus"
             app:summary="@string/preference_playback_audio_focus_summary" />
+        <CheckBoxPreference
+            app:key="playback_constant_bitrate_seeking"
+            app:summary="@string/preference_playback_constant_bitrate_seeking_summary"
+            app:title="@string/preference_playback_constant_bitrate_seeking" />
         <SeekBarPreference
             app:key="playback_duration_interval"
             app:icon="@drawable/baseline_timer_24"
