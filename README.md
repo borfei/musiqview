@@ -11,7 +11,9 @@ It aims to provide a simple & user-friendly interface with the design following 
 Material 3 guidelines, and media playback powered by ExoPlayer through Media3 API.
 
 ## Download
-Get the [latest build](https://github.com/feivegian/music/releases/latest) on the Releases page.
+[![Android CI](https://github.com/feivegian/music/actions/workflows/android.yml/badge.svg)](https://github.com/feivegian/music/actions/workflows/android.yml)
+
+Get the [latest version](https://github.com/feivegian/music/releases/latest) on the Releases page.
 
 ## Building
 It's the same way as you build a project using Android Studio, no steps needed.
