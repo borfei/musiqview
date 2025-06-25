@@ -231,10 +231,17 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         var parsedHeader = headerFormat // we use the format to use String.replace later
         var parsedSubheader = subheaderFormat // same goes to this variable too
         val formats = hashMapOf(
-            "%title%" to metadata.title,
-            "%artist%" to metadata.artist,
             "%album_artist%" to metadata.albumArtist,
-            "%album_title%" to metadata.albumTitle
+            "%album_title%" to metadata.albumTitle,
+            "%artist%" to metadata.artist,
+            "%composer%" to metadata.composer,
+            "%description%" to metadata.description,
+            "%display_title%" to metadata.displayTitle,
+            "%genre%" to metadata.genre,
+            "%subtitle%" to metadata.subtitle,
+            "%trackNumber%" to metadata.trackNumber.toString(), // cast from int to string
+            "%writer%" to metadata.writer,
+            "%title%" to metadata.title,
         )
         for ((format, value) in formats) {
             if (value.isNullOrBlank()) {
@@ -247,20 +254,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
             parsedHeader = parsedHeader.replace(format, value.toString())
             parsedSubheader = parsedSubheader.replace(format, value.toString())
         }
-
-        // load cover art from metadata
-        val artworkData = metadata.artworkData ?: byteArrayOf(1)
-        var artworkBitmap = BitmapFactory.decodeByteArray(artworkData, 0, artworkData.size)
-
-        if (artworkBitmap == null) {
-            artworkBitmap = Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
-        }
-
-        // Set the loaded cover art to it's respective view
-        Glide.with(this)
-            .load(artworkBitmap)
-            .transition(withCrossFade())
-            .into(binding.coverArt)
 
         binding.infoHeader.text = parsedHeader
         binding.infoSubheader.text = parsedSubheader
@@ -282,6 +275,18 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 View.GONE
             }
         }
+
+        // Load cover art from metadata
+        val artworkData = metadata.artworkData ?: byteArrayOf(1)
+        var artworkBitmap = BitmapFactory.decodeByteArray(artworkData, 0, artworkData.size)
+
+        if (artworkBitmap == null) {
+            artworkBitmap = Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
+        }
+        Glide.with(this)
+            .load(artworkBitmap)
+            .transition(withCrossFade())
+            .into(binding.coverArt)
     }
 
     private fun updateSeek(position: Long = mediaController?.currentPosition ?: 0) {
