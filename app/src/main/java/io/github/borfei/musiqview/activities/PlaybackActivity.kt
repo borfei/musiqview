@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,6 +17,7 @@ import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.MenuCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.descendants
 import androidx.core.widget.doOnTextChanged
@@ -162,6 +164,11 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             val popup = PopupMenu(this, view)
             popup.menuInflater.inflate(R.menu.playback_options, popup.menu)
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                popup.menu.setGroupDividerEnabled(true)
+            } else {
+                MenuCompat.setGroupDividerEnabled(popup.menu, true)
+            }
             popup.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.playback_stop -> {
