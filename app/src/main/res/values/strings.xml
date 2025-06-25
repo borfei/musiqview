@@ -11,7 +11,7 @@
     <string name="playback_seek_default">0:00</string>
     <string name="playback_seek_format_short">%1$d:%2$s</string>
     <string name="playback_seek_format_long">%1$d:%2$d:%3$s</string>
-    <!-- Preference editor settings -->
+    <!-- Preference editor strings -->
     <string name="preference_editor_title">Preference editor</string>
     <string name="preference_editor_edit_item_title">Edit preference item</string>
     <string name="preference_editor_edit_item_title_alt">New preference item</string>
