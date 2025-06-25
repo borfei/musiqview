@@ -3,6 +3,7 @@ package io.github.borfei.musiqview.activities
 import android.animation.LayoutTransition
 import android.content.ComponentName
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -23,10 +24,10 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Player.DISCONTINUITY_REASON_SEEK
+import androidx.media3.common.Player.STATE_READY
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.google.common.util.concurrent.MoreExecutors
@@ -38,70 +39,107 @@ import io.github.borfei.musiqview.extensions.adjustPaddingForSystemBarInsets
 import io.github.borfei.musiqview.extensions.getName
 import io.github.borfei.musiqview.extensions.setImmersiveMode
 import io.github.borfei.musiqview.services.PlaybackService
-import java.util.Locale
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class PlaybackActivity : AppCompatActivity(), Player.Listener {
     companion object {
         const val TAG = "PlaybackActivity"
+
+        /**
+         * Decode the ByteArray-based data into BitmapFactory
+         * which can then by used to create a proper Bitmap as the return value.
+         *
+         * If you want to create a empty bitmap, use 1 byte instead.
+         *
+         * @param[data] The data you want to convert.
+         * @return[Bitmap]
+         */
+        fun byteArrayToBitmap(data: ByteArray): Bitmap {
+
+            val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
+            return bitmap ?: Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
+        }
+
+        /**
+         * Converts duration into timestamp (mm:ss)
+         *
+         * @param[duration] The duration you want to convert.
+         * @return[String]
+         */
+        fun durationToTimestamp(duration: Duration): String {
+            return duration.toComponents { minutes, seconds, _ ->
+                "%02d:%02d".format(minutes, seconds)
+            }
+        }
     }
 
     private lateinit var binding: ActivityPlaybackBinding
 
     private var isMetadataDisplayed: Boolean = true
     private var isLayoutAnimated: Boolean = true
+    private var isImmersive: Boolean = true
     private var isWakeLock: Boolean = false
 
-    private var durationUpdateHandler: Handler? = null
-    private var durationUpdateRunnable: Runnable? = null
+    private val app: App by lazy {
+        App.fromInstance(application)
+    }
+    private val preferences: SharedPreferences by lazy {
+        app.preferences
+    }
+
+    private val durationUpdateHandler: Handler by lazy {
+        Handler(Looper.myLooper() ?: Looper.getMainLooper())
+    }
+    private val durationUpdateRunnable: Runnable by lazy {
+        Runnable {
+            mediaController?.currentPosition?.let {
+                updateSeek(it)
+            }
+            durationUpdateRunnable.let {
+                durationUpdateHandler.postDelayed(it, durationUpdateInterval.toLong())
+            }
+        }
+    }
     private var durationUpdateInterval: Int = 1000
 
     private var mediaController: MediaController? = null
-    private var mediaItem: MediaItem = MediaItem.EMPTY
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Enable edge-to-edge for easy integration with system bars
         enableEdgeToEdge()
+
         super.onCreate(savedInstanceState)
-
-        val application = App.fromInstance(application)
-        val preferences = application.preferences
-
-        preferences.getBoolean(Constants.PREFERENCE_INTERFACE_DISPLAY_METADATA, isMetadataDisplayed).let {
-            isMetadataDisplayed = it
-        }
-        preferences.getInt(Constants.PREFERENCE_PLAYBACK_DURATION_INTERVAL, durationUpdateInterval).let {
-            durationUpdateInterval = it
-        }
-        preferences.getBoolean(Constants.PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES, isLayoutAnimated).let {
-            isLayoutAnimated = it
-        }
-        preferences.getBoolean(Constants.PREFERENCE_OTHER_WAKE_LOCK, isWakeLock).let {
-            isWakeLock = it
-        }
-
-        // Inflate activity view using ViewBinding
+        // Inflate activity layout via ViewBinding and adjust padding for system bar insets
         binding = ActivityPlaybackBinding.inflate(layoutInflater)
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
+        // Finally for inflater, set the activity's view to it's proper content
         setContentView(binding.root)
 
-        // Connect activity to media session
-        val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
-        val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+        // Load preferences and the activity's preference variables
+        preferences.let {
+            durationUpdateInterval = it.getInt(Constants.PREFERENCE_PLAYBACK_DURATION_INTERVAL, durationUpdateInterval)
 
-        // Initialize duration updater
-        durationUpdateHandler = Handler(Looper.myLooper() ?: Looper.getMainLooper())
-        durationUpdateRunnable = Runnable {
-            updateSeek()
-
-            durationUpdateRunnable?.let {
-                durationUpdateHandler?.postDelayed(it, durationUpdateInterval.toLong())
+            isMetadataDisplayed = it.getBoolean(Constants.PREFERENCE_INTERFACE_DISPLAY_METADATA, isMetadataDisplayed)
+            isLayoutAnimated = it.getBoolean(Constants.PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES, isLayoutAnimated)
+            isWakeLock = it.getBoolean(Constants.PREFERENCE_OTHER_WAKE_LOCK, isWakeLock)
+            isImmersive = when (it.getString(Constants.PREFERENCE_OTHER_IMMERSIVE_MODE, "landscape")) {
+                "enabled" -> {
+                    true
+                }
+                "landscape" -> {
+                    resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+                }
+                else -> {
+                    false
+                }
             }
         }
-
-        // Manually select the media filename text view to begin marquee animation
-        binding.mediaFilename.isSelected = true
-
-        // Make all ViewGroups animate when their child orders are changed
-        // If PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES is false, then they won't be animated
+        // Make sure the root layout's transition manager is initialized
+        // if isLayoutAnimated is set to true
+        //
+        // The descendants of the root layout is also affected by isLayoutAnimated
         binding.root.layoutTransition = if (isLayoutAnimated) {
             LayoutTransition()
         } else {
@@ -116,33 +154,13 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
                 }
             }
         }
-        // Set immersive mode to enabled if the following conditions are met:
-        //  If "enabled" -> hide system bars
-        //  If "landscape" -> only hide system bars if orientation is landscape
-        //  Otherwise, don't hide the system bars
-        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(when (preferences.getString(
-            Constants.PREFERENCE_OTHER_IMMERSIVE_MODE, "landscape")) {
-            "enabled" -> {
-                true
-            }
-            "landscape" -> {
-                resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-            }
-            else -> {
-                false
-            }
-        })
-        // When text changes for media filename/title/artists, toggle visibility based on text count
-        binding.mediaFilename.doOnTextChanged { _, _, _, count ->
-            binding.mediaFilename.visibility = if (count > 0) View.VISIBLE else View.GONE
-        }
+        // Register certain view listeners
         binding.mediaTitle.doOnTextChanged { _, _, _, count ->
             binding.mediaTitle.visibility = if (count > 0) View.VISIBLE else View.GONE
         }
         binding.mediaArtists.doOnTextChanged { _, _, _, count ->
             binding.mediaArtists.visibility = if (count > 0) View.VISIBLE else View.GONE
         }
-        // Register playback control listeners
         binding.playbackState.addOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 mediaController?.play()
@@ -151,17 +169,11 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             }
         }
         binding.playbackOpenExternal.setOnClickListener {
+            val currentMediaItem = mediaController?.currentMediaItem
             val openExternalIntent = Intent(Intent.ACTION_VIEW)
-            openExternalIntent.setDataAndType(mediaItem.localConfiguration?.uri, "audio/*")
+            openExternalIntent.setDataAndType(currentMediaItem?.localConfiguration?.uri, "audio/*")
             startActivity(Intent.createChooser(openExternalIntent, null))
         }
-        /*
-        binding.playbackSeekSlider?.setLabelFormatter { value ->
-            val duration = mediaController?.duration ?: 0
-            val valueLong = ((value + 0.0) * duration).toLong()
-            parseSeekPosition(valueLong)
-        }
-        */
         binding.playbackSeekSlider.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
                 mediaController?.pause()
@@ -177,35 +189,33 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
                 mediaController?.seekTo(((value + 0.0) * (currentDuration ?: 0)).toLong())
             }
         }
+
+        // Toggle system immersive mode based on isImmersive's value
+        WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(isImmersive)
+        // Hotfix for marquee text animation (by default it will not animate itself unless selected)
+        binding.mediaFilename.isSelected = true
+
+        // Initialize media session token & media controller
+        val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
+        val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+
         controllerFuture.addListener({
             mediaController = controllerFuture.get()
             mediaController?.addListener(this)
 
-            // Store media URI from intent as a local variable to keep track of information
+            // If an intent URI has received, load it as a media item
             intent?.let {
-                // Determine it's action before getting the intent data
-                //
-                // With Intent.ACTION_VIEW, it's clear that the intent came from
-                // the one defined in AndroidManifest.xml
                 if (intent.action == Intent.ACTION_VIEW) {
                     intent.data?.let {
-                        Log.d(TAG, "Intent URI: $it")
-                        mediaItem = MediaItem.fromUri(it)
-                        updateInfo(mediaItem.mediaMetadata)
+                        Log.d(TAG, "Received Intent URI: $it")
+                        mediaController?.setMediaItem(MediaItem.fromUri(it))
+                        mediaController?.prepare()
                     }
                 }
             }
-            // If there's no media item set, load the stored media item & prepare playback
-            // Otherwise, update the entire UI with the currently loaded media item
-            if (mediaController?.currentMediaItem == null) {
-                mediaController?.setMediaItem(mediaItem)
-                mediaController?.prepare()
-                mediaController?.playWhenReady = true
-                Log.d(TAG, "Preparing media URI")
-            } else {
-                update()
-                Log.d(TAG, "Update called; playback already loaded")
-            }
+
+            // Make sure to begin the playback when ready and prepared
+            mediaController?.playWhenReady = true
         },
             MoreExecutors.directExecutor()
         )
@@ -213,9 +223,8 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
 
     override fun onDestroy() {
         super.onDestroy()
-        // Release duration updater
-        durationUpdateRunnable = null
-        durationUpdateHandler = null
+        // Cancel all pending callbacks of duration updater
+        durationUpdateHandler.removeCallbacksAndMessages(null)
         // Disconnect from media session
         mediaController?.removeListener(this)
         mediaController?.release()
@@ -223,7 +232,22 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
 
     override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
         super.onMediaMetadataChanged(mediaMetadata)
-        updateInfo(mediaMetadata)
+        updateMetadata(mediaMetadata)
+    }
+
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        super.onPlaybackStateChanged(playbackState)
+
+        // If playback state is ready, we'll:
+        // - Update the seek duration text to media duration
+        // - Display the audio file's proper filename
+        if (playbackState == STATE_READY) {
+            mediaController?.currentMediaItem?.let {
+                binding.mediaFilename.text = it.localConfiguration?.uri?.getName(this)
+            }
+
+            mediaController?.duration?.let { updateDuration(it) }
+        }
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -234,6 +258,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
 
+        // When error occurs, display it's message in a MaterialAlertDialog
         MaterialAlertDialogBuilder(this)
             .setIcon(R.drawable.dialog_error_48)
             .setTitle(R.string.dialog_playback_error_title)
@@ -252,18 +277,15 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
     ) {
         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
 
+        // If the reason is seeking, update the seek position
         if (reason == DISCONTINUITY_REASON_SEEK) {
             updateSeek(newPosition.positionMs)
         }
     }
 
-    private fun updateInfo(metadata: MediaMetadata = mediaController?.mediaMetadata ?: MediaMetadata.EMPTY) {
-        // Set media filename/title/artists to the available metadata
-        //
-        // If metadata is unavailable, or is opted to hide by user
-        // we'll be displaying the media filename instead, leaving the other two to be hidden
+    private fun updateMetadata(metadata: MediaMetadata) {
+        // Display available media metadata
         if (!isMetadataDisplayed) {
-            binding.mediaFilename.text = mediaItem.localConfiguration?.uri?.getName(this)
             binding.mediaTitle.text = String()
             binding.mediaArtists.text = String()
         } else {
@@ -276,83 +298,56 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             }
         }
 
-        // Load artwork from metadata, if available
-        val artworkData = parseArtwork(metadata.artworkData ?: byteArrayOf(1))
+        // Display available media artwork
+        //
+        // If isLayoutAnimated is true, we'll use Glide to have a cross-fade animation
+        // otherwise, we have to use ImageView's built-in setImageBitmap method instead
+        val mediaArtworkData = metadata.artworkData ?: byteArrayOf(1)
+        val mediaArtworkBitmap = byteArrayToBitmap(mediaArtworkData)
 
         if (isLayoutAnimated) {
             Glide.with(this)
-                .load(artworkData)
-                .transition(withCrossFade())
+                .load(mediaArtworkBitmap)
                 .into(binding.mediaArtwork)
         } else {
-            binding.mediaArtwork.setImageBitmap(artworkData)
+            binding.mediaArtwork.setImageBitmap(mediaArtworkBitmap)
         }
     }
 
-    private fun updateSeek(position: Long = mediaController?.currentPosition ?: 0,
-                           duration: Long = mediaController?.duration ?: 0) {
-        // Create float-based position value
-        var positionFloat = (position + 0.0f) / (mediaController?.duration ?: 0)
-
-        // float-based position value cannot be greater than 1.0f or lesser than 0.0f
-        if (positionFloat > 1.0f) {
-            positionFloat = 1.0f
-        } else if (positionFloat < 0.0f) {
-            positionFloat = 0.0f
-        }
-
-        // Update the playback slider value using it's float-based position
-        // Also update it's text start/end value by using the Long values
-        binding.playbackSeekSlider.value = positionFloat
-        binding.playbackSeekTextPosition.text = parseDuration(position)
-        binding.playbackSeekTextDuration.text = parseDuration(duration)
+    private fun updateDuration(duration: Long) {
+        // Update playback seek duration text from timestamp-based media position
+        binding.playbackSeekTextDuration.text = durationToTimestamp(duration.toDuration(DurationUnit.MILLISECONDS))
     }
 
-    private fun updateState(isPlaying: Boolean = mediaController?.isPlaying ?: false) {
+    private fun updateSeek(position: Long) {
+        // Update playback seek slider from media position
+        binding.playbackSeekSlider.value = (position + 0.0f) / (mediaController?.duration ?: 0)
+        // Update playback seek position text from timestamp-based media position
+        binding.playbackSeekTextPosition.text = durationToTimestamp(position.toDuration(DurationUnit.MILLISECONDS))
+    }
+
+    private fun updateState(isPlaying: Boolean) {
+        // Set playback state checked to isPlaying
         binding.playbackState.isChecked = isPlaying
 
-        durationUpdateHandler?.let {
+        // Start the duration updater if isPlaying is true
+        // otherwise if false, we have to stop it's pending callbacks & messages
+        //
+        // Same goes for the wake lock acquisition, if true, keep the screen on
+        // otherwise, remove the appropriate flag from the application window flags
+        durationUpdateHandler.let {
             if (isPlaying) {
-                durationUpdateRunnable?.let { runnable -> it.post(runnable) }
-                Log.d(TAG, "Post duration update until paused/stopped")
+                durationUpdateHandler.post(durationUpdateRunnable)
             } else {
                 it.removeCallbacksAndMessages(null)
-                Log.d(TAG, "Stopped pending callbacks & messages of duration update")
             }
         }
         if (isWakeLock) {
             if (isPlaying) {
-                Log.d(TAG, "Append FLAG_KEEP_SCREEN_ON to window flags")
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             } else {
-                Log.d(TAG, "Remove FLAG_KEEP_SCREEN_ON from window flags")
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
-        }
-    }
-
-    private fun update() {
-        updateInfo()
-        updateSeek()
-        updateState()
-    }
-
-    private fun parseArtwork(data: ByteArray): Bitmap {
-        val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
-        return bitmap ?: Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
-    }
-
-    private fun parseDuration(value: Long): String {
-        val locale = Locale.getDefault()
-        val valueMicroseconds = value / 1000
-        val valueMinutes = valueMicroseconds / 60
-        val valueSeconds = valueMicroseconds % 60
-
-        return if (valueMicroseconds >= 360) {
-            val valueHours = valueMicroseconds / 360
-            getString(R.string.playback_seek_format_long, valueHours, valueMinutes, String.format(locale, "%1$02d", valueSeconds))
-        } else {
-            getString(R.string.playback_seek_format_short, valueMinutes, String.format(locale, "%1$02d", valueSeconds))
         }
     }
 }
