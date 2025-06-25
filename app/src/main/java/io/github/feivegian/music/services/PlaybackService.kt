@@ -4,17 +4,29 @@ import android.content.SharedPreferences
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.database.StandaloneDatabaseProvider
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.cache.CacheDataSource
+import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
+import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.preference.PreferenceManager
 import com.google.common.util.concurrent.ListenableFuture
+import io.github.feivegian.music.App
 import io.github.feivegian.music.BuildConfig
 
+@UnstableApi
 class PlaybackService : MediaSessionService(), MediaSession.Callback {
     private lateinit var preferences: SharedPreferences
     private var audioFocus: Boolean = true
     private var wakeLock: Boolean = false
+
+    // TODO: Implement custom cache size
+    private lateinit var cacheDatabaseProvider: StandaloneDatabaseProvider
+    private val maxCacheBytes: Long = 2147483648 // 2GB
 
     private var mediaSession: MediaSession? = null
 
@@ -24,9 +36,16 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         audioFocus = preferences.getBoolean("playback_audio_focus", true)
         wakeLock = preferences.getBoolean("other_wake_lock", false)
 
+        cacheDatabaseProvider = StandaloneDatabaseProvider(this)
+        val cache = SimpleCache(cacheDir, LeastRecentlyUsedCacheEvictor(maxCacheBytes), cacheDatabaseProvider)
+        val cacheDataSourceFactory = CacheDataSource.Factory()
+            .setCache(cache)
+            .setUpstreamDataSourceFactory(DefaultDataSource.Factory(this))
+
         val player = ExoPlayer.Builder(this)
             .setAudioAttributes(AudioAttributes.DEFAULT, audioFocus)
-            .setWakeMode(if (wakeLock) C.WAKE_MODE_NETWORK else C.WAKE_MODE_NONE) // network one
+            .setWakeMode(if (wakeLock) C.WAKE_MODE_NETWORK else C.WAKE_MODE_NONE) // use network
+            .setMediaSourceFactory(DefaultMediaSourceFactory(this).setDataSourceFactory(cacheDataSourceFactory))
             .build()
         mediaSession = MediaSession.Builder(this, player)
             .setCallback(this)
