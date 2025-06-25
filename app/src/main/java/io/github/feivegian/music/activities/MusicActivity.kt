@@ -128,8 +128,8 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         }
         binding.playbackSeek.addOnSliderTouchListener(object: Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {
-                binding.playbackState.visibility = View.GONE
-                binding.playbackSeekPosition.visibility = View.GONE
+                binding.playbackState.visibility = View.INVISIBLE
+                binding.playbackSeekPosition.visibility = View.INVISIBLE
                 mediaController?.pause()
             }
 
