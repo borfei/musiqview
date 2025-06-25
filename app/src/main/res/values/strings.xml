@@ -47,25 +47,18 @@
     <string name="preference_about">About</string>
     <string name="preference_about_name">Music</string>
     <string name="preference_about_version">Version %1$s (%2$d)</string>
-    <string name="preference_about_updates">Check for updates</string>
-    <string name="preference_about_project">Project</string>
-    <string name="preference_about_project_website">Website</string>
-    <string name="preference_about_project_website_summary" translatable="false">https://feivegian.github.io/music</string> <!-- unused -->
-    <string name="preference_about_project_source">Source code</string>
-    <string name="preference_about_project_source_summary" translatable="false">https://github.com/feivegian/music</string>
-    <string name="preference_about_project_license">License</string>
-    <string name="preference_about_project_license_summary" translatable="false">MIT License</string>
     <string name="preference_about_author">Author</string>
-    <string name="preference_about_author_name" translatable="false">@string/app_author</string>
-    <string name="preference_about_author_name_summary" translatable="false">feivegian</string>
-    <string name="preference_about_author_donate">Donate</string>
-    <string name="preference_about_author_donate_summary">Buy me a coffee!</string>
-    <string name="preference_about_experiments">Experiments</string>
-    <string name="preference_about_experiments_summary">These are additional functionalities designed for testing the application.</string>
-    <string name="preference_about_experiments_crash_logs">Crash Logs</string>
-    <string name="preference_about_experiments_crash_logs_empty">No crash logs found.</string>
-    <string name="preference_about_experiments_device_info">Device Information</string>
-    <string name="preference_about_experiments_preference_editor">Preference Editor</string>
+    <string name="preference_about_author_summary" translatable="false">@string/app_author</string>
+    <string name="preference_about_source">Source code</string>
+    <string name="preference_about_source_summary" translatable="false">https://github.com/feivegian/music</string>
+    <string name="preference_about_license">License</string>
+    <string name="preference_about_license_summary" translatable="false">MIT License</string>
+    <string name="preference_experiments">Experiments</string>
+    <string name="preference_experiments_summary">These are additional functionalities designed for testing the application.</string>
+    <string name="preference_experiments_crash_logs">Crash Logs</string>
+    <string name="preference_experiments_crash_logs_empty">No crash logs found.</string>
+    <string name="preference_experiments_device_info">Device Information</string>
+    <string name="preference_experiments_preference_editor">Preference Editor</string>
     <!-- Snackbar strings -->
     <string name="snackbar_restart_required">There are modified changes that require restart to take effect.</string>
     <string name="snackbar_restart_required_action">Restart</string>
