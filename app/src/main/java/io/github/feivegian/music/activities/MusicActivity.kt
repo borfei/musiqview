@@ -35,7 +35,6 @@ import io.github.feivegian.music.utils.setImmersiveMode
 import java.util.Locale
 
 class MusicActivity : AppCompatActivity(), Player.Listener {
-
     enum class ImmersiveMode {
         DISABLED, ENABLED, LANDSCAPE_ONLY
     }
@@ -87,6 +86,10 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         binding.root.adjustPaddingForSystemBarInsets(top=true, bottom=true)
         setContentView(binding.root)
 
+        // Connect activity to media session
+        val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
+        val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+
         // Toggle immersive mode by depending on the preference check
         // If set to LANDSCAPE_ONLY, immersive mode will be enabled if current orientation is landscape
         WindowCompat.getInsetsController(window, window.decorView).setImmersiveMode(when (immersiveMode) {
@@ -135,15 +138,33 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
                 mediaController?.play()
             }
         })
-        // Connect activity to media session
-        val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
-        val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
-
         controllerFuture.addListener({
             mediaController = controllerFuture.get()
             mediaController?.addListener(this)
             update()
-            handleIncomingIntents()
+
+            intent?.let {
+                when (intent.action) {
+                    Intent.ACTION_VIEW -> {
+                        // Local playback
+                        intent.data?.let {
+                            mediaController?.setMediaItem(MediaItem.fromUri(it))
+                        }
+
+                        intent.data = null
+                    }
+                    Intent.ACTION_SEND -> {
+                        // Stream-over-HTTP playback
+                        intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+                            mediaController?.setMediaItem(MediaItem.fromUri(it))
+                        }
+
+                        intent.removeExtra(Intent.EXTRA_TEXT)
+                    }
+                }
+
+                mediaController?.prepare()
+            }
         },
             MoreExecutors.directExecutor()
         )
@@ -279,19 +300,6 @@ class MusicActivity : AppCompatActivity(), Player.Listener {
         updateSeek()
 
         binding.playbackState.isChecked = mediaController?.isPlaying == true
-    }
-
-    private fun handleIncomingIntents() {
-        when (intent?.action) {
-            Intent.ACTION_VIEW -> {
-                intent?.data?.let {
-                    val item = MediaItem.fromUri(it)
-                    intent?.data = null
-                    mediaController?.setMediaItem(item)
-                    mediaController?.prepare()
-                }
-            }
-        }
     }
 
     private fun startLoopHandler() {
