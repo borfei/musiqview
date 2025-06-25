@@ -113,8 +113,11 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
                     }
                     .setNeutralButton(R.string.dialog_crash_logs_neutral) { _, _ ->
                         val count = logs.list()?.size
-                        logs.deleteRecursively()
-                        Toast.makeText(requireContext(), getString(R.string.dialog_crash_logs_clear, count), Toast.LENGTH_LONG).show()
+                        val ok = logs.deleteRecursively()
+
+                        if (ok) {
+                            Toast.makeText(requireContext(), getString(R.string.dialog_crash_logs_clear, count), Toast.LENGTH_LONG).show()
+                        }
                     }
             }
 
