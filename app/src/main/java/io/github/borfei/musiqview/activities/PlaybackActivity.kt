@@ -4,7 +4,6 @@ import android.animation.LayoutTransition
 import android.content.ComponentName
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -79,7 +78,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
 
     private var isMetadataDisplayed: Boolean = true
     private var isLayoutAnimated: Boolean = true
-    private var isImmersive: Boolean = true
+    private var isImmersive: Boolean = false
     private var isWakeLock: Boolean = false
 
     private val app: App by lazy {
@@ -124,17 +123,7 @@ class PlaybackActivity : AppCompatActivity(), Player.Listener {
             isMetadataDisplayed = it.getBoolean(Constants.PREFERENCE_INTERFACE_DISPLAY_METADATA, isMetadataDisplayed)
             isLayoutAnimated = it.getBoolean(Constants.PREFERENCE_OTHER_ANIMATE_LAYOUT_CHANGES, isLayoutAnimated)
             isWakeLock = it.getBoolean(Constants.PREFERENCE_OTHER_WAKE_LOCK, isWakeLock)
-            isImmersive = when (it.getString(Constants.PREFERENCE_OTHER_IMMERSIVE_MODE, "landscape")) {
-                "enabled" -> {
-                    true
-                }
-                "landscape" -> {
-                    resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-                }
-                else -> {
-                    false
-                }
-            }
+            isImmersive = it.getBoolean(Constants.PREFERENCE_OTHER_IMMERSIVE_MODE, isImmersive)
         }
         // Make sure the root layout's transition manager is initialized
         // if isLayoutAnimated is set to true
