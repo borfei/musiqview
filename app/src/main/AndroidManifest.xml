@@ -38,15 +38,6 @@
                 <data android:mimeType="audio/*" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.PreferenceActivity"
-            android:exported="true"
-            android:theme="@style/AppTheme.Preference">
-            <intent-filter>
-                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
 
         <service
             android:name=".services.PlaybackService"
