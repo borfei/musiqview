@@ -81,14 +81,12 @@
             android:textAppearance="?attr/textAppearanceLabelSmall" />
 
         <com.google.android.material.slider.Slider
+            style="@style/Widget.App.Slider"
             android:id="@+id/playback_seek_slider"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:contentDescription="@string/content_description_playback_seek"
-            app:labelBehavior="gone"
-            app:thumbHeight="16dp"
-            app:trackHeight="8dp" />
+            android:contentDescription="@string/content_description_playback_seek" />
 
         <TextView
             android:id="@+id/playback_seek_text_duration"
