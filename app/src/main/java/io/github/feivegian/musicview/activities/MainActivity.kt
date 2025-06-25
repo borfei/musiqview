@@ -1,5 +1,6 @@
 package io.github.feivegian.musicview.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
@@ -13,7 +14,7 @@ import io.github.feivegian.musicview.extensions.setActivityEnabled
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private var hasContinued: Boolean = false
+    private var hideOnDestroy: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -31,20 +32,24 @@ class MainActivity : AppCompatActivity() {
         binding.welcomeInstruction.text = getString(R.string.welcome_instruction, appName)
         binding.welcomeConfiguration.text = getString(R.string.welcome_configuration, appName)
 
-        // Register continue click listener
+        // Register button click listeners
         binding.welcomeContinue.setOnClickListener {
-            hasContinued = true
+            hideOnDestroy = true
+            finish()
+        }
+        binding.welcomeCustomize.setOnClickListener {
+            hideOnDestroy = true
+            startActivity(Intent(this, PreferenceActivity::class.java))
             finish()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
-        // When the activity is destroyed and hasContinued is true, disable it afterwards
-        if (packageManager.isActivityEnabled(this, this::class.java) && hasContinued) {
+        // When the activity is destroyed and hideOnDestroy is true, disable it afterwards
+        if (packageManager.isActivityEnabled(this, this::class.java) && hideOnDestroy) {
             packageManager.setActivityEnabled(this, this::class.java, false)
-            Log.d(TAG, "Disabled activity; reinstall to make it appear again")
+            Log.d(TAG, "Disabled activity; use app settings to re-enable it back")
         }
     }
 
