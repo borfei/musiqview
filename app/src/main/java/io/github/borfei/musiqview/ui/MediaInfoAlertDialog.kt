@@ -2,7 +2,6 @@ package io.github.borfei.musiqview.ui
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.media3.common.C
@@ -13,6 +12,7 @@ import io.github.borfei.musiqview.databinding.AlertDialogMediaInfoBinding
 import io.github.borfei.musiqview.extensions.getName
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
+import androidx.core.net.toUri
 
 class MediaInfoAlertDialog : DialogFragment() {
     companion object {
@@ -101,7 +101,7 @@ class MediaInfoAlertDialog : DialogFragment() {
             }
         }
         arguments?.getString("uri")?.let {
-            binding.mediaInfoFilename.text = Uri.parse(it).getName(requireContext())
+            binding.mediaInfoFilename.text = it.toUri().getName(requireContext())
         }
 
         return dialog
