@@ -2,6 +2,7 @@ package io.github.borfei.musiqview.extensions
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.core.graphics.createBitmap
 
 /**
  * Decode the data into BitmapFactory which can then
@@ -13,5 +14,5 @@ import android.graphics.BitmapFactory
  */
 fun ByteArray.toBitmap(): Bitmap {
     val bitmap = BitmapFactory.decodeByteArray(this, 0, size)
-    return bitmap ?: Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
+    return bitmap ?: createBitmap(800, 600)
 }
