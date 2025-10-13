@@ -7,7 +7,7 @@ Quickly preview audio files without leaving, on Android.
 - No music catalog or library required whatsoever
 - Simple and easy-to-use user interface, with Material 3
 - Supports a wide range of audio formats, powered by AndroidX Media3
-- Supports devices running in Android 7 (Nougat) to Android 15 (Vanilla Ice Cream)
+- Supports devices running in Android 7 (Nougat) to Android 16 (Baklava)
 
 More features will likely to come soon! If you have a suggestion,
 please [open a new issue](https://github.com/borfei/musiqview/issues/new).
