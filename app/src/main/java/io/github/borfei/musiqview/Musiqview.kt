@@ -9,14 +9,18 @@ import java.util.Locale
 import kotlin.system.exitProcess
 
 class Musiqview : Application(), Thread.UncaughtExceptionHandler {
+    private var defaultUncaughtExceptionHandler: Thread.UncaughtExceptionHandler? = null
+
     override fun onCreate() {
         super.onCreate()
         DynamicColors.applyToActivitiesIfAvailable(this)
+        defaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler(this)
     }
 
     override fun uncaughtException(t: Thread, e: Throwable) {
         generateErrorLog(e)
+        defaultUncaughtExceptionHandler?.uncaughtException(t, e)
         exitProcess(-1)
     }
 
