@@ -1,16 +1,15 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android)
 }
 
 android {
     namespace = "io.github.borfei.musiqview"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "io.github.borfei.musiqview"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 12
         versionName = "4.0.2"
 
@@ -33,9 +32,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
     }
 }
 

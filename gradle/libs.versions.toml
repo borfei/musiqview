@@ -1,17 +1,16 @@
 [versions]
-appcompat = "1.7.0"
-core-ktx = "1.16.0"
-espresso-core = "3.6.1"
-fragment-ktx = "1.8.6"
-glide = "4.16.0"
+appcompat = "1.7.1"
+core-ktx = "1.17.0"
+espresso-core = "3.7.0"
+fragment-ktx = "1.8.9"
+glide = "5.0.5"
 junit = "4.13.2"
-junit-version = "1.2.1"
-material = "1.12.0"
-media3-common = "1.7.1"
-media3-exoplayer = "1.7.1"
-media3-session = "1.7.1"
-plugin-android = "8.13.0"
-plugin-ktx = "2.0.21"
+junit-version = "1.3.0"
+material = "1.13.0"
+media3-common = "1.9.2"
+media3-exoplayer = "1.9.2"
+media3-session = "1.9.2"
+plugin-android = "9.0.0"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -28,4 +27,3 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 
 [plugins]
 android = { id = "com.android.application", version.ref = "plugin-android" }
-android-ktx = { id = "org.jetbrains.kotlin.android", version.ref = "plugin-ktx" }

@@ -8,7 +8,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import com.google.common.util.concurrent.ListenableFuture
 
 @OptIn(UnstableApi::class)
 class MusiqService : MediaSessionService(), MediaSession.Callback {
@@ -64,14 +63,6 @@ class MusiqService : MediaSessionService(), MediaSession.Callback {
     }
 
     override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {}
-
-    @UnstableApi
-    override fun onPlaybackResumption(
-        mediaSession: MediaSession,
-        controller: MediaSession.ControllerInfo
-    ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
-        return super.onPlaybackResumption(mediaSession, controller)
-    }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = mediaSession
 }
