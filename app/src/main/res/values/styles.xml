@@ -9,10 +9,7 @@
         <item name="android:minHeight">48dp</item>
         <item name="iconPadding">0dp</item>
     </style>
-    <style name="Widget.App.ModalBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
+
     <style name="Widget.App.Slider" parent="Widget.Material3.Slider">
         <item name="labelBehavior">gone</item>
         <item name="thumbHeight">16dp</item>

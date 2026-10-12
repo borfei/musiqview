@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Musiqview</string>
     <string name="content_description_artwork">Artwork for current media</string>
-    <string name="content_description_launcher_icon">Icon</string>
     <string name="content_description_playback_state">Play or pause current media</string>
     <string name="content_description_playback_repeat">Repeat current media</string>
     <string name="content_description_playback_seek">Seek media position</string>
@@ -9,10 +8,6 @@
     <string name="dialog_media_info_title">Media information</string>
     <string name="dialog_media_info_negative">Close</string>
     <string name="filename_placeholder">[unknown file]</string>
-    <string name="launcher_greeting">Welcome to %1$s!</string>
-    <string name="launcher_instructions">To get started, simply use your file manager and open your audio files using %1$s.\n\nIf you want to let %2$s handle audio files automatically, set it as the default music app.</string>
-    <string name="launcher_set_default">Set as default app</string>
-    <string name="launcher_finish">Finish set-up</string>
     <string name="media_info_title">Title</string>
     <string name="media_info_display_title">Display Title</string>
     <string name="media_info_artist">Artist(s)</string>
@@ -32,5 +27,4 @@
     <string name="menu_missing_option">Missing an option? <a href="https://github.com/borfei/musiqview/issues/new">Open a new issue.</a></string>
     <string name="playback_seek_text" formatted="false">00:00</string>
     <string name="playback_seek_text_format" formatted="false">%02d:%02d</string>
-    <string name="under_construction">Hey! This feature is still under construction..</string>
 </resources>
