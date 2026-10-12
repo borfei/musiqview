@@ -12,10 +12,13 @@ import android.provider.OpenableColumns
  * @return[String]
  */
 fun Uri.getName(context: Context): String? {
-    val returnCursor = context.contentResolver.query(this, null, null, null, null)
-    val nameIndex = returnCursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-    returnCursor?.moveToFirst()
-    val fileName = nameIndex?.let { returnCursor.getString(it) }
-    returnCursor?.close()
-    return fileName
+    val queriedName = runCatching {
+        context.contentResolver.query(this, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+            ?.use { cursor ->
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (nameIndex >= 0 && cursor.moveToFirst()) cursor.getString(nameIndex) else null
+            }
+    }.getOrNull()
+
+    return queriedName?.takeIf { it.isNotBlank() } ?: lastPathSegment
 }

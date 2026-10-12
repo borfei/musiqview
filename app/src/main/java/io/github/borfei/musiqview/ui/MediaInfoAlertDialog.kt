@@ -39,7 +39,7 @@ class MediaInfoAlertDialog : DialogFragment() {
             }
 
             bundle.putLong("duration", mediaController.duration)
-            bundle.putString("uri", mediaUri.toString())
+            mediaUri?.let { bundle.putString("uri", it.toString()) }
 
             val dialog = MediaInfoAlertDialog()
             dialog.arguments = bundle
@@ -101,7 +101,9 @@ class MediaInfoAlertDialog : DialogFragment() {
             }
         }
         arguments?.getString("uri")?.let {
-            binding.mediaInfoFilename.text = it.toUri().getName(requireContext())
+            binding.mediaInfoFilename.text =
+                it.toUri().getName(requireContext())
+                    ?: getString(R.string.filename_placeholder)
         }
 
         return dialog
