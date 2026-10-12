@@ -38,13 +38,12 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
     private lateinit var binding: ActivityMusiqBinding
 
-    // used for updating seek every millisecond
     private var seekUpdateHandler: Handler? = null
     private var seekUpdateRunnable: Runnable? = null
+    private var canUpdateSeek: Boolean = false
 
     private var mediaController: MediaController? = null
     private var mediaControllerFuture: ListenableFuture<MediaController>? = null
-    private var isStarted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -57,7 +56,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
         seekUpdateHandler =
             Handler(Looper.myLooper() ?: Looper.getMainLooper())
         seekUpdateRunnable = Runnable {
-            if (isStarted) {
+            if (canUpdateSeek) {
                 mediaController?.currentPosition?.let {
                     updatePlaybackSeekPosition(it)
                 }
@@ -73,7 +72,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
     override fun onStart() {
         super.onStart()
-        isStarted = true
+        canUpdateSeek = true
         seekUpdateRunnable?.let {
             seekUpdateHandler?.removeCallbacks(it)
             seekUpdateHandler?.post(it)
@@ -81,14 +80,13 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
     }
 
     override fun onStop() {
-        isStarted = false
+        canUpdateSeek = false
         seekUpdateHandler?.removeCallbacksAndMessages(null)
         super.onStop()
     }
 
     override fun onDestroy() {
         Log.i(TAG, "Releasing media controller")
-        isStarted = false
         mediaControllerFuture?.cancel(false)
         mediaController?.removeListener(this)
         mediaController?.release()
@@ -194,7 +192,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
 
     private fun updatePlaybackSeekPosition(position: Long) {
         val duration = mediaController?.duration ?: C.TIME_UNSET
-        binding.playbackSeekSlider.value = if (duration > 0 && duration != C.TIME_UNSET) {
+        binding.playbackSeekSlider.value = if (duration > 0) {
             (position.toFloat() / duration).coerceIn(0.0f, 1.0f)
         } else {
             0f
@@ -205,7 +203,7 @@ class MusiqActivity : AppCompatActivity(), Player.Listener {
     }
 
     private fun updatePlaybackSeekDuration() {
-        val duration = mediaController?.duration?.takeIf { it > 0 && it != C.TIME_UNSET }
+        val duration = mediaController?.duration?.takeIf { it > 0 }
         if (duration == null) {
             binding.playbackSeekTextDuration.setText(R.string.playback_seek_text)
             return
