@@ -15,9 +15,7 @@ please [open a new issue](https://github.com/borfei/musiqview/issues/new).
 ## Nightly Builds
 Nightly builds are automatically generated from the latest Git commit, they have
 the latest features and bug fixes, but may also contain bugs that aren't present 
-in the stable release.
-
-You can obtain the latest nightly build [here](https://nightly.link/borfei/musiqview/workflows/android/main/app-debug.zip).
+in the stable release. You can obtain the latest nightly build [here](https://nightly.link/borfei/musiqview/workflows/android/main/app-debug.zip).
 
 > [!NOTE]
 > Nightly builds are only valid for 30-days since the last successful CI build.
