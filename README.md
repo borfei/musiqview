@@ -13,19 +13,20 @@ More features will likely to come soon! If you have a suggestion,
 please [open a new issue](https://github.com/borfei/musiqview/issues/new).
 
 ## Nightly Builds
-You can obtain the latest successful build of the latest Git commit [here](https://nightly.link/borfei/musiqview/workflows/android/main/app-debug.zip).
+Nightly builds are automatically generated from the latest Git commit, they have
+the latest features and bug fixes, but may also contain bugs that aren't present 
+in the stable release.
 
-> [!WARNING]
-> When using the nightly builds, you will experience bugs that aren't usually
-> present in the stable release. Consider opening a new issue if you can find one.
+You can obtain the latest nightly build [here](https://nightly.link/borfei/musiqview/workflows/android/main/app-debug.zip).
 
 > [!NOTE]
-> Nightly builds are only valid for 30-days since the last successful CI build,
-> it's recommended to fork the repository if you plan on testing nightly builds occasionally.
+> Nightly builds are only valid for 30-days since the last successful CI build.
+> We recommend you to compile the source code locally in case the nightly build has expired.
 
 ## Contribution
-Any kind of contribution to the source code is greatly
-appreciated! Make sure to read the [Code of Conduct](CODE_OF_CONDUCT.md).
+Any kind of contribution to the source code is very
+appreciated! Make sure your contributions adhere to 
+the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 This project is licensed under the **MIT License**.
