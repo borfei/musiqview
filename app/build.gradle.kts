@@ -10,8 +10,8 @@ android {
         applicationId = "io.github.borfei.musiqview"
         minSdk = 24
         targetSdk = 36
-        versionCode = 12
-        versionName = "4.0.2"
+        versionCode = 13
+        versionName = "4.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
